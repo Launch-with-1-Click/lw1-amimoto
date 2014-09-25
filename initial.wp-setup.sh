@@ -15,13 +15,6 @@ function plugin_install(){
   /bin/rm -r /tmp/${1}.zip
 }
 
-if [ ! -d /etc/chef/ohai/hints ]; then
-  /bin/mkdir -p /etc/chef/ohai/hints
-fi
-if [ ! -f /etc/chef/ohai/hints/ec2.json ]; then
-  echo '{}' > /etc/chef/ohai/hints/ec2.json
-fi
-
 WP_VER=4.0
 
 INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
@@ -35,6 +28,7 @@ SERVERNAME=$INSTANCEID
 /bin/cp /dev/null /home/ec2-user/.bash_history > /dev/null 2>&1
 /bin/rm -rf /var/www/vhosts/i-* > /dev/null 2>&1
 /usr/bin/yes | /usr/bin/crontab -r
+echo '@reboot /bin/sh /opt/local/provision > /dev/null 2>&1' | crontab
 
 if [ -f /etc/php-fpm.d/www.conf ]; then
   /bin/rm -f /etc/php-fpm.d/www.conf
@@ -61,34 +55,25 @@ echo '<html>
 <p>After a while please reload your web browser.</p>
 </body>' > /var/www/vhosts/${INSTANCEID}/index.html
 
-if [ ! -d /opt/local ]; then
-  /bin/mkdir -p /opt/local
-fi
-cd /opt/local
-/usr/bin/git clone git://github.com/opscode/chef-repo.git
-cd chef-repo/cookbooks
-/usr/bin/git clone git://github.com/Launch-with-1-Click/lw1-amimoto.git amimoto
-cd /opt/local
-echo '{ "run_list" : [ "recipe[amimoto]" ] }' > amimoto.json
-echo 'file_cache_path "/tmp/chef-solo"
-cookbook_path ["/opt/local/chef-repo/cookbooks"]' > solo.rb
-/usr/bin/chef-solo -c solo.rb -j amimoto.json
+/usr/bin/git -C /opt/local/chef-repo/ pull origin master
+/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin master
+/usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
 if [ ! -f /etc/nginx/nginx.conf ]; then
-  /usr/bin/chef-solo -o amimoto::nginx -c solo.rb -j amimoto.json
+  /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
 if [ ! -f /etc/nginx/conf.d/default.conf ]; then
-  /usr/bin/chef-solo -o amimoto::nginx_default -c solo.rb -j amimoto.json
+  /usr/bin/chef-solo -o amimoto::nginx_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
 if [ ! -f /etc/php-fpm.d/www.conf ]; then
-  /usr/bin/chef-solo -o amimoto::php -c solo.rb -j amimoto.json
+  /usr/bin/chef-solo -o amimoto::php -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
 
 CF_PATTERN=`/usr/bin/curl -s https://raw.githubusercontent.com/megumiteam/amimoto/master/cf_patern_check.php | /usr/bin/php`
 if [ "$CF_PATTERN" = "nfs_server" ]; then
-  /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c solo.rb -j amimoto.json
+  /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
 if [ "$CF_PATTERN" = "nfs_client" ]; then
-  /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c solo.rb -j amimoto.json
+  /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
 
 cd /tmp
@@ -142,10 +127,7 @@ fi
 
 /sbin/service monit start
 
-WP_CLI=/usr/bin/wp
-if [ ! -f $WP_CLI ]; then
-   WP_CLI=/usr/local/bin/wp
-fi
+WP_CLI=/usr/local/bin/wp
 if [ ! -f $WP_CLI ]; then
   cd /usr/local/bin
   /usr/bin/curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
@@ -155,9 +137,6 @@ fi
 
 if [ "$CF_PATTERN" != "nfs_client" ]; then
   echo "WordPress install ..."
-  if [ ! -d /var/www/vhosts/$SERVERNAME ]; then
-    /bin/mkdir /var/www/vhosts/$SERVERNAME
-  fi
   cd /var/www/vhosts/$SERVERNAME
   if [ "$REGION" = "ap-northeast-1" ]; then
     $WP_CLI core download --locale=ja --version=$WP_VER --allow-root --force
