@@ -1,0 +1,19 @@
+cfn = JSON.load(::File.read('/opt/aws/cloud_formation.json'))
+describe_cmd = "/usr/bin/aws ec2 describe-instances --instance-id #{cfn['nfs']['server']['instance-id']} --region #{node.ec2[:placement_availability_zone].chop} "
+masterserver = JSON.load(`#{describe_cmd}`)
+master_ip = masterserver['Reservations'].first['Instances'].first["PrivateIpAddress"]
+
+mount "/var/www/vhosts/#{node[:ec2][:instance_id]}" do
+  action [:mount]
+  device "#{master_ip}:/var/www/vhosts/#{cfn['nfs']['server']['instance-id']}"
+  fstype "nfs"
+  options "rw"
+end
+
+mount "/var/cache/nginx/proxy_cache" do
+  action [:mount]
+  device "#{master_ip}:/var/cache/nginx/proxy_cache"
+  fstype "nfs"
+  options "rw"
+end
+

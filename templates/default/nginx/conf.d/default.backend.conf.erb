@@ -1,0 +1,17 @@
+server {
+    listen      unix:/var/run/nginx-backend.sock default;
+    server_name _;
+    root        /var/www/vhosts/<%= @server_name %>;
+    index       index.php index.html index.htm;
+
+    access_log  /var/log/nginx/<%= @server_name %>.backend.access.log backend;
+
+    keepalive_timeout 25;
+    port_in_redirect  off;
+
+    gzip              off;
+    gzip_vary         off;
+
+    include /etc/nginx/wp-singlesite;
+    #include /etc/nginx/wp-multisite-subdir;
+}

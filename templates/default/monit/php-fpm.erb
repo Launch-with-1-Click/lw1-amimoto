@@ -1,0 +1,22 @@
+check process <%= @name %>
+<% if @pidfile %>
+  with pidfile <%= @pidfile %>
+<% else %>
+  matching "<%= @name %>"
+<% end %>
+  start program = "<%= @start %>"
+  stop program = "<%= @stop %>"
+<% @rules.each do |rule| %>
+  <%= rule %>
+<% end %>
+
+check directory php_tmp with path "/var/tmp/php"
+  if does not exist then exec "/bin/mkdir -p /var/tmp/php"
+  if failed uid <%= @user %> then exec "/bin/chown -R <%= @user %>:<%= @group %> /var/tmp/php"
+
+check directory php_session with path "/var/tmp/php/session"
+  if does not exist then exec "/bin/mkdir -p /var/tmp/php/session"
+  if failed uid <%= @user %> then exec "/bin/chown -R <%= @user %>:<%= @group %> /var/tmp/php/session"
+
+check directory php_log with path "/var/log/php-fpm"
+  if failed uid <%= @user %> then exec "/bin/chown -R <%= @user %>:<%= @group %> /var/log/php-fpm"

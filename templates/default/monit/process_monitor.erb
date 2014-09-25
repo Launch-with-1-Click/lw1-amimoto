@@ -1,0 +1,11 @@
+check process <%= @name %>
+<% if @pidfile %>
+  with pidfile <%= @pidfile %>
+<% else %>
+  matching "<%= @name %>"
+<% end %>
+  start program = "<%= @start %>"
+  stop program = "<%= @stop %>"
+<% @rules.each do |rule| %>
+  <%= rule %>
+<% end %>

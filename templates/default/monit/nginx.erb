@@ -1,0 +1,20 @@
+check process <%= @name %>
+<% if @pidfile %>
+  with pidfile <%= @pidfile %>
+<% else %>
+  matching "<%= @name %>"
+<% end %>
+  start program = "<%= @start %>"
+  stop program = "<%= @stop %>"
+<% @rules.each do |rule| %>
+  <%= rule %>
+<% end %>
+
+check directory nginx_cache with path "/var/cache/nginx"
+  if failed uid <%= @user %> then exec "/bin/chown -R <%= @user %>:<%= @group %> /var/cache/nginx"
+
+check directory nginx_lib with path "/var/lib/nginx"
+  if failed uid <%= @user %> then exec "/bin/chown -R <%= @user %>:<%= @group %> /var/lib/nginx"
+
+check directory nginx_log with path "/var/log/nginx"
+  if failed uid <%= @user %> then exec "/bin/chown -R <%= @user %>:<%= @group %> /var/log/nginx"

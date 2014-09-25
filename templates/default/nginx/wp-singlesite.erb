@@ -1,0 +1,60 @@
+include /etc/nginx/drop;
+
+##fastcgi_cache start
+#set $no_cache 0;
+#
+## POST requests and urls with a query string should always go to PHP
+#if ($request_method = POST) {
+#    set $no_cache 1;
+#}
+#if ($query_string != "") {
+#    set $no_cache 1;
+#}
+#
+## Don't cache uris containing the following segments
+#if ($request_uri ~* "(/wp-admin/|/xmlrpc.php|/wp-(app|cron|login|register|mail).php|wp-.*.php|/feed/|index.php|wp-comments-popup.php|wp-links-opml.php|wp-locations.php|sitemap(_index)?.xml|[a-z0-9_-]+-sitemap([0-9]+)?.xml)") {
+#    set $no_cache 1;
+#}
+#
+## Don't use the cache for logged in users or recent commenters
+#if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wordpress_no_cache|wordpress_logged_in") {
+#    set $no_cache 1;
+#}
+
+# This order might seem weird - this is attempted to match last if rules below fail.
+location / {
+    try_files $uri $uri/ /index.php?$args;
+}
+
+# Add trailing slash to */wp-admin requests.
+rewrite /wp-admin$ $uri/ permanent;
+
+location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+    include /etc/nginx/expires;
+    log_not_found off;
+}
+
+# Pass all .php files onto a php-fpm/php-fcgi server.
+location ~ \.php$ {
+    #limit_req zone=method;
+
+    set $proxy_https '';
+    if ( $http_x_forwarded_proto = 'https' ) {
+        set $proxy_https 'on';
+    }
+
+    include /etc/nginx/php-fpm;
+    fastcgi_param  REMOTE_ADDR      $http_x_real_ip;
+    fastcgi_param  HTTPS            $proxy_https  if_not_empty;
+    fastcgi_pass_header "X-Accel-Redirect";
+    fastcgi_pass_header "X-Accel-Buffering";
+    fastcgi_pass_header "X-Accel-Charset";
+    fastcgi_pass_header "X-Accel-Expires";
+    fastcgi_pass_header "X-Accel-Limit-Rate";
+
+    # fastcgi cache
+    #fastcgi_cache_bypass $no_cache;
+    #fastcgi_no_cache     $no_cache;
+    #fastcgi_cache        fastcgizone;
+    #fastcgi_cache_valid  60m;
+}

@@ -1,0 +1,14 @@
+## This file modified by chef for <%= node[:fqdn] %>
+
+set daemon 30
+  with start delay 5
+
+set httpd port 2812 and
+  use address localhost
+  allow localhost
+
+<% @alert.each do |address| %>
+set alert <%= address %>
+<% end %>
+
+include /etc/monit.d/*

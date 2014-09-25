@@ -1,0 +1,73 @@
+server {
+    listen      80 default;
+    server_name _;
+    root        /var/www/vhosts/<%= @server_name %>;
+    index       index.html index.htm;
+    charset     utf-8;
+
+    access_log  /var/log/nginx/<%= @server_name %>.access.log  main;
+    error_log   /var/log/nginx/<%= @server_name %>.error.log;
+
+    include     /etc/nginx/drop;
+
+    rewrite /wp-admin$ $scheme://$host$uri/ permanent;
+    #rewrite ^(.*)(index|home|default)\.html? $1 permanent;
+
+    set $mobile '';
+    #include /etc/nginx/mobile-detect;
+
+    set $do_not_cache 0;
+    if ($http_cookie ~* "comment_author_|wordpress_(?!test_cookie)|wp-postpass_" ) {
+        set $do_not_cache 1;
+    }
+    if ($request_method != GET) {
+        set $do_not_cache 1;
+    }
+
+    location / {
+        try_files $uri @wordpress;
+
+        include /etc/nginx/expires;
+
+        # Pass all .php files onto a php-fpm/php-fcgi server.
+        location ~ \.php$ {
+            include /etc/nginx/php-fpm;
+        }
+    }
+
+
+    location @wordpress {
+        proxy_no_cache     $do_not_cache;
+        proxy_cache_bypass $do_not_cache;
+
+        proxy_redirect     off;
+        proxy_cache        czone;
+        proxy_cache_key    "$scheme://$host$request_uri$mobile";
+        proxy_cache_valid  200 0m;
+        proxy_pass http://backend;
+    }
+
+<% if @phpmyadmin_enable %>
+    # phpMyAdmin
+    include     /etc/nginx/phpmyadmin;
+<% else %>
+    #
+    # When you use phpMyAdmin, uncomment the line "include /etc/nginx/phpmyadmin;"
+    # and delete or comment out the below line "location ~* /(phpmyadmin|myadmin|pma) { }".
+    #
+    #include     /etc/nginx/phpmyadmin;
+    location ~* /(phpmyadmin|myadmin|pma) {
+        access_log off;
+        log_not_found off;
+        return 404;
+    }
+<% end %>
+
+    #
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
