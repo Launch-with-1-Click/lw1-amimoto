@@ -8,7 +8,7 @@ end
 
 # configure php
 
-%w{ php.ini php-fpm.conf php.d/apc.ini php.d/memcache.ini php-fpm.d/www.conf }.each do | file_name |
+%w{ php.ini php-fpm.conf php.d/memcache.ini php-fpm.d/www.conf }.each do | file_name |
   template "/etc/" + file_name do
     variables node[:php][:config]
     source "php/" + file_name + ".erb"

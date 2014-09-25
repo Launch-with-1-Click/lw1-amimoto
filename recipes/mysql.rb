@@ -1,16 +1,5 @@
 # Percona install
 
-cookbook_file "#{Chef::Config[:file_cache_path]}/percona-release-0.0-1.x86_64.rpm" do
-  source "percona-release-0.0-1.x86_64.rpm"
-end
-
-package "percona-release" do
-  source "#{Chef::Config[:file_cache_path]}/percona-release-0.0-1.x86_64.rpm"
-  action :install
-  provider Chef::Provider::Package::Rpm
-  ignore_failure true
-end
-
 node[:mysql][:packages].each do |package_name|
   yum_package package_name do
     action [:install, :upgrade]
