@@ -67,7 +67,7 @@ fi
 cd /opt/local
 /usr/bin/git clone git://github.com/opscode/chef-repo.git
 cd chef-repo/cookbooks
-/usr/bin/git clone git://github.com/megumiteam/chef-amimoto.git amimoto
+/usr/bin/git clone git://github.com/Launch-with-1-Click/lw1-amimoto.git amimoto
 cd /opt/local
 echo '{ "run_list" : [ "recipe[amimoto]" ] }' > amimoto.json
 echo 'file_cache_path "/tmp/chef-solo"

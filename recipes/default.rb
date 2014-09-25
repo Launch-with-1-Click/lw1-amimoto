@@ -24,6 +24,7 @@ end
 node[:memcached][:packages].each do | pkg |
   package pkg do
     action [:install, :upgrade]
+    options '--disablerepo=remi'
   end
 end
 
