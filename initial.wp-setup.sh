@@ -21,6 +21,7 @@ INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id
 AZ=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone/`
 SERVERNAME=$INSTANCEID
 
+/sbin/resize2fs /dev/xvda1
 /sbin/service mysql stop
 
 /bin/cp /dev/null /root/.mysql_history > /dev/null 2>&1
