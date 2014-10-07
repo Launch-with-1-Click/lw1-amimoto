@@ -16,5 +16,8 @@ check directory nginx_cache with path "/var/cache/nginx"
 check directory nginx_lib with path "/var/lib/nginx"
   if failed uid <%= @user %> then exec "/bin/chown -R <%= @user %>:<%= @group %> /var/lib/nginx"
 
+check directory nginx_lib_tmp with path "/var/lib/nginx/tmp"
+  if failed uid <%= @user %> then exec "/bin/chown -R <%= @user %>:<%= @group %> /var/lib/nginx/tmp"
+
 check directory nginx_log with path "/var/log/nginx"
   if failed uid <%= @user %> then exec "/bin/chown -R <%= @user %>:<%= @group %> /var/log/nginx"
