@@ -20,6 +20,8 @@ innodb_log_file_size=<%= @innodb_log_file_size %>
 innodb_flush_log_at_trx_commit = 2
 innodb_flush_method=O_DIRECT
 innodb_fast_shutdown = 0
+innodb_buffer_pool_dump_at_shutdown = 1
+innodb_buffer_pool_load_at_startup = 1
 
 query_cache_size=<%= @query_cache_size %>
 query_cache_limit=2M
