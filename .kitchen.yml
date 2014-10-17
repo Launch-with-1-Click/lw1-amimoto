@@ -1,0 +1,63 @@
+---
+driver_plugin: ec2
+driver_config:
+  require_chef_omnibus: 11.10.4
+  aws_access_key_id: PLEASE_OVERWRITE_BY_.kitchen.local.yml
+  aws_secret_access_key: PLEASE_OVERWRITE_BY_.kitchen.local.yml
+  aws_ssh_key_id: PLEASE_OVERWRITE_BY_.kitchen.local.yml
+  ssh_key: PLEASE_OVERWRITE_BY_.kitchen.local.yml
+
+platforms:
+- name: amazon-linux-micro-tokyo
+  driver_config:
+    username: ec2-user
+    flavor_id: t1.micro
+    image_id: ami-3561fe34 # Amazon Linux AMI 2013.09.1
+    region: ap-northeast-1
+    availability_zone: ap-northeast-1a
+    tags:
+      Name: test-kitchen-micro
+- name: amazon-linux-small-tokyo
+  driver_config:
+    username: ec2-user
+    flavor_id: m1.small
+    image_id: ami-3561fe34 # Amazon Linux AMI 2013.09.1
+    region: ap-northeast-1
+    availability_zone: ap-northeast-1a
+    tags:
+      Name: test-kitchen-small
+- name: amazon-linux-large-tokyo
+  driver_config:
+    username: ec2-user
+    flavor_id: m1.large
+    image_id: ami-3561fe34 # Amazon Linux AMI 2013.09.1
+    region: ap-northeast-1
+    availability_zone: ap-northeast-1a
+    tags:
+      Name: test-kitchen-large
+- name: rhel64-micro-tokyo
+  driver_config:
+    username: ec2-user
+    flavor_id: t1.micro
+    image_id: ami-5769f956  # Red Hat Enterprise Linux 6.4
+    region: ap-northeast-1
+    availability_zone: ap-northeast-1a
+    tags:
+      Name: test-kitchen-micro
+
+suites:
+- name: amimoto
+  run_list:
+    - recipe[amimoto::default]
+    - recipe[amimoto::nginx_default]
+    - recipe[amimoto::report_handler]
+  attributes: {}
+#- name: amimoto-nfs
+#  run_list:
+#    - recipe[amimoto::default]
+#    - recipe[testmoto::default]
+#    - recipe[amimoto::report_handler]
+#  attributes: {}
+
+busser:
+  sudo: true

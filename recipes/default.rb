@@ -14,9 +14,15 @@ template "/etc/sysconfig/i18n" do
   source "i18n.erb"
 end
 
-%w{ zip unzip wget git openssl }.each do | pkg |
+%w{ zip unzip wget git openssl bash }.each do | pkg |
   package pkg do
     action [:install, :upgrade]
+  end
+end
+
+%w{httpd24 httpd24-tools}.each do | pkg |
+  package pkg do
+    action [:remove]
   end
 end
 
@@ -33,6 +39,7 @@ include_recipe 'amimoto::mysql'
 
 # install nginx
 include_recipe 'amimoto::nginx'
+#include_recipe 'amimoto::nginx_default'
 
 # install php
 include_recipe 'amimoto::php'

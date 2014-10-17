@@ -1,4 +1,10 @@
 # Percona
+bash 'percona.repo' do
+    not_if 'rpm -qi gpg-pubkey-* | grep Percona'
+    code <<-EOC
+        rpm --import http://www.percona.com/downloads/RPM-GPG-KEY-percona
+    EOC
+end
 template '/etc/yum.repos.d/Percona.repo' do
   source 'yum/Percona.repo.erb'
   action :create
@@ -17,6 +23,12 @@ template '/etc/yum.repos.d/rpmforge.repo' do
 end
 
 # remi
+bash 'remi.repo' do
+    not_if 'rpm -qi gpg-pubkey-* | grep Remi'
+    code <<-EOC
+        rpm --import http://rpms.famillecollet.com/RPM-GPG-KEY-remi
+    EOC
+end
 template '/etc/yum.repos.d/remi.repo' do
   source 'yum/remi.repo.erb'
   action :create
