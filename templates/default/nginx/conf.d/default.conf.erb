@@ -27,16 +27,17 @@ server {
     location / {
         try_files $uri @wordpress;
 
-        include /etc/nginx/expires;
-
         # Pass all .php files onto a php-fpm/php-fcgi server.
         location ~ \.php$ {
+            try_files $uri @wordpress;
             include /etc/nginx/php-fpm;
         }
     }
 
 
     location @wordpress {
+        internal;
+
         proxy_no_cache     $do_not_cache;
         proxy_cache_bypass $do_not_cache;
 
