@@ -9,10 +9,19 @@ bin = ::File.join(node[:wpcli][:dir], 'phar', 'wp-cli.phar')
 file bin do
   mode '0755'
   action :create
-  # only_if { ::File.exists?(bin) }
+  only_if { ::File.exists?(bin) }
 end
 
 link node[:wpcli][:link] do
   to bin
 end
 
+wp_setup = "/usr/local/bin/wp-setup"
+template wp_setup do
+  source "wp-setup.erb"
+end
+file wp_setup do
+  mode '0755'
+  action :create
+  only_if { ::File.exists?(bin) }
+end
