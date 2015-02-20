@@ -19,6 +19,7 @@ end
 
 %w{ drop expires mobile-detect phpmyadmin php-fpm wp-multisite-subdir wp-singlesite }.each do | file_name |
   template "/etc/nginx/" + file_name do
+    variables node[:nginx][:config]
     source "nginx/" + file_name + ".erb"
     notifies :reload, 'service[nginx]'
   end
