@@ -3,6 +3,7 @@ listen = /var/run/php-fpm.sock
 listen.owner = <%= @user %>
 listen.group = <%= @group %>
 listen.mode  = 0666
+listen.backlog = <%= @listen_backlog %>
 
 user  = <%= @user %>
 group = <%= @group %>

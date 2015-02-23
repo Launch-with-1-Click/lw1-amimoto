@@ -18,10 +18,11 @@ default[:nginx][:config][:UA_smartphone] ='(iPhone|iPod|incognito|webmate|Androi
 default[:nginx][:config][:UA_smartphone_off] ='wptouch[^\\=]+\\=(normal|desktop)'
 
 ## PHP
-default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-pecl-memcache }
+default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-pecl-memcache php-pecl-zendopcache }
 default[:php][:service_action] = [:enable, :start]
 default[:php][:config][:user] = 'nginx'
 default[:php][:config][:group] = 'nginx'
+default[:php][:config][:listen_backlog] = '65536'
 default[:php][:config][:max_children] = '5'
 default[:php][:config][:start_servers] = '1'
 default[:php][:config][:min_spare_servers] = '1'
