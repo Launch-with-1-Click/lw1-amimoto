@@ -10,12 +10,14 @@
   end
 end
 
-directory "/opt/local/amimoto/wp-admin" do
-  owner node[:php][:config][:user]
-  group node[:php][:config][:group]
-  mode 00755
-  recursive true
-  action :create
+%w{ /opt/local/amimoto /opt/local/amimoto/wp-admin }.each do | dir_name |
+  directory dir_name do
+    owner node[:php][:config][:user]
+    group node[:php][:config][:group]
+    mode 00755
+    recursive true
+    action :create
+  end
 end
 
 template "/opt/local/amimoto/wp-admin/install.php" do
