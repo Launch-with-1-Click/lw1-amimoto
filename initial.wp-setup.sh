@@ -101,15 +101,6 @@ else
   REGION=unknown
 fi
 
-if [ "t1.micro" = "${INSTANCETYPE}" ]; then
-  sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
-  sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.backend.conf > /etc/nginx/conf.d/default.backend.conf
-  /sbin/service nginx stop
-  /bin/rm -Rf /var/log/nginx/*
-  /bin/rm -Rf /var/cache/nginx/*
-  /sbin/service nginx start
-fi
-
 if [ "$REGION" = "ap-northeast-1" ]; then
   /bin/cp /tmp/amimoto/etc/motd /etc/motd
   /bin/cat /etc/system-release >> /etc/motd
@@ -120,6 +111,10 @@ else
   /bin/cat /tmp/amimoto/etc/motd.en >> /etc/motd
 fi
 
+if [ "t1.micro" = "${INSTANCETYPE}" ]; then
+  sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
+  sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.backend.conf > /etc/nginx/conf.d/default.backend.conf
+fi
 if [ ! -d /opt/local/amimoto/wp-admin ]; then
   /bin/mkdir -p /opt/local/amimoto/wp-admin
 fi
