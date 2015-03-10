@@ -48,6 +48,22 @@ server {
         proxy_pass http://backend;
     }
 
+    location = /wp-admin/install.php {
+        set $script_root '/opt/local/amimoto';
+        if ( -e /opt/local/amimoto/.valid.$server_name ) {
+            set $script_root $document_root;
+        }
+        if ( !-e /opt/local/amimoto/$fastcgi_script_name ) {
+            set $script_root $document_root;
+        }
+        expires        off;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass   phpfpm;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $script_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+
 <% if @phpmyadmin_enable %>
     # phpMyAdmin
     include     /etc/nginx/phpmyadmin;
