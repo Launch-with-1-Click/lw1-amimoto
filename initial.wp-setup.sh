@@ -17,6 +17,7 @@ function plugin_install(){
 
 WP_VER=4.1
 
+INSTANCETYPE=`/usr/bin/curl -s curl http://169.254.169.254/latest/meta-data/instance-type`
 INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
 AZ=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone/`
 SERVERNAME=$INSTANCEID
@@ -31,19 +32,6 @@ SERVERNAME=$INSTANCEID
 /usr/bin/yes | /usr/bin/crontab -r
 echo '@reboot /bin/sh /opt/local/provision > /dev/null 2>&1' | crontab
 
-if [ -f /etc/php-fpm.d/www.conf ]; then
-  /bin/rm -f /etc/php-fpm.d/www.conf
-fi
-if [ -f /etc/nginx/nginx.conf ]; then
-  /bin/rm -f /etc/nginx/nginx.conf
-fi
-if [ -f /etc/nginx/conf.d/default.conf ]; then
-  /bin/rm -f /etc/nginx/conf.d/default.conf
-fi
-if [ -f /etc/nginx/conf.d/default.backend.conf ]; then
-  /bin/rm -f /etc/nginx/conf.d/default.backend.conf
-fi
-
 if [ ! -d /var/www/vhosts/${INSTANCEID} ]; then
   /bin/mkdir -p /var/www/vhosts/${INSTANCEID}
 fi
@@ -56,25 +44,40 @@ echo '<html>
 <p>After a while please reload your web browser.</p>
 </body>' > /var/www/vhosts/${INSTANCEID}/index.html
 
-/usr/bin/git -C /opt/local/chef-repo/ pull origin master
-/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin master
-/usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
-if [ ! -f /etc/nginx/nginx.conf ]; then
-  /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
-fi
-if [ ! -f /etc/nginx/conf.d/default.conf ]; then
-  /usr/bin/chef-solo -o amimoto::nginx_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
-fi
-if [ ! -f /etc/php-fpm.d/www.conf ]; then
-  /usr/bin/chef-solo -o amimoto::php -c /opt/local/solo.rb -j /opt/local/amimoto.json
-fi
+if [ "t1.micro" != "${INSTANCETYPE}" ]; then
+  if [ -f /etc/php-fpm.d/www.conf ]; then
+    /bin/rm -f /etc/php-fpm.d/www.conf
+  fi
+  if [ -f /etc/nginx/nginx.conf ]; then
+    /bin/rm -f /etc/nginx/nginx.conf
+  fi
+  if [ -f /etc/nginx/conf.d/default.conf ]; then
+    /bin/rm -f /etc/nginx/conf.d/default.conf
+  fi
+  if [ -f /etc/nginx/conf.d/default.backend.conf ]; then
+    /bin/rm -f /etc/nginx/conf.d/default.backend.conf
+  fi
 
-CF_PATTERN=`/usr/bin/curl -s https://raw.githubusercontent.com/megumiteam/amimoto/master/cf_patern_check.php | /usr/bin/php`
-if [ "$CF_PATTERN" = "nfs_server" ]; then
-  /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
-fi
-if [ "$CF_PATTERN" = "nfs_client" ]; then
-  /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
+  /usr/bin/git -C /opt/local/chef-repo/ pull origin master
+  /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin master
+  /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
+  if [ ! -f /etc/nginx/nginx.conf ]; then
+    /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
+  fi
+  if [ ! -f /etc/nginx/conf.d/default.conf ]; then
+    /usr/bin/chef-solo -o amimoto::nginx_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
+  fi
+  if [ ! -f /etc/php-fpm.d/www.conf ]; then
+    /usr/bin/chef-solo -o amimoto::php -c /opt/local/solo.rb -j /opt/local/amimoto.json
+  fi
+
+  CF_PATTERN=`/usr/bin/curl -s https://raw.githubusercontent.com/megumiteam/amimoto/master/cf_patern_check.php | /usr/bin/php`
+  if [ "$CF_PATTERN" = "nfs_server" ]; then
+    /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
+  fi
+  if [ "$CF_PATTERN" = "nfs_client" ]; then
+    /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
+  fi
 fi
 
 cd /tmp
@@ -109,6 +112,14 @@ else
   /bin/cat /etc/system-release >> /etc/motd
   /bin/cat /tmp/amimoto/etc/motd.en >> /etc/motd
 fi
+
+if [ ! -d /opt/local/amimoto/wp-admin ]; then
+  /bin/mkdir -p /opt/local/amimoto/wp-admin
+fi
+if [ ! -f /opt/local/amimoto/wp-admin/install.php ]; then
+  /bin/cp /tmp/amimoto/install.php /opt/local/amimoto/wp-admin
+fi
+/bin/chown -R nginx:nginx /opt/local/amimoto
 
 /sbin/service monit stop
 
