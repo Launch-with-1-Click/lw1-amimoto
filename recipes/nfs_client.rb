@@ -22,11 +22,12 @@ template '/opt/aws/nfs_client.rb' do
   source 'cfn/nfs_client.rb.erb'
 end
 
-rc_line = '/usr/bin/chef-apply /opt/aws/nfs_client.rb > /dev/null 2>&1'
-file '/etc/rc.local' do
-  _file = Chef::Util::FileEdit.new('/etc/rc.local')
-  _file.insert_line_if_no_match('/opt/aws/nfs_client.rb', [rc_line, "\n"].join)
-  content _file.send(:contents).join
-  manage_symlink_source true
-end.run_action(:create)
+ruby_block "add nfs_init to/etc/rc.local" do
+  block do
+    rc_line = '/usr/bin/chef-apply /opt/aws/nfs_client.rb > /dev/null 2>&1'
+    _file = Chef::Util::FileEdit.new('/etc/rc.local')
+    _file.insert_line_if_no_match('/opt/aws/nfs_client.rb', [rc_line, "\n"].join)
+    _file.write_file
+  end
+end
 
