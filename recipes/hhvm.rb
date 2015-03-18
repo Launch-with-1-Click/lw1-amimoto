@@ -48,6 +48,10 @@ yum_package 'hhvm' do
   options '-y --nogpgcheck'
 end
 
+template "/etc/hhvm/server.ini" do
+  source "hhvm/server.ini.erb"
+end
+
 service 'hhvm' do
   action [:enable, :start]
 end
