@@ -89,11 +89,11 @@ http {
     #limit_req_zone $request_method zone=method:1m rate=250r/s;
 
     upstream backend {
-        server unix:/var/run/nginx-backend.sock;
+        server <%= @backend_upstream %>;
     }
 
     upstream phpfpm {
-        server unix:/var/run/php-fpm.sock;
+        server <%= @php_upstream %>;
     }
 
     include /etc/nginx/conf.d/*.conf;
