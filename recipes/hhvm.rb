@@ -43,9 +43,10 @@ end
   end
 end
 
+yum_package 'libmemcached'
 yum_package 'hhvm' do
   action [:install]
-  options '-y --nogpgcheck --skip-broken'
+  options '-y --nogpgcheck'
 end
 
 template "/etc/hhvm/server.ini" do
