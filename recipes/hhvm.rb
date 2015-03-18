@@ -32,7 +32,7 @@ end
 
 %w{ hop5.repo opsrock-hhvm.repo }.each do | file_name |
   template "/etc/yum.repos.d/" + file_name do
-    source file_name + ".erb"
+    source "yum/" + file_name + ".erb"
   end
 end
 
