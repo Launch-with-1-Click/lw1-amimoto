@@ -44,8 +44,8 @@ end
 end
 
 yum_package 'hhvm' do
-  action [:install, :upgrade]
-  options '-y --nogpgcheck'
+  action [:install]
+  options '-y --nogpgcheck --skip-broken'
 end
 
 template "/etc/hhvm/server.ini" do
