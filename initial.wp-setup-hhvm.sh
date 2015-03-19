@@ -29,6 +29,7 @@ SERVERNAME=$INSTANCEID
 /bin/cp /dev/null /root/.bash_history > /dev/null 2>&1; history -c
 /bin/cp /dev/null /home/ec2-user/.bash_history > /dev/null 2>&1
 /bin/rm -rf /var/www/vhosts/i-* > /dev/null 2>&1
+/bin/rm -rf /opt/local/amimoto > /dev/null 2>&1
 /usr/bin/yes | /usr/bin/crontab -r
 echo '@reboot /bin/sh /opt/local/provision > /dev/null 2>&1' | crontab
 
