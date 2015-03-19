@@ -15,7 +15,7 @@ function plugin_install(){
   /bin/rm -r /tmp/${1}.zip
 }
 
-WP_VER=4.1
+WP_VER=4.1.1
 
 INSTANCETYPE=`/usr/bin/curl -s curl http://169.254.169.254/latest/meta-data/instance-type`
 INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
