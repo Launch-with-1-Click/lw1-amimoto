@@ -53,6 +53,12 @@ template "/etc/hhvm/server.ini" do
   source "hhvm/server.ini.erb"
 end
 
+template "/etc/hhvm/php.ini" do
+  variables node[:php][:config]
+  source "php/php.ini.erb"
+  notifies :restart, 'service[hhvm]'
+end
+
 service 'hhvm' do
   action node[:hhvm][:service_action]
 end
