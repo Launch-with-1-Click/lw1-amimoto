@@ -30,3 +30,7 @@ template "/opt/local/amimoto/wp-admin/install.php" do
   )
   source "install.php.erb"
 end
+
+service "nginx" do
+  action node[:nginx][:service_action]
+end

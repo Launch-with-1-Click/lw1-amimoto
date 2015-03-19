@@ -130,10 +130,6 @@ fi
 /bin/rm -Rf /var/cache/nginx/*
 /sbin/service nginx start
 
-/sbin/service php-fpm stop
-/bin/rm -Rf /var/log/php-fpm/*
-/sbin/service php-fpm start
-
 /sbin/service mysql stop
 /bin/rm /var/lib/mysql/ib_logfile*
 /bin/rm /var/log/mysqld.log*
@@ -210,6 +206,9 @@ if [ ! -d /usr/share/${PHP_MY_ADMIN} ]; then
   /usr/bin/wget http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/${PHP_MY_ADMIN_VER}/${PHP_MY_ADMIN}.zip
   /usr/bin/unzip /usr/share/${PHP_MY_ADMIN}.zip
   /bin/rm /usr/share/${PHP_MY_ADMIN}.zip
+  if [ -d /usr/share/phpMyAdmin ]; then
+    /bin/rm /usr/share/phpMyAdmin
+  fi
   /bin/ln -s /usr/share/${PHP_MY_ADMIN} /usr/share/phpMyAdmin
 fi
 
