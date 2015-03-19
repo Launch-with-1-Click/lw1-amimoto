@@ -13,9 +13,9 @@ include_recipe 'amimoto::repos'
 template "/etc/sysconfig/i18n" do
   source "i18n.erb"
 end
-template "/etc/sudoers" do
-  source "sudoers.erb"
-end
+#template "/etc/sudoers" do
+#  source "sudoers.erb"
+#end
 
 %w{ zip unzip wget git openssl bash }.each do | pkg |
   package pkg do
