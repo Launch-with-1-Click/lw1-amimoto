@@ -59,7 +59,7 @@ if [ "t1.micro" != "${INSTANCETYPE}" ]; then
   fi
 
   /usr/bin/git -C /opt/local/chef-repo/ pull origin master
-  /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin master
+  /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin use_hhvm_insterad_of_phpfpm
   /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
   if [ ! -f /etc/nginx/nginx.conf ]; then
     /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
@@ -203,7 +203,7 @@ fi
 /bin/chown -R nginx:nginx /var/lib/php
 /bin/chmod +x /usr/local/bin/wp-setup
 
-PHP_MY_ADMIN_VER="4.2.9"
+PHP_MY_ADMIN_VER="4.3.12"
 PHP_MY_ADMIN="phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages"
 if [ ! -d /usr/share/${PHP_MY_ADMIN} ]; then
   cd /usr/share/
