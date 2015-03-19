@@ -14,10 +14,10 @@
   end
 end
 
-%w{ /opt/local/amimoto /opt/local/amimoto/wp-admin /var/www/vhosts/#{node[:ec2][:instance_id]} }.each do | dir_name |
+%W{ /opt/local/amimoto /opt/local/amimoto/wp-admin /var/www/vhosts/#{node[:ec2][:instance_id]} }.each do | dir_name |
   directory dir_name do
-    owner node[:php][:config][:user]
-    group node[:php][:config][:group]
+    owner node[:nginx][:config][:user]
+    group node[:nginx][:config][:group]
     mode 00755
     recursive true
     action :create

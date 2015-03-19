@@ -29,3 +29,15 @@ node[:monit][:settings][:processes].each do |monit|
     notifies :reload, 'service[monit]'
   end
 end
+
+if node[:hhvm][:enabled]
+  file ::File.join(node[:monit][:config_dir], 'php-fpm') do
+    action :delete
+    notifies :reload, 'service[monit]'
+  end
+else
+  file ::File.join(node[:monit][:config_dir], 'hhvm') do
+    action :delete
+    notifies :reload, 'service[monit]'
+  end
+end

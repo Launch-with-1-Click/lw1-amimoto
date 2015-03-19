@@ -45,7 +45,11 @@ include_recipe 'amimoto::nginx'
 #include_recipe 'amimoto::nginx_default'
 
 # install php
-include_recipe 'amimoto::php'
+if node[:hhvm][:enabled]
+  include_recipe 'amimoto::hhvm'
+else
+  include_recipe 'amimoto::php'
+end
 
 # install monit
 include_recipe 'amimoto::monit'

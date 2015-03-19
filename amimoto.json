@@ -1,0 +1,6 @@
+{
+  "nginx" : { "config" : { "user" : "nginx", "group" : "nginx" } },
+  "php"   : { "config" : { "user" : "nginx", "group" : "nginx" } },
+  "run_list" : [ "recipe[amimoto]" ]
+}
+

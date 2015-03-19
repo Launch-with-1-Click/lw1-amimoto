@@ -26,6 +26,10 @@ end
   end
 end
 
+service 'hhvm' do
+  action [:stop, :disable]
+end
+
 service "php-fpm" do
   action node[:php][:service_action]
 end

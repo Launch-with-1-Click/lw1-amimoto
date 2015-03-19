@@ -54,5 +54,5 @@ template "/etc/hhvm/server.ini" do
 end
 
 service 'hhvm' do
-  action [:enable, :start]
+  action node[:hhvm][:service_action]
 end

@@ -1,3 +1,6 @@
+## hhvm
+default[:hhvm][:enabled] = false
+
 ## memcached
 default[:memcached][:packages] = %w{ memcached }
 default[:memcached][:service_action] = [:enable, :start]
@@ -9,13 +12,14 @@ default[:nginx][:config][:user] = 'nginx'
 default[:nginx][:config][:group] = 'nginx'
 default[:nginx][:config][:backend_upstream] = 'unix:/var/run/nginx-backend.sock'
 default[:nginx][:config][:php_upstream] = 'unix:/var/run/php-fpm.sock'
+if node[:hhvm][:enabled]
+  default[:nginx][:config][:php_upstream] = '127.0.0.1:9001'
+end
 default[:nginx][:config][:listen] = '80'
 default[:nginx][:config][:listen_backend] = node[:nginx][:config][:backend_upstream]
 default[:nginx][:config][:worker_processes] = '2'
 default[:nginx][:config][:client_max_body_size] = '4M'
 default[:nginx][:config][:proxy_read_timeout] = '90'
-default[:nginx][:config][:backend_upstream] = 'unix:/var/run/nginx-backend.sock'
-default[:nginx][:config][:php_upstream] = 'unix:/var/run/php-fpm.sock'
 default[:nginx][:config][:worker_rlimit_nofile] = '10240'
 default[:nginx][:config][:worker_connections] = '8192'
 default[:nginx][:config][:phpmyadmin_enable] = false
@@ -28,9 +32,14 @@ default[:nginx][:config][:UA_smartphone_off] ='wptouch[^\\=]+\\=(normal|desktop)
 ## PHP
 default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-pecl-memcache php-pecl-zendopcache }
 default[:php][:service_action] = [:enable, :start]
+default[:hhvm][:service_action] = [:disable, :stop]
+if node[:hhvm][:enabled]
+  default[:php][:service_action] = [:disable, :stop]
+  default[:hhvm][:service_action] = [:enable, :start]
+end
 default[:php][:config][:user] = 'nginx'
 default[:php][:config][:group] = 'nginx'
-default[:php][:config][:listen] = node[:nginx][:config][:php_upstream]
+default[:php][:config][:listen] = '/var/run/php-fpm.sock'
 default[:php][:config][:listen_backlog] = '65536'
 default[:php][:config][:max_children] = '5'
 default[:php][:config][:start_servers] = '1'
