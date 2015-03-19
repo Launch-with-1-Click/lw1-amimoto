@@ -1,5 +1,5 @@
 server {
-    listen      80 default;
+    listen      <%= @listen %> default;
     server_name _;
     root        /var/www/vhosts/<%= @server_name %>;
     index       index.html index.htm;
@@ -14,7 +14,11 @@ server {
     #rewrite ^(.*)(index|home|default)\.html? $1 permanent;
 
     set $mobile '';
+<% if @mobile_detect_enable %>
+    include /etc/nginx/mobile-detect;
+<% else %>
     #include /etc/nginx/mobile-detect;
+<% end %>
 
     set $do_not_cache 0;
     if ($http_cookie ~* "comment_author_|wordpress_(?!test_cookie)|wp-postpass_" ) {

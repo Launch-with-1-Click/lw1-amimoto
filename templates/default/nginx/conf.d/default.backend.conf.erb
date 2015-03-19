@@ -1,5 +1,5 @@
 server {
-    listen      unix:/var/run/nginx-backend.sock default;
+    listen      <%= @listen_backend %> default;
     server_name _;
     root        /var/www/vhosts/<%= @server_name %>;
     index       index.php index.html index.htm;
@@ -12,6 +12,11 @@ server {
     gzip              off;
     gzip_vary         off;
 
+<% if @wp_multisite %>
+    #include /etc/nginx/wp-singlesite;
+    include /etc/nginx/wp-multisite-subdir;
+<% else %>
     include /etc/nginx/wp-singlesite;
     #include /etc/nginx/wp-multisite-subdir;
+<% end %>
 }
