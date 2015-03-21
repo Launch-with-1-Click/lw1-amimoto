@@ -2,8 +2,12 @@ default[:web][:user] = 'nginx'
 default[:web][:group] = 'nginx'
 
 ## memcached
+default[:memcached][:enabled] = true
 default[:memcached][:packages] = %w{ memcached }
-default[:memcached][:service_action] = [:enable, :start]
+default[:memcached][:service_action] = [:disable, :stop]
+if node[:memcached][:enabled]
+  default[:memcached][:service_action] = [:enable, :start]
+end
 
 ## Nginx
 default[:nginx][:enabled] = true
@@ -49,12 +53,12 @@ default[:phpfpm][:enabled] = true
 if node[:hhvm][:enabled]
   default[:phpfpm][:enabled] = false
 end
+default[:phpfpm][:service_action] = [:disable, :stop]
+if node[:phpfpm][:enabled]
+  default[:phpfpm][:service_action] = [:enable, :start]
+end
 
 default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-pecl-memcache php-pecl-zendopcache }
-default[:php][:service_action] = [:disable, :stop]
-if node[:phpfpm][:enabled]
-  default[:php][:service_action] = [:enable, :start]
-end
 default[:php][:config][:user] = node[:web][:user]
 default[:php][:config][:group] = node[:web][:user]
 default[:php][:config][:listen] = '/var/run/php-fpm.sock'
@@ -89,7 +93,36 @@ default[:mysql][:config][:max_connections] = '128'
 default[:mysql][:config][:thread_cache] = '128'
 
 case node[:ec2][:instance_type]
+when "t1.micro"
+  ## memcached
+  default[:memcached][:service_action] = [:stop, :disable]
+  if node[:memcached][:enabled]
+    default[:memcached][:service_action] = [:enable, :start]
+  end
+
+  ## Nginx
+  default[:nginx][:config][:worker_processes] = '2'
+
+  ## PHP
+  default[:php][:config][:max_children] = '5'
+  default[:php][:config][:start_servers] = '1'
+  default[:php][:config][:min_spare_servers] = '1'
+  default[:php][:config][:max_spare_servers] = '4'
+  default[:php][:config][:max_requests] = '200'
+
+  ## MySQL
+  default[:mysql][:config][:innodb_buffer_pool_size] = '64M'
+  default[:mysql][:config][:query_cache_size] = '64M'
+  default[:mysql][:config][:tmp_table_size]  = '64M'
+  default[:mysql][:config][:max_connections] = '128'
+  default[:mysql][:config][:thread_cache] = '128'
 when "t2.micro"
+  ## memcached
+  default[:memcached][:service_action] = [:disable, :stop]
+  if node[:memcached][:enabled]
+    default[:memcached][:service_action] = [:enable, :start]
+  end
+
   ## Nginx
   default[:nginx][:config][:worker_processes] = '2'
 
@@ -786,24 +819,4 @@ when "r3.8xlarge"
   default[:mysql][:config][:tmp_table_size]  = '256M'
   default[:mysql][:config][:max_connections] = '256'
   default[:mysql][:config][:thread_cache] = '256'
-when "t1.micro"
-  ## memcached
-  default[:memcached][:service_action] = [:stop, :disable]
-
-  ## Nginx
-  default[:nginx][:config][:worker_processes] = '2'
-
-  ## PHP
-  default[:php][:config][:max_children] = '5'
-  default[:php][:config][:start_servers] = '1'
-  default[:php][:config][:min_spare_servers] = '1'
-  default[:php][:config][:max_spare_servers] = '4'
-  default[:php][:config][:max_requests] = '200'
-
-  ## MySQL
-  default[:mysql][:config][:innodb_buffer_pool_size] = '64M'
-  default[:mysql][:config][:query_cache_size] = '64M'
-  default[:mysql][:config][:tmp_table_size]  = '64M'
-  default[:mysql][:config][:max_connections] = '128'
-  default[:mysql][:config][:thread_cache] = '128'
 end

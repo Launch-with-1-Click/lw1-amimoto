@@ -36,6 +36,9 @@ node[:memcached][:packages].each do | pkg |
     options '--disablerepo=remi'
   end
 end
+service "memcached" do
+  action node[:memcached][:service_action]
+end
 
 # install mysql
 include_recipe 'amimoto::mysql'

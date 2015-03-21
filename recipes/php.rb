@@ -31,5 +31,5 @@ service 'hhvm' do
 end
 
 service "php-fpm" do
-  action node[:php][:service_action]
+  action node[:phpfpm][:service_action]
 end
