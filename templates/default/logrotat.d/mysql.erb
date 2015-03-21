@@ -1,5 +1,5 @@
 /var/log/mysqld.log {
-    # create 600 mysql mysql
+    create 600 <%= @user %> <%= @group %>
     notifempty
     daily
     rotate 5
@@ -16,7 +16,7 @@
 }
 
 /var/log/mysqld-slow.log {
-    # create 600 mysql mysql
+    create 600 <%= @user %> <%= @group %>
     notifempty
     daily
     rotate 5

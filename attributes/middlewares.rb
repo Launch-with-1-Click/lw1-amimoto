@@ -1,20 +1,21 @@
-## hhvm
-default[:hhvm][:enabled] = false
+default[:web][:user] = 'nginx'
+default[:web][:group] = 'nginx'
 
 ## memcached
 default[:memcached][:packages] = %w{ memcached }
 default[:memcached][:service_action] = [:enable, :start]
 
 ## Nginx
+default[:nginx][:enabled] = true
 default[:nginx][:packages] = %w{ nginx }
-default[:nginx][:service_action] = [:enable, :start]
-default[:nginx][:config][:user] = 'nginx'
-default[:nginx][:config][:group] = 'nginx'
+default[:nginx][:service_action] = [:disable, :stop]
+if node[:nginx][:enabled]
+  default[:nginx][:service_action] = [:enable, :start]
+end
+default[:nginx][:config][:user] = node[:web][:user]
+default[:nginx][:config][:group] = node[:web][:user]
 default[:nginx][:config][:backend_upstream] = 'unix:/var/run/nginx-backend.sock'
 default[:nginx][:config][:php_upstream] = 'unix:/var/run/php-fpm.sock'
-if node[:hhvm][:enabled]
-  default[:nginx][:config][:php_upstream] = '127.0.0.1:9001'
-end
 default[:nginx][:config][:listen] = '80'
 default[:nginx][:config][:listen_backend] = node[:nginx][:config][:backend_upstream]
 default[:nginx][:config][:worker_processes] = '2'
@@ -29,17 +30,37 @@ default[:nginx][:config][:UA_ktai] = '(DoCoMo|J-PHONE|Vodafone|MOT-|UP\.Browser|
 default[:nginx][:config][:UA_smartphone] ='(iPhone|iPod|incognito|webmate|Android|dream|CUPCAKE|froyo|BlackBerry|webOS|s8000|bada|IEMobile|Googlebot\-Mobile|AdsBot\-Google)'
 default[:nginx][:config][:UA_smartphone_off] ='wptouch[^\\=]+\\=(normal|desktop)'
 
-## PHP
-default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-pecl-memcache php-pecl-zendopcache }
-default[:php][:service_action] = [:enable, :start]
+## hhvm
+default[:hhvm][:enabled] = false
 default[:hhvm][:service_action] = [:disable, :stop]
 if node[:hhvm][:enabled]
-  default[:php][:service_action] = [:disable, :stop]
   default[:hhvm][:service_action] = [:enable, :start]
 end
-default[:php][:config][:user] = 'nginx'
-default[:php][:config][:group] = 'nginx'
+default[:hhvm][:config][:user] = node[:web][:user]
+default[:hhvm][:config][:group] = node[:web][:user]
+default[:hhvm][:config][:listen] = '9001'
+if node[:hhvm][:enabled]
+  default[:nginx][:config][:php_upstream] = '127.0.0.1:9001'
+end
+
+
+## PHP
+default[:phpfpm][:enabled] = true
+if node[:hhvm][:enabled]
+  default[:phpfpm][:enabled] = false
+end
+
+default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-pecl-memcache php-pecl-zendopcache }
+default[:php][:service_action] = [:disable, :stop]
+if node[:phpfpm][:enabled]
+  default[:php][:service_action] = [:enable, :start]
+end
+default[:php][:config][:user] = node[:web][:user]
+default[:php][:config][:group] = node[:web][:user]
 default[:php][:config][:listen] = '/var/run/php-fpm.sock'
+if node[:phpfpm][:enabled]
+  default[:nginx][:config][:php_upstream] = 'unix:/var/run/php-fpm.sock'
+end
 default[:php][:config][:listen_backlog] = '65536'
 default[:php][:config][:max_children] = '5'
 default[:php][:config][:start_servers] = '1'
@@ -52,8 +73,12 @@ default[:php][:config][:request_terminate_timeout] = node[:nginx][:config][:prox
 default[:php][:config][:max_execution_time] = node[:nginx][:config][:proxy_read_timeout]
 
 ## MySQL
+default[:mysql][:enabled] = true
 default[:mysql][:packages] = %w{ Percona-Server-server-56 Percona-Server-client-56 }
-default[:mysql][:service_action] = [:enable, :start]
+default[:mysql][:service_action] = [:disable, :stop]
+if node[:mysql][:enabled]
+  default[:mysql][:service_action] = [:enable, :start]
+end
 default[:mysql][:config][:user] = 'mysql'
 default[:mysql][:config][:group] = 'mysql'
 default[:mysql][:config][:innodb_buffer_pool_size] = '64M'

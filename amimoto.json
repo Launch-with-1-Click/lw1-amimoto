@@ -1,6 +1,7 @@
 {
   "nginx" : { "config" : { "user" : "nginx", "group" : "nginx" } },
   "php"   : { "config" : { "user" : "nginx", "group" : "nginx" } },
+  "phpfpm"  : { "enabled" : true },
   "run_list" : [ "recipe[amimoto]" ]
 }
 

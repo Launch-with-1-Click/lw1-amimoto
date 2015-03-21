@@ -30,6 +30,8 @@ service "php-fpm" do
   action [:stop, :disable]
 end
 
+# hhvm install
+
 %w{ hop5.repo opsrock-hhvm.repo }.each do | file_name |
   template "/etc/yum.repos.d/" + file_name do
     source "yum/" + file_name + ".erb"
@@ -49,14 +51,23 @@ yum_package 'hhvm' do
   options '-y --nogpgcheck'
 end
 
+# hhvm configure
+
 template "/etc/hhvm/server.ini" do
+  variables node[:hhvm][:config]
   source "hhvm/server.ini.erb"
+  notifies :restart, 'service[hhvm]'
 end
 
 template "/etc/hhvm/php.ini" do
   variables node[:php][:config]
   source "php/php.ini.erb"
   notifies :restart, 'service[hhvm]'
+end
+
+template "/etc/logrotate.d/hhvm" do
+  variables node[:hhvm][:config]
+  source "logrotat.d/hhvm.erb"
 end
 
 service 'hhvm' do

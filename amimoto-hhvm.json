@@ -1,7 +1,7 @@
 {
   "nginx" : { "config" : { "user" : "nginx", "group" : "nginx" } },
-  "hhvm"  : { "enabled" : true },
   "php"   : { "config" : { "user" : "nginx", "group" : "nginx" } },
+  "hhvm"  : { "enabled" : true },
   "run_list" : [ "recipe[amimoto]" ]
 }
 

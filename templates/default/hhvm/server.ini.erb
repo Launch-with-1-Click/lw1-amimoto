@@ -6,14 +6,15 @@ hhvm.jit = true
 
 ;; common options
 hhvm.pid_file = /var/tmp/hhvm.pid
-hhvm.server.user = nginx
+hhvm.server.user = <%= @user %>
+hhvm.server.group = <%= @group %>
 hhvm.log.use_log_file = true
 hhvm.log.file = /var/log/hhvm/error.log
 hhvm.repo.central.path = /tmp/.hhvm.hhbc
 
 ;; listner options
 ;;; port and socket have exclusive relationship.
-hhvm.server.port = 9001
+hhvm.server.port = <%= @listen %>
 ;hhvm.server.file_socket = /var/tmp/hiphop-php.sock
 
 ;;; please update 2 * number of CPUs

@@ -1,0 +1,11 @@
+/var/log/hhvm/*log {
+  create 0644 <%= @user %> <%= @group %>
+  daily
+  rotate 10
+  missingok
+  notifempty
+  compress
+  sharedscripts
+  # hhvm can't reopen log files yet: https://github.com/facebook/hhvm/issues/4448
+  copytruncate
+}

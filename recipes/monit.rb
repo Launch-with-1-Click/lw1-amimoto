@@ -23,21 +23,16 @@ template node[:monit][:config_file] do
 end
 
 node[:monit][:settings][:processes].each do |monit|
-  template ::File.join(node[:monit][:config_dir], monit[:name]) do
-    source node[:monit][:source][monit[:name]]
-    variables monit
-    notifies :reload, 'service[monit]'
-  end
-end
-
-if node[:hhvm][:enabled]
-  file ::File.join(node[:monit][:config_dir], 'php-fpm') do
-    action :delete
-    notifies :reload, 'service[monit]'
-  end
-else
-  file ::File.join(node[:monit][:config_dir], 'hhvm') do
-    action :delete
-    notifies :reload, 'service[monit]'
+  if node[:monit][:monitor][monit[:name]]
+    template ::File.join(node[:monit][:config_dir], monit[:name]) do
+      source node[:monit][:source][monit[:name]]
+      variables monit
+      notifies :reload, 'service[monit]'
+    end
+  else
+    file ::File.join(node[:monit][:config_dir], monit[:name]) do
+      action :delete
+      notifies :reload, 'service[monit]'
+    end
   end
 end
