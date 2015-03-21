@@ -95,6 +95,7 @@ default[:mysql][:config][:thread_cache] = '128'
 case node[:ec2][:instance_type]
 when "t1.micro"
   ## memcached
+  default[:memcached][:enabled] = false
   default[:memcached][:service_action] = [:stop, :disable]
   if node[:memcached][:enabled]
     default[:memcached][:service_action] = [:enable, :start]
@@ -118,6 +119,7 @@ when "t1.micro"
   default[:mysql][:config][:thread_cache] = '128'
 when "t2.micro"
   ## memcached
+  default[:memcached][:enabled] = false
   default[:memcached][:service_action] = [:disable, :stop]
   if node[:memcached][:enabled]
     default[:memcached][:service_action] = [:enable, :start]
