@@ -123,6 +123,13 @@ if [ ! -f /opt/local/amimoto/wp-admin/install.php ]; then
   /bin/cp /tmp/amimoto/install.php /opt/local/amimoto/wp-admin
 fi
 /bin/chown -R nginx:nginx /opt/local/amimoto
+if [ -f /usr/sbin/getenforce ]; then
+  if [ "Enforcing" = "`/usr/sbin/getenforce`" ]; then
+    /usr/bin/yum install -y setools-console
+    /usr/sbin/semanage fcontext -a -t httpd_sys_content_t "/opt/local/amimoto(/.*)?"
+    /sbin/restorecon -R -v /opt/local/amimoto/
+  fi
+fi
 
 /sbin/service monit stop
 
