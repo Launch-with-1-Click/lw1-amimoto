@@ -3,21 +3,23 @@ default[:monit][:config_dir]     = '/etc/monit.d'
 default[:monit][:config][:alert] = []
 
 default[:monit][:monitor] = {
-  'nginx'   => node[:nginx][:enabled],
-  'hhvm'    => node[:hhvm][:enabled],
-  'php-fpm' => node[:phpfpm][:enabled],
-  'mysql'   => node[:mysql][:enabled],
-  'crond'   => true,
-  'logging' => true,
+  'nginx'     => node[:nginx][:enabled],
+  'hhvm'      => node[:hhvm][:enabled],
+  'php-fpm'   => node[:phpfpm][:enabled],
+  'mysql'     => node[:mysql][:enabled],
+  'memcached' => node[:memcached][:enabled],
+  'crond'     => true,
+  'logging'   => true,
 }
 
 default[:monit][:source] = {
-  'nginx'   => 'monit/nginx.erb',
-  'hhvm'    => 'monit/process_monitor.erb',
-  'php-fpm' => 'monit/php-fpm.erb',
-  'mysql'   => 'monit/process_monitor.erb',
-  'crond'   => 'monit/process_monitor.erb',
-  'logging' => 'monit/logging.erb'
+  'nginx'     => 'monit/nginx.erb',
+  'hhvm'      => 'monit/process_monitor.erb',
+  'php-fpm'   => 'monit/php-fpm.erb',
+  'mysql'     => 'monit/process_monitor.erb',
+  'memcached' => 'monit/process_monitor.erb',
+  'crond'     => 'monit/process_monitor.erb',
+  'logging'   => 'monit/logging.erb'
 }
 
 default[:monit][:settings][:processes] = [
@@ -61,6 +63,13 @@ default[:monit][:settings][:processes] = [
    :rules => [
    ]
   },
+  {
+   :name => 'memcached',
+   :pidfile => '/var/run/memcached/memcached.pid',
+   :start => '/sbin/service memcached start',
+   :stop  => '/sbin/service memcached stop',
+   :rules => [
+   ]
   {
    :name => 'crond',
    :pidfile => '/var/run/crond.pid',
