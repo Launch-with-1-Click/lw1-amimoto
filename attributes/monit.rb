@@ -70,6 +70,7 @@ default[:monit][:settings][:processes] = [
    :stop  => '/sbin/service memcached stop',
    :rules => [
    ]
+  },
   {
    :name => 'crond',
    :pidfile => '/var/run/crond.pid',
