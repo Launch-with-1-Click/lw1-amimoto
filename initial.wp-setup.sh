@@ -23,7 +23,21 @@ AZ=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/placement/availabil
 SERVERNAME=$INSTANCEID
 
 /sbin/resize2fs /dev/xvda1
+/sbin/service monit stop
 /sbin/service mysql stop
+
+/usr/bin/curl -L http://www.opscode.com/chef/install.sh | /bin/bash
+echo '#!/bin/sh
+/sbin/service monit stop
+if [ -d /usr/bin/python2.7 ]; then
+  /usr/sbin/alternatives --set python /usr/bin/python2.7
+elif [ -d /usr/bin/python2.6 ]; then
+  /usr/sbin/alternatives --set python /usr/bin/python2.6
+fi
+/usr/bin/git -C /opt/local/chef-repo/ pull origin master
+/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin master
+/usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json' > /opt/local/provision
+/bin/chmod +x /opt/local/provision
 
 /bin/cp /dev/null /root/.mysql_history > /dev/null 2>&1
 /bin/cp /dev/null /root/.bash_history > /dev/null 2>&1; history -c
@@ -59,6 +73,11 @@ if [ "t1.micro" != "${INSTANCETYPE}" ]; then
     /bin/rm -f /etc/nginx/conf.d/default.backend.conf
   fi
 
+  if [ -d /usr/bin/python2.7 ]; then
+    /usr/sbin/alternatives --set python /usr/bin/python2.7
+  elif [ -d /usr/bin/python2.6 ]; then
+    /usr/sbin/alternatives --set python /usr/bin/python2.6
+  fi
   /usr/bin/git -C /opt/local/chef-repo/ pull origin master
   /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin master
   /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
