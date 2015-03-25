@@ -26,12 +26,12 @@ SERVERNAME=$INSTANCEID
 /sbin/service monit stop
 /sbin/service mysql stop
 
-/usr/bin/curl -L http://www.opscode.com/chef/install.sh | /bin/bash
+#/usr/bin/curl -L http://www.opscode.com/chef/install.sh | /bin/bash
 echo '#!/bin/sh
 /sbin/service monit stop
-if [ -d /usr/bin/python2.7 ]; then
+if [ -f /usr/bin/python2.7 ]; then
   /usr/sbin/alternatives --set python /usr/bin/python2.7
-elif [ -d /usr/bin/python2.6 ]; then
+elif [ -f /usr/bin/python2.6 ]; then
   /usr/sbin/alternatives --set python /usr/bin/python2.6
 fi
 /usr/bin/git -C /opt/local/chef-repo/ pull origin master
@@ -73,9 +73,9 @@ if [ "t1.micro" != "${INSTANCETYPE}" ]; then
     /bin/rm -f /etc/nginx/conf.d/default.backend.conf
   fi
 
-  if [ -d /usr/bin/python2.7 ]; then
+  if [ -f /usr/bin/python2.7 ]; then
     /usr/sbin/alternatives --set python /usr/bin/python2.7
-  elif [ -d /usr/bin/python2.6 ]; then
+  elif [ -f /usr/bin/python2.6 ]; then
     /usr/sbin/alternatives --set python /usr/bin/python2.6
   fi
   /usr/bin/git -C /opt/local/chef-repo/ pull origin master
