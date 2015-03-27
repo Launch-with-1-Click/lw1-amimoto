@@ -44,7 +44,7 @@ default[:hhvm][:config][:user] = node[:web][:user]
 default[:hhvm][:config][:group] = node[:web][:user]
 default[:hhvm][:config][:listen] = '9001'
 if node[:hhvm][:enabled]
-  default[:nginx][:config][:php_upstream] = '127.0.0.1:9001'
+  default[:nginx][:config][:php_upstream] = 'unix:/var/tmp/hiphop-php.sock'
 end
 
 
