@@ -2,35 +2,26 @@
 driver_plugin: ec2
 driver_config:
   require_chef_omnibus: latest
-  aws_access_key_id: PLEASE_OVERWRITE_BY_.kitchen.local.yml
-  aws_secret_access_key: PLEASE_OVERWRITE_BY_.kitchen.local.yml
-  aws_ssh_key_id: PLEASE_OVERWRITE_BY_.kitchen.local.yml
-  ssh_key: PLEASE_OVERWRITE_BY_.kitchen.local.yml
+  aws_access_key_id: <%= ENV['AWS_ACCESS_KEY'] %>
+  aws_secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
+  aws_ssh_key_id: <%= ENV['AWS_EC2_KEYPAIR'] %>
+  ssh_key: <%= ENV['AWS_EC2_KEYPASS'] %>
 
 platforms:
 - name: amazon-linux-micro-tokyo
   driver_config:
     username: ec2-user
     flavor_id: t1.micro
-    image_id: ami-3561fe34 # Amazon Linux AMI 2013.09.1
+    image_id: ami-c7f90ec7 # Amazon Linux AMI 2015.03.0 (HVM)
     region: ap-northeast-1
     availability_zone: ap-northeast-1a
     tags:
       Name: test-kitchen-micro
-- name: amazon-linux-small-tokyo
-  driver_config:
-    username: ec2-user
-    flavor_id: m1.small
-    image_id: ami-3561fe34 # Amazon Linux AMI 2013.09.1
-    region: ap-northeast-1
-    availability_zone: ap-northeast-1a
-    tags:
-      Name: test-kitchen-small
 - name: amazon-linux-large-tokyo
   driver_config:
     username: ec2-user
-    flavor_id: m1.large
-    image_id: ami-3561fe34 # Amazon Linux AMI 2013.09.1
+    flavor_id: c3.large
+    image_id: ami-c7f90ec7 # Amazon Linux AMI 2015.03.0 (HVM)
     region: ap-northeast-1
     availability_zone: ap-northeast-1a
     tags:
@@ -52,6 +43,15 @@ suites:
     - recipe[amimoto::nginx_default]
     - recipe[amimoto::report_handler]
   attributes: {}
+- name: hhvm-amimoto
+  run_list:
+    - recipe[amimoto::default]
+    - recipe[amimoto::nginx_default]
+    - recipe[amimoto::report_handler]
+  attributes:
+    hhvm:
+      enabled: true
+
 #- name: amimoto-nfs
 #  run_list:
 #    - recipe[amimoto::default]
