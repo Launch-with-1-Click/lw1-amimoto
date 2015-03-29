@@ -73,3 +73,10 @@ end
 service 'hhvm' do
   action node[:hhvm][:service_action]
 end
+
+# install php
+if node[:hhvm][:enabled]
+  if (node.memory.total.to_i / 1024) > 1024
+    include_recipe 'amimoto::redis_hhvm'
+  end
+end
