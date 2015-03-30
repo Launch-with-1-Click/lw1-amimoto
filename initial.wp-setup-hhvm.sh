@@ -186,6 +186,14 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   plugin_install "contact-form-7" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "simple-ga-ranking" "$SERVERNAME" > /dev/null 2>&1
 
+  if [ "t1.micro" != "${INSTANCETYPE}" ]; then
+    /bin/rm /var/www/vhosts/${INSTANCEID}/wp-content/object-cache.php
+  else
+    plugin_install "wp-redis" "$SERVERNAME" > /dev/null 2>&1
+    /bin/cp -p /var/www/vhosts/${INSTANCEID}/wp-content/plubins/wp-redis/object-cache.php /var/www/vhosts/${INSTANCEID}/wp-content/
+  fi
+
+
   echo "... WordPress installed"
 
   MU_PLUGINS="/var/www/vhosts/${INSTANCEID}/wp-content/mu-plugins"
