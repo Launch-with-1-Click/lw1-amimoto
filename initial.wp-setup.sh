@@ -15,14 +15,15 @@ function plugin_install(){
   /bin/rm -r /tmp/${1}.zip
 }
 
-WP_VER=4.1.1
+WP_VER="4.1.1"
+PHP_MY_ADMIN_VER="4.3.13"
 
 INSTANCETYPE=`/usr/bin/curl -s curl http://169.254.169.254/latest/meta-data/instance-type`
 INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
 AZ=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone/`
 SERVERNAME=$INSTANCEID
 
-/sbin/resize2fs /dev/xvda1
+#/sbin/resize2fs /dev/xvda1
 /sbin/service monit stop
 /sbin/service mysql stop
 
@@ -78,7 +79,7 @@ if [ "t1.micro" != "${INSTANCETYPE}" ]; then
   elif [ -f /usr/bin/python2.6 ]; then
     /usr/sbin/alternatives --set python /usr/bin/python2.6
   fi
-  /usr/bin/git -C /opt/local/chef-repo/ pull origin master
+  #/usr/bin/git -C /opt/local/chef-repo/ pull origin master
   /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin master
   /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
   if [ ! -f /etc/nginx/nginx.conf ]; then
@@ -90,18 +91,22 @@ if [ "t1.micro" != "${INSTANCETYPE}" ]; then
   if [ ! -f /etc/php-fpm.d/www.conf ]; then
     /usr/bin/chef-solo -o amimoto::php -c /opt/local/solo.rb -j /opt/local/amimoto.json
   fi
-
-  CF_PATTERN=`/usr/bin/curl -s https://raw.githubusercontent.com/megumiteam/amimoto/master/cf_patern_check.php | /usr/bin/php`
-  if [ "$CF_PATTERN" = "nfs_server" ]; then
-    /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  fi
-  if [ "$CF_PATTERN" = "nfs_client" ]; then
-    /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  fi
+elif [ "t1.micro" != "${INSTANCETYPE}" ]; then
+    /sbin/chkconfig memcached off
+    /sbin/service memcached stop
 fi
 
 cd /tmp
 /usr/bin/git clone git://github.com/megumiteam/amimoto.git
+
+#CF_PATTERN=`/usr/bin/curl -s https://raw.githubusercontent.com/megumiteam/amimoto/master/cf_patern_check.php | /usr/bin/php`
+CF_PATTERN=`/usr/bin/php /tmp/amimoto/cf_patern_check.php`
+if [ "$CF_PATTERN" = "nfs_server" ]; then
+  /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
+fi
+if [ "$CF_PATTERN" = "nfs_client" ]; then
+  /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
+fi
 
 if [ "$AZ" = "eu-west-1a" -o "$AZ" = "eu-west-1b" -o "$AZ" = "eu-west-1c" ]; then
   REGION=eu-west-1
@@ -132,8 +137,14 @@ else
 fi
 
 if [ "t1.micro" = "${INSTANCETYPE}" ]; then
-  sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
-  sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.backend.conf > /etc/nginx/conf.d/default.backend.conf
+  /bin/cp /tmp/amimoto/etc/nginx/nginx.conf /etc/nginx/nginx.conf
+  /bin/sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
+  /bin/sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.backend.conf > /etc/nginx/conf.d/default.backend.conf
+  /bin/cp /tmp/amimoto/etc/php-fpm.d/www.conf /etc/php-fpm.d/www.conf
+  /bin/cp /tmp/amimoto/etc/my.cnf /etc/my.cnf
+  /sbin/service nginx reload
+  /sbin/service php-fpm reload
+  /sbin/service mysql reload
 fi
 if [ ! -d /opt/local/amimoto/wp-admin ]; then
   /bin/mkdir -p /opt/local/amimoto/wp-admin
@@ -230,7 +241,6 @@ fi
 /bin/chown -R nginx:nginx /var/lib/php
 /bin/chmod +x /usr/local/bin/wp-setup
 
-PHP_MY_ADMIN_VER="4.3.12"
 PHP_MY_ADMIN="phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages"
 if [ ! -d /usr/share/${PHP_MY_ADMIN} ]; then
   cd /usr/share/
