@@ -91,7 +91,7 @@ if [ "t1.micro" != "${INSTANCETYPE}" ]; then
   if [ ! -f /etc/php-fpm.d/www.conf ]; then
     /usr/bin/chef-solo -o amimoto::php -c /opt/local/solo.rb -j /opt/local/amimoto.json
   fi
-elif [ "t1.micro" != "${INSTANCETYPE}" ]; then
+elif [ "t1.micro" = "${INSTANCETYPE}" ]; then
     /sbin/chkconfig memcached off
     /sbin/service memcached stop
 fi
