@@ -15,7 +15,7 @@ hhvm.repo.central.path = /tmp/.hhvm.hhbc
 ;; listner options
 ;;; port and socket have exclusive relationship.
 ;hhvm.server.port = <%= @listen %>
-hhvm.server.file_socket = /var/tmp/hiphop-php.sock
+hhvm.server.file_socket = <%= @file_socket %>
 
 ;;; please update 2 * number of CPUs
 hhvm.server.thread_count = <%= node.cpu.total * 2 %>

@@ -17,12 +17,12 @@ if node[:nginx][:enabled]
   default[:nginx][:service_action] = [:enable, :start]
 end
 default[:nginx][:config][:user] = node[:web][:user]
-default[:nginx][:config][:group] = node[:web][:user]
+default[:nginx][:config][:group] = node[:web][:group]
 default[:nginx][:config][:backend_upstream] = 'unix:/var/run/nginx-backend.sock'
 default[:nginx][:config][:php_upstream] = 'unix:/var/run/php-fpm.sock'
 default[:nginx][:config][:listen] = '80'
 default[:nginx][:config][:listen_backend] = node[:nginx][:config][:backend_upstream]
-default[:nginx][:config][:worker_processes] = '2'
+default[:nginx][:config][:worker_processes] = node[:cpu][:total]
 default[:nginx][:config][:client_max_body_size] = '4M'
 default[:nginx][:config][:proxy_read_timeout] = '90'
 default[:nginx][:config][:worker_rlimit_nofile] = '10240'
@@ -41,8 +41,9 @@ if node[:hhvm][:enabled]
   default[:hhvm][:service_action] = [:enable, :start]
 end
 default[:hhvm][:config][:user] = node[:web][:user]
-default[:hhvm][:config][:group] = node[:web][:user]
+default[:hhvm][:config][:group] = node[:web][:group]
 default[:hhvm][:config][:listen] = '9001'
+default[:hhvm][:config][:file_socket] = '/var/tmp/hiphop-php.sock'
 if node[:hhvm][:enabled]
   default[:nginx][:config][:php_upstream] = 'unix:/var/tmp/hiphop-php.sock'
 end
@@ -60,7 +61,7 @@ end
 
 default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-pecl-memcache php-pecl-zendopcache }
 default[:php][:config][:user] = node[:web][:user]
-default[:php][:config][:group] = node[:web][:user]
+default[:php][:config][:group] = node[:web][:group]
 default[:php][:config][:listen] = '/var/run/php-fpm.sock'
 if node[:phpfpm][:enabled]
   default[:nginx][:config][:php_upstream] = 'unix:/var/run/php-fpm.sock'
