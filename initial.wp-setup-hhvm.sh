@@ -15,7 +15,8 @@ function plugin_install(){
   /bin/rm -r /tmp/${1}.zip
 }
 
-WP_VER=4.1
+WP_VER="4.2.2"
+PHP_MY_ADMIN_VER="4.3.13"
 
 INSTANCETYPE=`/usr/bin/curl -s curl http://169.254.169.254/latest/meta-data/instance-type`
 INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
@@ -186,13 +187,13 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   plugin_install "contact-form-7" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "simple-ga-ranking" "$SERVERNAME" > /dev/null 2>&1
 
-  if [ "t1.micro" != "${INSTANCETYPE}" ]; then
+  if [ -f /var/www/vhosts/${INSTANCEID}/wp-content/object-cache.php ]; then
     /bin/rm /var/www/vhosts/${INSTANCEID}/wp-content/object-cache.php
-  else
-    plugin_install "wp-redis" "$SERVERNAME" > /dev/null 2>&1
-    /bin/cp -p /var/www/vhosts/${INSTANCEID}/wp-content/plubins/wp-redis/object-cache.php /var/www/vhosts/${INSTANCEID}/wp-content/
   fi
-
+  if [ -f /etc/redis.conf ]; then
+    plugin_install "wp-redis" "$SERVERNAME" > /dev/null 2>&1
+    /bin/cp -p /var/www/vhosts/${INSTANCEID}/wp-content/plugins/wp-redis/object-cache.php /var/www/vhosts/${INSTANCEID}/wp-content/
+  fi
 
   echo "... WordPress installed"
 
@@ -215,7 +216,6 @@ fi
 /bin/chown -R nginx:nginx /var/lib/php
 /bin/chmod +x /usr/local/bin/wp-setup
 
-PHP_MY_ADMIN_VER="4.3.12"
 PHP_MY_ADMIN="phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages"
 if [ ! -d /usr/share/${PHP_MY_ADMIN} ]; then
   cd /usr/share/

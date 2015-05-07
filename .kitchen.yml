@@ -51,6 +51,10 @@ suites:
   attributes:
     hhvm:
       enabled: true
+#    redis:
+#      enabled: true
+#    memcached:
+#      enabled: false
 
 #- name: amimoto-nfs
 #  run_list:

@@ -1,14 +1,6 @@
 default[:web][:user] = 'nginx'
 default[:web][:group] = 'nginx'
 
-## memcached
-default[:memcached][:enabled] = true
-default[:memcached][:packages] = %w{ memcached }
-default[:memcached][:service_action] = [:disable, :stop]
-if node[:memcached][:enabled]
-  default[:memcached][:service_action] = [:enable, :start]
-end
-
 ## Nginx
 default[:nginx][:enabled] = true
 default[:nginx][:packages] = %w{ nginx }
@@ -59,7 +51,7 @@ if node[:phpfpm][:enabled]
   default[:phpfpm][:service_action] = [:enable, :start]
 end
 
-default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-pecl-memcache php-pecl-zendopcache }
+default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-pecl-zendopcache }
 default[:php][:config][:user] = node[:web][:user]
 default[:php][:config][:group] = node[:web][:group]
 default[:php][:config][:listen] = '/var/run/php-fpm.sock'
@@ -93,14 +85,30 @@ default[:mysql][:config][:tmp_table_size]  = '64M'
 default[:mysql][:config][:max_connections] = '128'
 default[:mysql][:config][:thread_cache] = '128'
 
+## memcached
+default[:memcached][:enabled] = true
+default[:memcached][:service_action] = [:disable, :stop]
+if node[:memcached][:enabled]
+  default[:memcached][:service_action] = [:enable, :start]
+end
+
+## redis
+default[:redis][:enabled] = false
+default[:redis][:service_action] = [:disable, :stop]
+if node[:redis][:enabled]
+  default[:redis][:service_action] = [:enable, :start]
+end
+
+
 case node[:ec2][:instance_type]
 when "t1.micro"
   ## memcached
   default[:memcached][:enabled] = false
   default[:memcached][:service_action] = [:stop, :disable]
-  if node[:memcached][:enabled]
-    default[:memcached][:service_action] = [:enable, :start]
-  end
+
+  ## redis
+  default[:redis][:enabled] = false
+  default[:redis][:service_action] = [:stop, :disable]
 
   ## Nginx
   default[:nginx][:config][:worker_processes] = '2'
@@ -124,6 +132,13 @@ when "t2.micro"
   default[:memcached][:service_action] = [:disable, :stop]
   if node[:memcached][:enabled]
     default[:memcached][:service_action] = [:enable, :start]
+  end
+
+  ## redis
+  default[:redis][:enabled] = false
+  default[:redis][:service_action] = [:disable, :stop]
+  if node[:redis][:enabled]
+    default[:redis][:service_action] = [:enable, :start]
   end
 
   ## Nginx

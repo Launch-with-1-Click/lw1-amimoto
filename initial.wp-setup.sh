@@ -15,7 +15,7 @@ function plugin_install(){
   /bin/rm -r /tmp/${1}.zip
 }
 
-WP_VER="4.1.1"
+WP_VER="4.2.2"
 PHP_MY_ADMIN_VER="4.3.13"
 
 INSTANCETYPE=`/usr/bin/curl -s curl http://169.254.169.254/latest/meta-data/instance-type`
@@ -219,6 +219,14 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   plugin_install "flamingo" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "contact-form-7" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "simple-ga-ranking" "$SERVERNAME" > /dev/null 2>&1
+
+  if [ -f /var/www/vhosts/${INSTANCEID}/wp-content/object-cache.php ]; then
+    /bin/rm /var/www/vhosts/${INSTANCEID}/wp-content/object-cache.php
+  fi
+  if [ -f /etc/redis.conf ]; then
+    plugin_install "wp-redis" "$SERVERNAME" > /dev/null 2>&1
+    /bin/cp -p /var/www/vhosts/${INSTANCEID}/wp-content/plugins/wp-redis/object-cache.php /var/www/vhosts/${INSTANCEID}/wp-content/
+  fi
 
   echo "... WordPress installed"
 

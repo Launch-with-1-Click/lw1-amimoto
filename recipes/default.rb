@@ -29,17 +29,6 @@ end
   end
 end
 
-# memcached install
-node[:memcached][:packages].each do | pkg |
-  package pkg do
-    action [:install, :upgrade]
-    options '--disablerepo=remi'
-  end
-end
-service "memcached" do
-  action node[:memcached][:service_action]
-end
-
 # install mysql
 include_recipe 'amimoto::mysql'
 
@@ -52,6 +41,18 @@ if node[:hhvm][:enabled]
   include_recipe 'amimoto::hhvm'
 else
   include_recipe 'amimoto::php'
+end
+
+if (node.memory.total.to_i / 1024) > 1024
+  # memcached install
+  if node[:memcached][:enabled]
+    include_recipe 'amimoto::memcached'
+  end
+
+  # redis install
+  if node[:redis][:enabled]
+    include_recipe 'amimoto::redis'
+  end
 end
 
 # install monit

@@ -1,34 +1,6 @@
 # php54 install
 
-node[:php][:packages].each do | pkg |
-  package pkg do
-    action [:install, :upgrade]
-  end
-end
-
-# configure php
-
-%w{ php.ini php-fpm.conf php.d/memcache.ini php-fpm.d/www.conf }.each do | file_name |
-  template "/etc/" + file_name do
-    variables node[:php][:config]
-    source "php/" + file_name + ".erb"
-    notifies :reload, 'service[php-fpm]'
-  end
-end
-
-%w{ /var/tmp/php /var/tmp/php/session /var/log/php-fpm }.each do | dir_name |
-  directory dir_name do
-    owner node[:php][:config][:user]
-    group node[:php][:config][:group]
-    mode 00755
-    recursive true
-    action :create
-  end
-end
-
-service "php-fpm" do
-  action [:stop, :disable]
-end
+include_recipe 'amimoto::php'
 
 # hhvm install
 
@@ -70,13 +42,14 @@ template "/etc/logrotate.d/hhvm" do
   source "logrotat.d/hhvm.erb"
 end
 
-service 'hhvm' do
-  action node[:hhvm][:service_action]
+# hhvm start
+
+if node[:hhvm][:enabled]
+  service "php-fpm" do
+    action [:stop, :disable]
+  end
 end
 
-# install php
-if node[:hhvm][:enabled]
-  if (node.memory.total.to_i / 1024) > 1024
-    include_recipe 'amimoto::redis_hhvm'
-  end
+service 'hhvm' do
+  action node[:hhvm][:service_action]
 end
