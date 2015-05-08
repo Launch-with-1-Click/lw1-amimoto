@@ -8,6 +8,7 @@ pid        /var/run/nginx.pid;
 events {
     worker_connections  <%= @worker_connections %>;
     use epoll;
+    accept_mutex_delay 100ms;
 }
 
 
@@ -28,7 +29,8 @@ http {
     server_tokens      off;
 
     sendfile           on;
-    tcp_nopush         off;
+    open_file_cache    max=100 inactive=20s;
+    tcp_nopush         on;
 
     keepalive_timeout  5;
 
