@@ -18,7 +18,7 @@ function plugin_install(){
 WP_VER="4.2.1"
 PHP_MY_ADMIN_VER="4.3.13"
 
-INSTANCETYPE=`/usr/bin/curl -s curl http://169.254.169.254/latest/meta-data/instance-type`
+INSTANCETYPE=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-type`
 INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
 AZ=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone/`
 SERVERNAME=$INSTANCEID
@@ -46,44 +46,43 @@ echo '<html>
 <p>After a while please reload your web browser.</p>
 </body>' > /var/www/vhosts/${INSTANCEID}/index.html
 
-if [ "t1.micro" != "${INSTANCETYPE}" ]; then
-  if [ -f /etc/php-fpm.d/www.conf ]; then
-    /bin/rm -f /etc/php-fpm.d/www.conf
-  fi
-  if [ -f /etc/nginx/nginx.conf ]; then
-    /bin/rm -f /etc/nginx/nginx.conf
-  fi
-  if [ -f /etc/nginx/conf.d/default.conf ]; then
-    /bin/rm -f /etc/nginx/conf.d/default.conf
-  fi
-  if [ -f /etc/nginx/conf.d/default.backend.conf ]; then
-    /bin/rm -f /etc/nginx/conf.d/default.backend.conf
-  fi
+if [ -f /etc/php-fpm.d/www.conf ]; then
+  /bin/rm -f /etc/php-fpm.d/www.conf
+fi
+if [ -f /etc/nginx/nginx.conf ]; then
+  /bin/rm -f /etc/nginx/nginx.conf
+fi
+if [ -f /etc/nginx/conf.d/default.conf ]; then
+  /bin/rm -f /etc/nginx/conf.d/default.conf
+fi
+if [ -f /etc/nginx/conf.d/default.backend.conf ]; then
+  /bin/rm -f /etc/nginx/conf.d/default.backend.conf
+fi
 
-  /usr/bin/git -C /opt/local/chef-repo/ pull origin master
-  /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin master
-  /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  if [ ! -f /etc/nginx/nginx.conf ]; then
-    /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  fi
-  if [ ! -f /etc/nginx/conf.d/default.conf ]; then
-    /usr/bin/chef-solo -o amimoto::nginx_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  fi
-  if [ ! -d /etc/hhvm ]; then
-    /usr/bin/chef-solo -o amimoto::hhvm -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  fi
-
-  CF_PATTERN=`/usr/bin/curl -s https://raw.githubusercontent.com/megumiteam/amimoto/master/cf_patern_check.php | /usr/bin/php`
-  if [ "$CF_PATTERN" = "nfs_server" ]; then
-    /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  fi
-  if [ "$CF_PATTERN" = "nfs_client" ]; then
-    /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  fi
+/usr/bin/git -C /opt/local/chef-repo/ pull origin master
+/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin master
+/usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
+if [ ! -f /etc/nginx/nginx.conf ]; then
+  /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
+fi
+if [ ! -f /etc/nginx/conf.d/default.conf ]; then
+  /usr/bin/chef-solo -o amimoto::nginx_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
+fi
+if [ ! -d /etc/hhvm ]; then
+  /usr/bin/chef-solo -o amimoto::hhvm -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
 
 cd /tmp
 /usr/bin/git clone git://github.com/megumiteam/amimoto.git
+
+#CF_PATTERN=`/usr/bin/curl -s https://raw.githubusercontent.com/megumiteam/amimoto/master/cf_patern_check.php | /usr/bin/php`
+CF_PATTERN=`/usr/bin/php /tmp/amimoto/cf_patern_check.php`
+if [ "$CF_PATTERN" = "nfs_server" ]; then
+  /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
+fi
+if [ "$CF_PATTERN" = "nfs_client" ]; then
+  /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
+fi
 
 if [ "$AZ" = "eu-west-1a" -o "$AZ" = "eu-west-1b" -o "$AZ" = "eu-west-1c" ]; then
   REGION=eu-west-1
@@ -113,10 +112,6 @@ else
   /bin/cat /tmp/amimoto/etc/motd.en >> /etc/motd
 fi
 
-if [ "t1.micro" = "${INSTANCETYPE}" ]; then
-  sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
-  sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.backend.conf > /etc/nginx/conf.d/default.backend.conf
-fi
 if [ ! -d /opt/local/amimoto/wp-admin ]; then
   /bin/mkdir -p /opt/local/amimoto/wp-admin
 fi
