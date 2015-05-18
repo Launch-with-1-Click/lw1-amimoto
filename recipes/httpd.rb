@@ -24,12 +24,14 @@ end
   end
 end
 
-directory node[:httpd][:config][:doc_root] do
-  owner node[:httpd][:config][:user]
-  group node[:httpd][:config][:group]
-  mode 00755
-  recursive true
-  action :create
+%W{ /opt/local/amimoto /opt/local/amimoto/wp-admin /var/www/vhosts/#{node[:ec2][:instance_id]} }.each do | dir_name |
+  directory dir_name do
+    owner node[:httpd][:config][:user]
+    group node[:httpd][:config][:group]
+    mode 00755
+    recursive true
+    action :create
+  end
 end
 
 service "httpd" do
