@@ -4,6 +4,7 @@ default[:monit][:config][:alert] = []
 
 default[:monit][:monitor] = {
   'nginx'     => node[:nginx][:enabled],
+  'httpd'     => node[:httpd][:enabled],
   'hhvm'      => node[:hhvm][:enabled],
   'php-fpm'   => node[:phpfpm][:enabled],
   'mysql'     => node[:mysql][:enabled],
@@ -14,6 +15,7 @@ default[:monit][:monitor] = {
 
 default[:monit][:source] = {
   'nginx'     => 'monit/nginx.erb',
+  'httpd'     => 'monit/process_monitor.erb',
   'hhvm'      => 'monit/process_monitor.erb',
   'php-fpm'   => 'monit/php-fpm.erb',
   'mysql'     => 'monit/process_monitor.erb',

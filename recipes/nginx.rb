@@ -1,8 +1,5 @@
 # nginx install
 
-service "httpd" do
-  action [:stop, :disable]
-end
 node[:nginx][:packages].each do | pkg |
   package pkg do
     action [:install, :upgrade]
