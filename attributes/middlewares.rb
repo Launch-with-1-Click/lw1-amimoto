@@ -51,7 +51,7 @@ if node[:phpfpm][:enabled]
   default[:phpfpm][:service_action] = [:enable, :start]
 end
 
-default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-pecl-zendopcache }
+default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-opcache }
 default[:php][:config][:user] = node[:web][:user]
 default[:php][:config][:group] = node[:web][:group]
 default[:php][:config][:listen] = '/var/run/php-fpm.sock'
