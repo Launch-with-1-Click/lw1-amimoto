@@ -68,7 +68,7 @@ if node[:phpfpm][:enabled]
   default[:phpfpm][:service_action] = [:enable, :start]
 end
 
-default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-pecl-zendopcache }
+default[:php][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-opcache }
 default[:php][:config][:user] = node[:web][:user]
 default[:php][:config][:group] = node[:web][:group]
 default[:php][:config][:listen] = '/var/run/php-fpm.sock'
@@ -76,10 +76,12 @@ if node[:phpfpm][:enabled]
   default[:nginx][:config][:php_upstream] = 'unix:/var/run/php-fpm.sock'
 end
 default[:php][:config][:listen_backlog] = '65536'
+default[:php][:config][:pm] = 'dynamic'
 default[:php][:config][:max_children] = '5'
 default[:php][:config][:start_servers] = '1'
 default[:php][:config][:min_spare_servers] = '1'
 default[:php][:config][:max_spare_servers] = '4'
+default[:php][:config][:memory_limit] = '128M'
 default[:php][:config][:max_requests] = '200'
 default[:php][:config][:upload_max_filesize] = node[:nginx][:config][:client_max_body_size]
 default[:php][:config][:post_max_size] = node[:php][:config][:upload_max_filesize]
@@ -95,6 +97,7 @@ if node[:mysql][:enabled]
 end
 default[:mysql][:config][:user] = 'mysql'
 default[:mysql][:config][:group] = 'mysql'
+default[:mysql][:config][:max_allowed_packet] = '1M'
 default[:mysql][:config][:innodb_buffer_pool_size] = '64M'
 default[:mysql][:config][:innodb_log_file_size] = '16M'
 default[:mysql][:config][:query_cache_size] = '64M'

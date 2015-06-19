@@ -32,7 +32,7 @@ tmp_table_size=<%= @tmp_table_size %>
 max_heap_table_size=<%= @tmp_table_size %>
 
 table_open_cache=1024
-max_allowed_packet=1M
+max_allowed_packet=<%= @max_allowed_packet %>
 sort_buffer_size=512K
 read_buffer_size=256K
 read_rnd_buffer_size=256K

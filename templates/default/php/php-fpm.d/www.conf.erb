@@ -8,7 +8,7 @@ listen.backlog = <%= @listen_backlog %>
 user  = <%= @user %>
 group = <%= @group %>
 
-pm = dynamic
+pm = <%= @pm %>
 pm.max_children = <%= @max_children %>
 pm.start_servers = <%= @start_servers %>
 pm.min_spare_servers = <%= @min_spare_servers %>
@@ -28,3 +28,4 @@ php_admin_flag[log_errors] = on
 php_admin_value[upload_max_filesize] = <%= @upload_max_filesize %>
 php_admin_value[post_max_size] = <%= @post_max_size %>
 php_admin_value[max_execution_time] = <%= @max_execution_time %>
+php_admin_value[memory_limit] = <%= @memory_limit %>
