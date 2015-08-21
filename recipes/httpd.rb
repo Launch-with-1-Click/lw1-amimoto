@@ -11,7 +11,9 @@ end
 template "/etc/httpd/conf/httpd.conf" do
   variables node[:httpd][:config]
   source "httpd/conf/httpd.conf.erb"
-  notifies :restart, 'service[httpd]'
+  if node[:httpd][:service_action].include?(:start)
+    notifies :restart, 'service[httpd]'
+  end
 end
 
 %W{ /var/log/httpd }.each do | dir_name |
