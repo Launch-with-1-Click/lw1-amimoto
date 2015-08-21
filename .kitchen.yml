@@ -2,16 +2,19 @@
 driver_plugin: ec2
 driver_config:
   require_chef_omnibus: latest
-  aws_access_key_id: <%= ENV['AWS_ACCESS_KEY'] %>
-  aws_secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
   aws_ssh_key_id: <%= ENV['AWS_EC2_KEYPAIR'] %>
+#  aws_access_key_id: <%= ENV['AWS_ACCESS_KEY'] %>              #autoload from ENV:AWS_ACCESS_KEY
+#  aws_secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>   #autoload from ENV:AWS_SECRET_ACCESS_KEY
+
+transport:
   ssh_key: <%= ENV['AWS_EC2_KEYPASS'] %>
+  username: ec2-user
+
 
 platforms:
 - name: amazon-linux-micro-tokyo
   driver_config:
-    username: ec2-user
-    flavor_id: t1.micro
+    instance_type: t1.micro
     image_id: ami-c7f90ec7 # Amazon Linux AMI 2015.03.0 (HVM)
     region: ap-northeast-1
     availability_zone: ap-northeast-1a
@@ -19,8 +22,7 @@ platforms:
       Name: test-kitchen-micro
 - name: amazon-linux-large-tokyo
   driver_config:
-    username: ec2-user
-    flavor_id: c3.large
+    instance_type: c3.large
     image_id: ami-c7f90ec7 # Amazon Linux AMI 2015.03.0 (HVM)
     region: ap-northeast-1
     availability_zone: ap-northeast-1a
@@ -28,8 +30,7 @@ platforms:
       Name: test-kitchen-large
 - name: rhel64-micro-tokyo
   driver_config:
-    username: ec2-user
-    flavor_id: t1.micro
+    instance_type: t1.micro
     image_id: ami-5769f956  # Red Hat Enterprise Linux 6.4
     region: ap-northeast-1
     availability_zone: ap-northeast-1a
