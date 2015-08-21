@@ -1,4 +1,6 @@
-# php54 install
+# php install
+
+node.override[:php][:packages] = node[:php][:packages] - %w{ php-opcache }
 
 include_recipe 'amimoto::php'
 
