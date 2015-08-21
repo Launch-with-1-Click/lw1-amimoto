@@ -1,7 +1,7 @@
 # php install
 
 ## for avoid confricts between amzn and remi.
-node.override[:php][:packages] = node[:php][:packages] - %w{ php-opcache }
+# node.override[:php][:packages] = node[:php][:packages] - %w{ }
 package "php55-common" do
   action [:remove]
 end
