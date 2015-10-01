@@ -15,8 +15,8 @@ function plugin_install(){
   /bin/rm -r /tmp/${1}.zip
 }
 
-WP_VER="4.2.1"
-PHP_MY_ADMIN_VER="4.3.13"
+WP_VER="4.3.1"
+PHP_MY_ADMIN_VER="4.4.15"
 
 INSTANCETYPE=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-type`
 INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
@@ -174,7 +174,7 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   #Security
   plugin_install "crazy-bone" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "login-lockdown" "$SERVERNAME" > /dev/null 2>&1
-  plugin_install "google-authenticator" "$SERVERNAME" > /dev/null 2>&1
+  plugin_install "rublon" "$SERVERNAME" > /dev/null 2>&1
 
   #Other
   plugin_install "nginx-mobile-theme" "$SERVERNAME" > /dev/null 2>&1
