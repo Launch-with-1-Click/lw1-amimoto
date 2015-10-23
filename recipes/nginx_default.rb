@@ -1,9 +1,8 @@
 # configure nginx.conf
-%w{ default.conf default-ssl.conf default.backend.conf }.each do | file_name |
+%w{ default.conf default.backend.conf }.each do | file_name |
   template "/etc/nginx/conf.d/" + file_name do
     variables(
       :listen => node[:nginx][:config][:listen],
-      :listen_ssl => node[:nginx][:config][:listen_ssl],
       :listen_backend => node[:nginx][:config][:listen_backend],
       :server_name => node[:ec2][:instance_id],
       :wp_multisite => node[:nginx][:config][:wp_multisite],
