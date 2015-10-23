@@ -95,6 +95,7 @@ elif [ "t1.micro" = "${INSTANCETYPE}" ]; then
     /sbin/chkconfig memcached off
     /sbin/service memcached stop
 fi
+/usr/sbin/update-motd
 
 cd /tmp
 /usr/bin/git clone git://github.com/megumiteam/amimoto.git

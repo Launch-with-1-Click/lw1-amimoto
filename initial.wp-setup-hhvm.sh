@@ -71,6 +71,7 @@ fi
 if [ ! -d /etc/hhvm ]; then
   /usr/bin/chef-solo -o amimoto::hhvm -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
+/usr/sbin/update-motd
 
 cd /tmp
 /usr/bin/git clone git://github.com/megumiteam/amimoto.git
