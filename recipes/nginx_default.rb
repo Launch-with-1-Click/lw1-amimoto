@@ -1,8 +1,9 @@
 # configure nginx.conf
-%w{ default.conf default.backend.conf }.each do | file_name |
+%w{ default.conf default-ssl.conf default.backend.conf }.each do | file_name |
   template "/etc/nginx/conf.d/" + file_name do
     variables(
       :listen => node[:nginx][:config][:listen],
+      :listen_ssl => node[:nginx][:config][:listen_ssl],
       :listen_backend => node[:nginx][:config][:listen_backend],
       :server_name => node[:ec2][:instance_id],
       :wp_multisite => node[:nginx][:config][:wp_multisite],
@@ -10,6 +11,21 @@
       :phpmyadmin_enable => node[:nginx][:config][:phpmyadmin_enable]
     )
     source "nginx/conf.d/" + file_name + ".erb"
+    notifies :restart, 'service[nginx]'
+  end
+end
+
+if node[:nginx][:http2_enable]
+  template "/etc/nginx/conf.d/default-ssl.conf" do
+    variables(
+      :listen_ssl => node[:nginx][:config][:listen_ssl],
+      :listen_backend => node[:nginx][:config][:listen_backend],
+      :server_name => node[:ec2][:instance_id],
+      :wp_multisite => node[:nginx][:config][:wp_multisite],
+      :mobile_detect_enable => node[:nginx][:config][:mobile_detect_enable],
+      :phpmyadmin_enable => node[:nginx][:config][:phpmyadmin_enable]
+    )
+    source "nginx/conf.d/default-ssl.conf.erb"
     notifies :restart, 'service[nginx]'
   end
 end

@@ -1,4 +1,4 @@
-# php54 install
+# php56 install
 
 node[:php][:packages].each do | pkg |
   package pkg do
