@@ -126,16 +126,6 @@ else
   REGION=unknown
 fi
 
-if [ "$REGION" = "ap-northeast-1" ]; then
-  /bin/cp /tmp/amimoto/etc/motd /etc/motd
-  /bin/cat /etc/system-release >> /etc/motd
-  /bin/cat /tmp/amimoto/etc/motd.jp >> /etc/motd
-else
-  /bin/cp /tmp/amimoto/etc/motd /etc/motd
-  /bin/cat /etc/system-release >> /etc/motd
-  /bin/cat /tmp/amimoto/etc/motd.en >> /etc/motd
-fi
-
 if [ "t1.micro" = "${INSTANCETYPE}" ]; then
   /bin/cp /tmp/amimoto/etc/nginx/nginx.conf /etc/nginx/nginx.conf
   /bin/sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf

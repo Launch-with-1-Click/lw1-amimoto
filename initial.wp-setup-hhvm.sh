@@ -102,16 +102,6 @@ else
   REGION=unknown
 fi
 
-if [ "$REGION" = "ap-northeast-1" ]; then
-  /bin/cp /tmp/amimoto/etc/motd /etc/motd
-  /bin/cat /etc/system-release >> /etc/motd
-  /bin/cat /tmp/amimoto/etc/motd.jp >> /etc/motd
-else
-  /bin/cp /tmp/amimoto/etc/motd /etc/motd
-  /bin/cat /etc/system-release >> /etc/motd
-  /bin/cat /tmp/amimoto/etc/motd.en >> /etc/motd
-fi
-
 if [ ! -d /opt/local/amimoto/wp-admin ]; then
   /bin/mkdir -p /opt/local/amimoto/wp-admin
 fi
