@@ -60,7 +60,7 @@ if [ -f /etc/nginx/conf.d/default.backend.conf ]; then
 fi
 
 /usr/bin/git -C /opt/local/chef-repo/ pull origin master
-/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin master
+/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin 2015.10
 /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
 if [ ! -f /etc/nginx/nginx.conf ]; then
   /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
@@ -172,7 +172,7 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   plugin_install "debug-bar-console" "$SERVERNAME" > /dev/null 2>&1
 
   #Security
-  plugin_install "crazy-bone" "$SERVERNAME" > /dev/null 2>&1
+  #plugin_install "crazy-bone" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "login-lockdown" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "rublon" "$SERVERNAME" > /dev/null 2>&1
 
