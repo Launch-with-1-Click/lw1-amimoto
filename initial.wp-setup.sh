@@ -99,6 +99,7 @@ fi
 
 cd /tmp
 /usr/bin/git clone git://github.com/megumiteam/amimoto.git
+/usr/bin/git checkout -b for_cfn origin/for_cfn
 
 #CF_PATTERN=`/usr/bin/curl -s https://raw.githubusercontent.com/megumiteam/amimoto/master/cf_patern_check.php | /usr/bin/php`
 CF_PATTERN=`/usr/bin/php /tmp/amimoto/cf_patern_check.php`
