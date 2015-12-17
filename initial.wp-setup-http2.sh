@@ -23,22 +23,10 @@ INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id
 AZ=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone/`
 SERVERNAME=$INSTANCEID
 
-#/sbin/resize2fs /dev/xvda1
-/sbin/service monit stop
+/sbin/resize2fs /dev/xvda1
 /sbin/service mysql stop
 
-#/usr/bin/curl -L http://www.opscode.com/chef/install.sh | /bin/bash
-echo '#!/bin/sh
-/sbin/service monit stop
-if [ -f /usr/bin/python2.7 ]; then
-  /usr/sbin/alternatives --set python /usr/bin/python2.7
-elif [ -f /usr/bin/python2.6 ]; then
-  /usr/sbin/alternatives --set python /usr/bin/python2.6
-fi
-/usr/bin/git -C /opt/local/chef-repo/ pull origin master
-/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin master
-/usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json' > /opt/local/provision
-/bin/chmod +x /opt/local/provision
+/bin/rpm -Uvh https://s3-ap-northeast-1.amazonaws.com/nginx-next-amimoto/nginx-1.9.6-1.amzn1.amimoto.x86_64.rpm
 
 /bin/cp /dev/null /root/.mysql_history > /dev/null 2>&1
 /bin/cp /dev/null /root/.bash_history > /dev/null 2>&1; history -c
@@ -60,46 +48,35 @@ echo '<html>
 <p>After a while please reload your web browser.</p>
 </body>' > /var/www/vhosts/${INSTANCEID}/index.html
 
-if [ "t1.micro" != "${INSTANCETYPE}" ]; then
-  if [ -f /etc/php-fpm.d/www.conf ]; then
-    /bin/rm -f /etc/php-fpm.d/www.conf
-  fi
-  if [ -f /etc/nginx/nginx.conf ]; then
-    /bin/rm -f /etc/nginx/nginx.conf
-  fi
-  if [ -f /etc/nginx/conf.d/default.conf ]; then
-    /bin/rm -f /etc/nginx/conf.d/default.conf
-  fi
-  if [ -f /etc/nginx/conf.d/default.backend.conf ]; then
-    /bin/rm -f /etc/nginx/conf.d/default.backend.conf
-  fi
+if [ -f /etc/php-fpm.d/www.conf ]; then
+  /bin/rm -f /etc/php-fpm.d/www.conf
+fi
+if [ -f /etc/nginx/nginx.conf ]; then
+  /bin/rm -f /etc/nginx/nginx.conf
+fi
+if [ -f /etc/nginx/conf.d/default.conf ]; then
+  /bin/rm -f /etc/nginx/conf.d/default.conf
+fi
+if [ -f /etc/nginx/conf.d/default.backend.conf ]; then
+  /bin/rm -f /etc/nginx/conf.d/default.backend.conf
+fi
 
-  if [ -f /usr/bin/python2.7 ]; then
-    /usr/sbin/alternatives --set python /usr/bin/python2.7
-  elif [ -f /usr/bin/python2.6 ]; then
-    /usr/sbin/alternatives --set python /usr/bin/python2.6
-  fi
-  #/usr/bin/git -C /opt/local/chef-repo/ pull origin master
-  /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin 2015.10
-  /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  if [ ! -f /etc/nginx/nginx.conf ]; then
-    /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  fi
-  if [ ! -f /etc/nginx/conf.d/default.conf ]; then
-    /usr/bin/chef-solo -o amimoto::nginx_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  fi
-  if [ ! -f /etc/php-fpm.d/www.conf ]; then
-    /usr/bin/chef-solo -o amimoto::php -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  fi
-elif [ "t1.micro" = "${INSTANCETYPE}" ]; then
-    /sbin/chkconfig memcached off
-    /sbin/service memcached stop
+/usr/bin/git -C /opt/local/chef-repo/ pull origin master
+/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin 2015.10
+/usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
+if [ ! -f /etc/nginx/nginx.conf ]; then
+  /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
+fi
+if [ ! -f /etc/nginx/conf.d/default.conf ]; then
+  /usr/bin/chef-solo -o amimoto::nginx_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
+fi
+if [ ! -d /etc/hhvm ]; then
+  /usr/bin/chef-solo -o amimoto::hhvm -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
 /usr/sbin/update-motd
 
 cd /tmp
 /usr/bin/git clone git://github.com/megumiteam/amimoto.git
-/usr/bin/git checkout -b for_cfn origin/for_cfn
 
 #CF_PATTERN=`/usr/bin/curl -s https://raw.githubusercontent.com/megumiteam/amimoto/master/cf_patern_check.php | /usr/bin/php`
 CF_PATTERN=`/usr/bin/php /tmp/amimoto/cf_patern_check.php`
@@ -128,16 +105,6 @@ else
   REGION=unknown
 fi
 
-if [ "t1.micro" = "${INSTANCETYPE}" ]; then
-  /bin/cp /tmp/amimoto/etc/nginx/nginx.conf /etc/nginx/nginx.conf
-  /bin/sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
-  /bin/sed -e "s/\$host\([;\.]\)/$INSTANCEID\1/" /tmp/amimoto/etc/nginx/conf.d/default.backend.conf > /etc/nginx/conf.d/default.backend.conf
-  /bin/cp /tmp/amimoto/etc/php-fpm.d/www.conf /etc/php-fpm.d/www.conf
-  /bin/cp /tmp/amimoto/etc/my.cnf /etc/my.cnf
-  /sbin/service nginx reload
-  /sbin/service php-fpm reload
-  /sbin/service mysql reload
-fi
 if [ ! -d /opt/local/amimoto/wp-admin ]; then
   /bin/mkdir -p /opt/local/amimoto/wp-admin
 fi
@@ -159,10 +126,6 @@ fi
 /bin/rm -Rf /var/log/nginx/*
 /bin/rm -Rf /var/cache/nginx/*
 /sbin/service nginx start
-
-/sbin/service php-fpm stop
-/bin/rm -Rf /var/log/php-fpm/*
-/sbin/service php-fpm start
 
 /sbin/service mysql stop
 /bin/rm /var/lib/mysql/ib_logfile*
@@ -228,12 +191,6 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   fi
   if [ -d /tmp/amimoto/mu-plugins ]; then
     /bin/cp -rf /tmp/amimoto/mu-plugins/* $MU_PLUGINS
-  fi
-
-  CF_OPTION=`/usr/bin/php /tmp/amimoto/cf_patern_check.php`
-  if [ "$CF_OPTION" = "cloudfront" ]; then
-    /bin/cp -rf /tmp/amimoto/options/mu-plugins/* $MU_PLUGINS
-    plugin_install "c3-cloudfront-clear-cache" "$SERVERNAME" > /dev/null 2>&1
   fi
 
   /bin/rm /var/www/vhosts/${INSTANCEID}/index.html

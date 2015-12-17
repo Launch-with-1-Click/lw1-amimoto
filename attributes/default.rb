@@ -4,3 +4,7 @@ case node[:ec2][:placement_availability_zone].chop
 when 'ap-northeast-1'
   default[:sysconfig][:lang] = 'ja_JP.UTF-8'
 end
+
+default[:web][:user] = 'nginx'
+default[:web][:group] = 'nginx'
+default[:web][:servername] = 'localhost'

@@ -1,9 +1,6 @@
-default[:web][:user] = 'nginx'
-default[:web][:group] = 'nginx'
-default[:web][:servername] = 'localhost'
-
 ## Nginx
 default[:nginx][:enabled] = true
+default[:nginx][:http2_enable] = false
 default[:nginx][:packages] = %w{ nginx }
 default[:nginx][:service_action] = [:disable, :stop]
 if node[:nginx][:enabled]
@@ -14,6 +11,7 @@ default[:nginx][:config][:group] = node[:web][:group]
 default[:nginx][:config][:backend_upstream] = 'unix:/var/run/nginx-backend.sock'
 default[:nginx][:config][:php_upstream] = 'unix:/var/run/php-fpm.sock'
 default[:nginx][:config][:listen] = '80'
+default[:nginx][:config][:listen_ssl] = '443'
 default[:nginx][:config][:listen_backend] = node[:nginx][:config][:backend_upstream]
 default[:nginx][:config][:worker_processes] = node[:cpu][:total]
 default[:nginx][:config][:client_max_body_size] = '4M'

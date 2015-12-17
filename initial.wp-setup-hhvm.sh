@@ -60,7 +60,7 @@ if [ -f /etc/nginx/conf.d/default.backend.conf ]; then
 fi
 
 /usr/bin/git -C /opt/local/chef-repo/ pull origin master
-/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin master
+/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin 2015.10
 /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
 if [ ! -f /etc/nginx/nginx.conf ]; then
   /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
@@ -71,6 +71,7 @@ fi
 if [ ! -d /etc/hhvm ]; then
   /usr/bin/chef-solo -o amimoto::hhvm -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
+/usr/sbin/update-motd
 
 cd /tmp
 /usr/bin/git clone git://github.com/megumiteam/amimoto.git
@@ -100,16 +101,6 @@ elif [ "$AZ" = "ap-southeast-1a" -o "$AZ" = "ap-southeast-1b" ]; then
   REGION=ap-southeast-1
 else
   REGION=unknown
-fi
-
-if [ "$REGION" = "ap-northeast-1" ]; then
-  /bin/cp /tmp/amimoto/etc/motd /etc/motd
-  /bin/cat /etc/system-release >> /etc/motd
-  /bin/cat /tmp/amimoto/etc/motd.jp >> /etc/motd
-else
-  /bin/cp /tmp/amimoto/etc/motd /etc/motd
-  /bin/cat /etc/system-release >> /etc/motd
-  /bin/cat /tmp/amimoto/etc/motd.en >> /etc/motd
 fi
 
 if [ ! -d /opt/local/amimoto/wp-admin ]; then
@@ -165,6 +156,7 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   plugin_install "nginx-champuru" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "wpbooster-cdn-client" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "nephila-clavata" "$SERVERNAME" > /dev/null 2>&1
+  plugin_install "c3-cloudfront-clear-cache" "$SERVERNAME" > /dev/null 2>&1
 
   # Developer
   plugin_install "debug-bar" "$SERVERNAME" > /dev/null 2>&1
@@ -172,7 +164,7 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   plugin_install "debug-bar-console" "$SERVERNAME" > /dev/null 2>&1
 
   #Security
-  plugin_install "crazy-bone" "$SERVERNAME" > /dev/null 2>&1
+  #plugin_install "crazy-bone" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "login-lockdown" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "rublon" "$SERVERNAME" > /dev/null 2>&1
 
