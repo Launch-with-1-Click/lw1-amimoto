@@ -229,6 +229,12 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   if [ -d /tmp/amimoto/mu-plugins ]; then
     /bin/cp -rf /tmp/amimoto/mu-plugins/* $MU_PLUGINS
   fi
+  if [ -f /tmp/amimoto/cf_option_check.php ]; then
+    CF_OPTION=`/usr/bin/php /tmp/amimoto/cf_option_check.php`
+    if [ "$CF_OPTION" = "cloudfront" ]; then
+      /bin/cp -rf /tmp/amimoto/options/mu-plugins/* $MU_PLUGINS
+    fi
+  fi
 
   /bin/rm /var/www/vhosts/${INSTANCEID}/index.html
   /bin/chown -R nginx:nginx /var/cache/nginx
