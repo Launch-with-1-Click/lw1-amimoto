@@ -8,9 +8,13 @@ end
 
 include_recipe 'amimoto::php'
 
-# hhvm install
+# remove  old depends repo
+file "/etc/yum.repos.d/hop5.repo" do
+  action :delete
+end
 
-%w{ hop5.repo opsrock-hhvm.repo }.each do | file_name |
+# hhvm install
+%w{ opsrock-hhvm-depends.repo opsrock-hhvm.repo }.each do | file_name |
   template "/etc/yum.repos.d/" + file_name do
     source "yum/" + file_name + ".erb"
   end
