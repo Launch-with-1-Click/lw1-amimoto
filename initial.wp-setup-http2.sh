@@ -15,12 +15,14 @@ function plugin_install(){
   /bin/rm -r /tmp/${1}.zip
 }
 
-WP_VER="4.3.1"
+WP_VER="4.4.1"
 PHP_MY_ADMIN_VER="4.4.15"
 
 INSTANCETYPE=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-type`
 INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
 AZ=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone/`
+REGION=`echo ${AZ} | sed 's/[a-z]$//'`
+
 SERVERNAME=$INSTANCEID
 
 /sbin/resize2fs /dev/xvda1
@@ -29,7 +31,7 @@ SERVERNAME=$INSTANCEID
 /bin/rpm -Uvh https://s3-ap-northeast-1.amazonaws.com/nginx-next-amimoto/nginx-1.9.9-1.amzn1.amimoto.x86_64.rpm
 
 /bin/cp /dev/null /root/.mysql_history > /dev/null 2>&1
-/bin/cp /dev/null /root/.bash_history > /dev/null 2>&1; history -c
+/bin/cp /dev/null /root/.bash_history > /dev/null 2>&1
 /bin/cp /dev/null /home/ec2-user/.bash_history > /dev/null 2>&1
 /bin/rm -rf /var/www/vhosts/i-* > /dev/null 2>&1
 /bin/rm -rf /opt/local/amimoto > /dev/null 2>&1
@@ -85,24 +87,6 @@ if [ "$CF_PATTERN" = "nfs_server" ]; then
 fi
 if [ "$CF_PATTERN" = "nfs_client" ]; then
   /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json
-fi
-
-if [ "$AZ" = "eu-west-1a" -o "$AZ" = "eu-west-1b" -o "$AZ" = "eu-west-1c" ]; then
-  REGION=eu-west-1
-elif [ "$AZ" = "sa-east-1a" -o "$AZ" = "sa-east-1b" ]; then
-  REGION=sa-east-1
-elif [ "$AZ" = "us-east-1a" -o "$AZ" = "us-east-1b" -o "$AZ" = "us-east-1c" -o "$AZ" = "us-east-1d" -o "$AZ" = "us-east-1e" ]; then
-  REGION=us-east-1
-elif [ "$AZ" = "ap-northeast-1a" -o "$AZ" = "ap-northeast-1b" -o "$AZ" = "ap-northeast-1c" ]; then
-  REGION=ap-northeast-1
-elif [ "$AZ" = "us-west-2a" -o "$AZ" = "us-west-2b" -o "$AZ" = "us-west-2c" ]; then
-  REGION=us-west-2
-elif [ "$AZ" = "us-west-1a" -o "$AZ" = "us-west-1b" -o "$AZ" = "us-west-1c" ]; then
-  REGION=us-west-1
-elif [ "$AZ" = "ap-southeast-1a" -o "$AZ" = "ap-southeast-1b" ]; then
-  REGION=ap-southeast-1
-else
-  REGION=unknown
 fi
 
 if [ ! -d /opt/local/amimoto/wp-admin ]; then
@@ -165,7 +149,7 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   plugin_install "debug-bar-console" "$SERVERNAME" > /dev/null 2>&1
 
   #Security
-  #plugin_install "crazy-bone" "$SERVERNAME" > /dev/null 2>&1
+  plugin_install "crazy-bone" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "login-lockdown" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "rublon" "$SERVERNAME" > /dev/null 2>&1
 
