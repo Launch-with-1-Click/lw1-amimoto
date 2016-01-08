@@ -16,16 +16,15 @@ function plugin_install(){
 }
 
 WP_VER="4.4.1"
-PHP_MY_ADMIN_VER="4.4.15"
+PHP_MY_ADMIN_VER="4.5.3.1"
 
 INSTANCETYPE=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-type`
 INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
 AZ=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone/`
-REGION=`echo ${AZ} | sed 's/[a-z]$//'`
 
 SERVERNAME=$INSTANCEID
 
-/sbin/resize2fs /dev/xvda1
+/sbin/service monit stop
 /sbin/service mysql stop
 
 /bin/cp /dev/null /root/.mysql_history > /dev/null 2>&1
@@ -127,11 +126,7 @@ fi
 if [ "$CF_PATTERN" != "nfs_client" ]; then
   echo "WordPress install ..."
   cd /var/www/vhosts/$SERVERNAME
-  if [ "$REGION" = "ap-northeast-1" ]; then
-    $WP_CLI core download --locale=ja --version=$WP_VER --allow-root --force
-  else
-    $WP_CLI core download --version=$WP_VER --allow-root --force
-  fi
+  $WP_CLI core download --version=$WP_VER --allow-root --force
   if [ -f /tmp/amimoto/wp-setup.php ]; then
     /usr/bin/php /tmp/amimoto/wp-setup.php $SERVERNAME $INSTANCEID $PUBLICNAME
   fi
@@ -193,16 +188,16 @@ fi
 /bin/chown -R nginx:nginx /var/lib/php
 /bin/chmod +x /usr/local/bin/wp-setup
 
-PHP_MY_ADMIN="phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages"
-if [ ! -d /usr/share/${PHP_MY_ADMIN} ]; then
-  cd /usr/share/
-  /usr/bin/wget http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/${PHP_MY_ADMIN_VER}/${PHP_MY_ADMIN}.zip
-  /usr/bin/unzip /usr/share/${PHP_MY_ADMIN}.zip
-  /bin/rm /usr/share/${PHP_MY_ADMIN}.zip
+# install phpMyAdmin
+cd /usr/share/
+/usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/${PHP_MY_ADMIN_VER}/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
+if [ -f phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip ]; then
+  /usr/bin/unzip /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
+  /bin/rm /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
   if [ -d /usr/share/phpMyAdmin ]; then
     /bin/rm /usr/share/phpMyAdmin
   fi
-  /bin/ln -s /usr/share/${PHP_MY_ADMIN} /usr/share/phpMyAdmin
+  /bin/ln -s /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages /usr/share/phpMyAdmin
 fi
 
 #install DSaaS Client
