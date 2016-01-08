@@ -189,9 +189,7 @@ cd /usr/share/
 if [ -f phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip ]; then
   /usr/bin/unzip /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
   /bin/rm /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
-  if [ -d /usr/share/phpMyAdmin ]; then
-    /bin/rm /usr/share/phpMyAdmin
-  fi
+  /bin/rm /usr/share/phpMyAdmin
   /bin/ln -s /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages /usr/share/phpMyAdmin
 fi
 
