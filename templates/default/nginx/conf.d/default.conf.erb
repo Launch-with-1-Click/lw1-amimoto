@@ -56,8 +56,10 @@ server {
         set $script_root '/opt/local/amimoto';
         <% if node[:mod_php7][:enabled] %>
         set $php_upstream 'install-check';
-        <% end %>
+        if ( -e /opt/local/amimoto/.valid.$host ) {
+        <% else %>
         if ( -e /opt/local/amimoto/.valid.$server_name ) {
+        <% end %>
             set $script_root $document_root;
             <% if node[:mod_php7][:enabled] %>
             set $php_upstream 'php-httpd';
@@ -85,8 +87,10 @@ server {
         set $script '/opt/local/amimoto/wp-admin/install.php';
         <% if node[:mod_php7][:enabled] %>
         set $php_upstream 'install-check';
-        <% end %>
+        if ( -e /opt/local/amimoto/.valid.$host ) {
+        <% else %>
         if ( -e /opt/local/amimoto/.valid.$server_name ) {
+        <% end %>
             set $script $document_root$fastcgi_script_name;
             <% if node[:mod_php7][:enabled] %>
             set $php_upstream 'php-httpd';
