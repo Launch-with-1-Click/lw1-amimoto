@@ -98,5 +98,15 @@ http {
         server <%= @php_upstream %>;
     }
 
+    <% if node[:mod_php7][:enabled] %>
+    upstream php-httpd {
+        server <%= @backend_upstream %>;
+    }
+
+    upstream install-check {
+        server <%= node[:mod_php7][:install_checker] %>;
+    }
+    <% end %>
+
     include /etc/nginx/conf.d/*.conf;
 }

@@ -537,10 +537,10 @@ Alias /icons/ "/var/www/icons/"
 #
 # WebDAV module configuration section.
 # 
-<IfModule mod_dav_fs.c>
-    # Location of the WebDAV lock database.
-    DAVLockDB /var/lib/dav/lockdb
-</IfModule>
+# <IfModule mod_dav_fs.c>
+#     # Location of the WebDAV lock database.
+#     DAVLockDB /var/lib/dav/lockdb
+# </IfModule>
 
 #
 # ScriptAlias: This controls which directories contain server scripts.
@@ -550,18 +550,18 @@ Alias /icons/ "/var/www/icons/"
 # The same rules about trailing "/" apply to ScriptAlias directives as to
 # Alias.
 #
-ScriptAlias /cgi-bin/ "/var/www/cgi-bin/"
+# ScriptAlias /cgi-bin/ "/var/www/cgi-bin/"
 
 #
 # "/var/www/cgi-bin" should be changed to whatever your ScriptAliased
 # CGI directory exists, if you have that configured.
 #
-<Directory "/var/www/cgi-bin">
-    AllowOverride None
-    Options None
-    Order allow,deny
-    Allow from all
-</Directory>
+# <Directory "/var/www/cgi-bin">
+#     AllowOverride None
+#     Options None
+#     Order allow,deny
+#     Allow from all
+# </Directory>
 
 #
 # Redirect allows you to tell clients about documents which used to exist in
@@ -782,7 +782,7 @@ AddType application/x-pkcs7-crl    .crl
 # (This is enabled by default to allow the Apache "It Worked" page
 #  to be distributed in multiple languages.)
 #
-AddHandler type-map var
+# AddHandler type-map var
 
 #
 # Filters allow you to process content before it is sent to the client.
@@ -790,8 +790,8 @@ AddHandler type-map var
 # To parse .shtml files for server-side includes (SSI):
 # (You will also need to add "Includes" to the "Options" directive.)
 #
-AddType text/html .shtml
-AddOutputFilter INCLUDES .shtml
+# AddType text/html .shtml
+# AddOutputFilter INCLUDES .shtml
 
 #
 # Action lets you define media types that will execute a script whenever

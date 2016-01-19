@@ -36,6 +36,12 @@ end
   end
 end
 
+%W{welcome.conf manual.conf}.each do |file_name|
+  file "/etc/httpd/conf.d/" + file_name do
+    action :delete
+  end
+end
+
 service "httpd" do
   action node[:httpd][:service_action]
 end
