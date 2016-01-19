@@ -4,7 +4,7 @@ default[:monit][:config][:alert] = []
 
 default[:monit][:monitor] = {
   'nginx'     => node[:nginx][:enabled],
-  'httpd'     => node[:httpd][:enabled],
+  'httpd'     => node[:httpd][:enabled] || node[:mod_php7][:enabled],
   'hhvm'      => node[:hhvm][:enabled],
   'php-fpm'   => node[:phpfpm][:enabled],
   'mysql'     => node[:mysql][:enabled],
