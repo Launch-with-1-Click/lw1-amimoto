@@ -24,6 +24,14 @@ template "/etc/httpd/conf.d/install_check.conf" do
   end
 end
 
+template "/etc/httpd/conf.d/wordpress.conf" do
+  variables node[:httpd][:config]
+  source "httpd/conf.d/wordpress.conf.erb"
+  if node[:httpd][:service_action].include?(:start)
+    notifies :restart, 'service[httpd]'
+  end
+end
+
 %W{ /var/log/httpd }.each do | dir_name |
   directory dir_name do
     owner node[:httpd][:config][:user]
