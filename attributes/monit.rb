@@ -36,6 +36,16 @@ default[:monit][:settings][:processes] = [
    ]
   },
   {
+   :name => 'httpd',
+   :pidfile => '/var/run/httpd/httpd.pid',
+   :start => '/sbin/service httpd start',
+   :stop  => '/sbin/service httpd stop',
+   :user  => node[:nginx][:config][:user],
+   :group => node[:nginx][:config][:group],
+   :rules => [
+   ]
+  },
+  {
    :name => 'hhvm',
    :pidfile => '/var/tmp/hhvm.pid ',
    :start => '/sbin/service hhvm start',
