@@ -48,7 +48,7 @@ default[:mod_php7][:install_checker] = '127.0.0.1:8081'
 # default[:mod_php7][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-opcache }
 default[:mod_php7][:packages] = %w{ php70-mod_php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-opcache }
 if node[:mod_php7][:enabled]
-  force_default[:httpd][:enable] = true
+  force_default[:httpd][:enabled] = true
   force_default[:httpd][:service_action] = [:enable, :start]
   force_default[:httpd][:config][:listen] = '8080'
   force_default[:nginx][:config][:backend_upstream] = '127.0.0.1:8080'
