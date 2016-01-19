@@ -44,12 +44,12 @@ default[:httpd][:config][:allow_override] = 'NONE'
 ### mod_php7
 
 default[:mod_php7][:enabled] = false
-default[:mod_php7][:install_checker] = 'http://127.0.0.1:8081'
+default[:mod_php7][:install_checker] = '127.0.0.1:8081'
 # default[:mod_php7][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-opcache }
 default[:mod_php7][:packages] = %w{ php70-mod_php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-opcache }
 if node[:mod_php7][:enabled]
   force_default[:httpd][:enable] = true
-  force_default[:nginx][:config][:backend_upstream] = 'http://127.0.0.1:8080'
+  force_default[:nginx][:config][:backend_upstream] = '127.0.0.1:8080'
   force_default[:phpfpm][:enabled] = false
   force_default[:phpfpm][:service_action] = [:disable, :stop]
 end
