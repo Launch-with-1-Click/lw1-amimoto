@@ -50,6 +50,7 @@ default[:mod_php7][:packages] = %w{ php70-mod_php php-cli php-fpm php-devel php-
 if node[:mod_php7][:enabled]
   force_default[:httpd][:enable] = true
   force_default[:httpd][:service_action] = [:enable, :start]
+  force_default[:httpd][:config][:listen] = '8080'
   force_default[:nginx][:config][:backend_upstream] = '127.0.0.1:8080'
   force_default[:phpfpm][:enabled] = false
   force_default[:phpfpm][:service_action] = [:disable, :stop]
