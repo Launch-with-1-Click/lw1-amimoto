@@ -24,3 +24,6 @@ template "/etc/httpd/conf.d/wordpress.conf" do
   end
 end
 
+service "httpd" do
+  action node[:httpd][:service_action]
+end
