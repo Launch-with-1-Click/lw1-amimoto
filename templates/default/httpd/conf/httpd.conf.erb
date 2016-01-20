@@ -73,14 +73,14 @@ Timeout 60
 # KeepAlive: Whether or not to allow persistent connections (more than
 # one request per connection). Set to "Off" to deactivate.
 #
-KeepAlive Off
+KeepAlive On
 
 #
 # MaxKeepAliveRequests: The maximum number of requests to allow
 # during a persistent connection. Set to 0 to allow an unlimited amount.
 # We recommend you leave this number high, for maximum performance.
 #
-MaxKeepAliveRequests 100
+MaxKeepAliveRequests 1000
 
 #
 # KeepAliveTimeout: Number of seconds to wait for the next request from the
@@ -100,9 +100,9 @@ KeepAliveTimeout 15
 # MaxClients: maximum number of server processes allowed to start
 # MaxRequestsPerChild: maximum number of requests a server process serves
 <IfModule prefork.c>
-StartServers       8
-MinSpareServers    5
-MaxSpareServers   20
+StartServers      <%= node[:nginx][:config][:worker_processes] %>
+MinSpareServers   <%= node[:nginx][:config][:worker_processes] %>
+MaxSpareServers   <%= node[:nginx][:config][:worker_processes] * 4 %>
 ServerLimit      256
 MaxClients       256
 MaxRequestsPerChild  4000

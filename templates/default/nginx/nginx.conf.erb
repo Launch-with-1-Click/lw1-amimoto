@@ -92,6 +92,9 @@ http {
 
     upstream backend {
         server <%= @backend_upstream %>;
+        <% if node[:mod_php7][:enabled] %>
+        keepalive 16;
+        <% end %>
     }
 
     upstream phpfpm {
@@ -99,8 +102,11 @@ http {
     }
 
     <% if node[:mod_php7][:enabled] %>
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
     upstream php-httpd {
         server <%= @backend_upstream %>;
+        keepalive 16;
     }
 
     upstream install-check {
