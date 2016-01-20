@@ -1,1 +1,10 @@
 ErrorDocument 404 /index.php?error=404
+
+SetEnvIf Request_URI "\.(gif)|(jpg)|(jpeg)|(png)|(ico)|(icon)$" no_log
+SetEnvIf Request_URI "\.(css)|(js)$" no_log
+SetEnvIf Request_URI "/wp-(config|blog-header)\.php$" no_log
+SetEnvIf Request_URI "/(phpmyadmin|myadmin|pma)" no_log
+SetEnvIf Request_URI "/index.php\?error=404" no_log
+
+CustomLog logs/access_log combined env=!no_log
+

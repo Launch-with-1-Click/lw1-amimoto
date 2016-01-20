@@ -174,11 +174,11 @@ LoadModule headers_module modules/mod_headers.so
 LoadModule usertrack_module modules/mod_usertrack.so
 LoadModule setenvif_module modules/mod_setenvif.so
 LoadModule mime_module modules/mod_mime.so
-LoadModule dav_module modules/mod_dav.so
+# LoadModule dav_module modules/mod_dav.so
 LoadModule status_module modules/mod_status.so
 LoadModule autoindex_module modules/mod_autoindex.so
 LoadModule info_module modules/mod_info.so
-LoadModule dav_fs_module modules/mod_dav_fs.so
+# LoadModule dav_fs_module modules/mod_dav_fs.so
 LoadModule vhost_alias_module modules/mod_vhost_alias.so
 LoadModule negotiation_module modules/mod_negotiation.so
 LoadModule dir_module modules/mod_dir.so
@@ -188,16 +188,16 @@ LoadModule userdir_module modules/mod_userdir.so
 LoadModule alias_module modules/mod_alias.so
 LoadModule substitute_module modules/mod_substitute.so
 LoadModule rewrite_module modules/mod_rewrite.so
-LoadModule proxy_module modules/mod_proxy.so
-LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
-LoadModule proxy_ftp_module modules/mod_proxy_ftp.so
-LoadModule proxy_http_module modules/mod_proxy_http.so
-LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
-LoadModule proxy_connect_module modules/mod_proxy_connect.so
+# LoadModule proxy_module modules/mod_proxy.so
+# LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+# LoadModule proxy_ftp_module modules/mod_proxy_ftp.so
+# LoadModule proxy_http_module modules/mod_proxy_http.so
+# LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
+# LoadModule proxy_connect_module modules/mod_proxy_connect.so
 LoadModule cache_module modules/mod_cache.so
 LoadModule suexec_module modules/mod_suexec.so
-LoadModule disk_cache_module modules/mod_disk_cache.so
-LoadModule cgi_module modules/mod_cgi.so
+# LoadModule disk_cache_module modules/mod_disk_cache.so
+# LoadModule cgi_module modules/mod_cgi.so
 LoadModule version_module modules/mod_version.so
 
 #
@@ -500,7 +500,7 @@ LogFormat "%{User-agent}i" agent
 # For a single logfile with access, agent, and referer information
 # (Combined Logfile Format), use the following directive:
 #
-CustomLog logs/access_log combined
+# CustomLog logs/access_log combined
 
 #
 # Optionally add a line containing the server version and virtual host
