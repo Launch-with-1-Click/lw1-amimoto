@@ -10,6 +10,7 @@ default[:nginx][:config][:user] = node[:web][:user]
 default[:nginx][:config][:group] = node[:web][:group]
 default[:nginx][:config][:backend_upstream] = 'unix:/var/run/nginx-backend.sock'
 default[:nginx][:config][:php_upstream] = 'unix:/var/run/php-fpm.sock'
+default[:nginx][:config][:upstream_keepalive] = 16
 default[:nginx][:config][:listen] = '80'
 default[:nginx][:config][:listen_ssl] = '443'
 default[:nginx][:config][:listen_backend] = node[:nginx][:config][:backend_upstream]

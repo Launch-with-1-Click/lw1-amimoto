@@ -93,7 +93,7 @@ http {
     upstream backend {
         server <%= @backend_upstream %>;
         <% if node[:mod_php7][:enabled] %>
-        keepalive 16;
+        keepalive <%= @upstream_keepalive %>;
         <% end %>
     }
 
@@ -106,7 +106,7 @@ http {
     proxy_set_header Connection "";
     upstream php-httpd {
         server <%= @backend_upstream %>;
-        keepalive 16;
+        keepalive <%= @upstream_keepalive %>;
     }
 
     upstream install-check {
