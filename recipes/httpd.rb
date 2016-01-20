@@ -6,32 +6,6 @@ node[:httpd][:packages].each do | pkg |
   end
 end
 
-# configure nginx
-
-template "/etc/httpd/conf/httpd.conf" do
-  variables node[:httpd][:config]
-  source "httpd/conf/httpd.conf.erb"
-  if node[:httpd][:service_action].include?(:start)
-    notifies :restart, 'service[httpd]'
-  end
-end
-
-template "/etc/httpd/conf.d/install_check.conf" do
-  variables node[:httpd][:config]
-  source "httpd/conf.d/install_check.conf.erb"
-  if node[:httpd][:service_action].include?(:start)
-    notifies :restart, 'service[httpd]'
-  end
-end
-
-template "/etc/httpd/conf.d/wordpress.conf" do
-  variables node[:httpd][:config]
-  source "httpd/conf.d/wordpress.conf.erb"
-  if node[:httpd][:service_action].include?(:start)
-    notifies :restart, 'service[httpd]'
-  end
-end
-
 %W{ /var/log/httpd }.each do | dir_name |
   directory dir_name do
     owner node[:httpd][:config][:user]
