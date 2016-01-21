@@ -1,11 +1,14 @@
 tztable = {
   "eu-west-1" => "WET",
-  "sa-east-1" => "America/Sao_Paulo",
-  "us-east-1" => "US/Eastern",
+  "ap-southeast-1" => "Asia/Singapore",
+  "ap-southeast-2" => "Australia/Sydney",
+  "eu-central-1" => "Europe/Berlin",
+  "ap-northeast-2" => "Asia/Seoul",
   "ap-northeast-1" => "Asia/Tokyo",
-  "us-west-2" => "US/Pacific",
+  "us-east-1" => "US/Eastern",
+  "sa-east-1" => "America/Sao_Paulo",
   "us-west-1" => "US/Pacific",
-  "ap-southeast-1" => "Asia/Singapore"
+  "us-west-2" => "US/Pacific"
 }
 
 

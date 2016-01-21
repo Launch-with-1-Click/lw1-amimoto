@@ -1,0 +1,22 @@
+#!/bin/sh
+nginx_ver=`rpm -q --qf '%{version}' nginx`
+<% if @hhvm %>
+hhvm_ver=`rpm -q --qf '%{version}' hhvm`
+<% else %>
+php_ver=`rpm -q --qf '%{version}' php`
+<% end %>
+mysql_ver=`rpm -q --qf '%{version}' Percona-Server-server-56`
+
+cat << EOF
+
+<% if @hhvm %>
+ Nginx ${nginx_ver}, HHVM ${hhvm_ver}, Percona MySQL ${mysql_ver}, $(/usr/local/bin/wp --allow-root --version)
+<% else %>
+ Nginx ${nginx_ver}, PHP ${php_ver}, Percona MySQL ${mysql_ver}, $(/usr/local/bin/wp --allow-root --version)
+<% end %>
+
+ amimoto     http://www.amimoto-ami.com/
+ digitalcube https://en.digitalcube.jp/
+
+EOF
+

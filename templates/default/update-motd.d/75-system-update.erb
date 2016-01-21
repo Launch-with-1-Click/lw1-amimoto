@@ -1,0 +1,56 @@
+#!/usr/bin/python2.7
+# Copyright (c) 2011 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+#
+# Licensed under the Amazon Software License (the "License").  You may not use
+# this file except in compliance with the License. A copy of the License is
+# located at http://aws.amazon.com/asl or in the "license" file accompanying
+# this file.  This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+# OR CONDITIONS OF ANY KIND, either express or implied. See the License for
+# the specific language governing permissions and limitations under the License.
+
+__version__     = '1.0'
+__author__      = 'Amazon Web Services, Inc.'
+__license__     = 'Amazon Software License (http://aws.amazon.com/asl/)'
+
+import sys
+import rpm
+import yum
+import syslog
+
+def main():
+    # Setup syslog
+    syslog.openlog('check-system-update', syslog.LOG_PID)
+
+    yb = yum.YumBase()
+
+    # Disable plugin loading
+    yb.disablePlugins()
+    yb.preconf.init_plugins = False
+
+    # We allow the user to pin their instance to a particular release
+    # but this script is intended to notify of newer releases
+    yb.preconf.releasever = 'latest'
+
+    # Ensures that the cachedir exists and persists
+    # Uses a temp dir if the normal one isn't writable
+    if not yb.setCacheDir(reuse=True):
+        syslog.syslog(syslog.LOG_WARNING, 'Unable to open cachedir: %s' % (yb.conf.cachedir))
+        sys.exit(2)
+
+    try:
+        installed = yb.rpmdb.returnNewestByName('system-release')
+        available = yb.pkgSack.returnNewestByName('system-release')
+    except yum.Errors.YumBaseError, e:
+        syslog.syslog(syslog.LOG_WARNING, 'Exception: %s' % e)
+        sys.exit(2)
+
+    # Compare only the version number
+    # The epoch should not be changing (if it did some day we could update this script first)
+    # The release could change for reasons as trivial as a rebuild
+    if rpm.labelCompare(('0', installed[0].version, '0'), ('0', available[0].version, '0')) < 0:
+        print "Amazon Linux version %s is available." % available[0].version
+    else:
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()

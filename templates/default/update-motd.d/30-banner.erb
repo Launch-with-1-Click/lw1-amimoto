@@ -1,0 +1,10 @@
+#!/bin/sh
+version=$(rpm -q --qf '%{version}' system-release)
+cat << EOF
+      ___         _            __
+     / _ | __ _  (_)_ _  ___  / /____
+    / __ |/  ' \\/ /  ' \\/ _ \\/ __/ _ \\
+   /_/ |_/_/_/_/_/_/_/_/\\___/\\__/\\___/
+
+https://aws.amazon.com/amazon-linux-ami/$version-release-notes/
+EOF
