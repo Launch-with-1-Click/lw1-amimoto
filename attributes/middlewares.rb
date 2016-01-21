@@ -36,11 +36,14 @@ end
 default[:httpd][:config][:user]  = node[:web][:user]
 default[:httpd][:config][:group] = node[:web][:group]
 default[:httpd][:config][:servername] = node[:web][:servername]
-default[:httpd][:config][:listen] = '80'
+default[:httpd][:config][:listen] = '8080'
 if node[:nginx][:enable]
   default[:httpd][:config][:listen] = '8080'
 end
 default[:httpd][:config][:allow_override] = 'NONE'
+default[:httpd][:config][:max_requests_per_child] = 4000
+default[:httpd][:config][:max_keep_alive_requests] = 2500
+default[:httpd][:config][:keep_alive_timeout] = 5
 
 ### mod_php7
 
@@ -56,6 +59,7 @@ if node[:mod_php7][:enabled]
   force_default[:nginx][:config][:backend_upstream] = '127.0.0.1:8080'
   force_default[:phpfpm][:enabled] = false
   force_default[:phpfpm][:service_action] = [:disable, :stop]
+  force_default[:httpd][:config][:keep_alive_timeout] = 120
 end
 
 ## hhvm

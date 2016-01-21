@@ -80,13 +80,13 @@ KeepAlive On
 # during a persistent connection. Set to 0 to allow an unlimited amount.
 # We recommend you leave this number high, for maximum performance.
 #
-MaxKeepAliveRequests 2500
+MaxKeepAliveRequests <%= @max_keep_alive_requests %>
 
 #
 # KeepAliveTimeout: Number of seconds to wait for the next request from the
 # same client on the same connection.
 #
-KeepAliveTimeout 120
+KeepAliveTimeout <%= @keep_alive_timeout %>
 
 ##
 ## Server-Pool Size Regulation (MPM specific)
@@ -105,7 +105,7 @@ MinSpareServers   <%= node[:nginx][:config][:upstream_keepalive].to_i + 2 %>
 MaxSpareServers   <%= node[:nginx][:config][:upstream_keepalive].to_i + 2 %>
 ServerLimit       <%= node[:nginx][:config][:upstream_keepalive].to_i + 2 %>
 MaxClients        <%= node[:nginx][:config][:upstream_keepalive].to_i + 2 %>
-MaxRequestsPerChild  4000
+MaxRequestsPerChild <%= @max_requests_per_child %>
 </IfModule>
 
 # worker MPM
@@ -119,7 +119,7 @@ MaxRequestsPerChild  4000
 StartServers         4
 MaxClients         300
 MinSpareThreads     25
-MaxSpareThreads     75 
+MaxSpareThreads     75
 ThreadsPerChild     25
 MaxRequestsPerChild  0
 </IfModule>
