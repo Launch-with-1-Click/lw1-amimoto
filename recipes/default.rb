@@ -62,3 +62,6 @@ include_recipe 'amimoto::monit'
 
 # install wp-cli
 include_recipe 'amimoto::wpcli'
+
+# update-motd
+include_recipe 'amimoto::update-motd'
