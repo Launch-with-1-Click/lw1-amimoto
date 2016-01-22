@@ -2,7 +2,8 @@
   template "/etc/update-motd.d/" + file_name do
     variables(
       :hhvm => node[:hhvm][:enabled],
-      :php => node[:phpfpm][:enabled]
+      :php => node[:phpfpm][:enabled],
+      :mod_php7 => node[:mod_php7][:enabled]
     )
     source "update-motd.d/" + file_name + ".erb"
     mode 00755

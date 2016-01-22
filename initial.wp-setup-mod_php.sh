@@ -72,16 +72,17 @@ fi
 
 /usr/bin/git -C /opt/local/chef-repo/ pull origin master
 /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin ${AMIMOTO_BRANCH}
+if [ ! -f /etc/httpd/conf/httpd.conf ]; then
+  /usr/bin/chef-solo -o amimoto::httpd_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
+  /usr/bin/chef-solo -o amimoto::mod_php7 -c /opt/local/solo.rb -j /opt/local/amimoto.json
+  /usr/bin/chef-solo -o amimoto::httpd -c /opt/local/solo.rb -j /opt/local/amimoto.json
+fi
 /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
 if [ ! -f /etc/nginx/nginx.conf ]; then
   /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
 if [ ! -f /etc/nginx/conf.d/default.conf ]; then
   /usr/bin/chef-solo -o amimoto::nginx_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
-fi
-if [ ! -f /etc/httpd/conf/httpd.conf ]; then
-  /usr/bin/chef-solo -o amimoto::httpd_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
-  /usr/bin/chef-solo -o amimoto::httpd -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
 /usr/sbin/update-motd
 
