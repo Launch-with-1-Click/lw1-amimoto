@@ -228,17 +228,19 @@ fi
 
 # install phpMyAdmin
 cd /usr/share/
-/usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/${PHP_MY_ADMIN_VER}/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
-if [ -f phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip ]; then
-  /usr/bin/unzip /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
-  /bin/rm /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
-  /bin/rm /usr/share/phpMyAdmin
-  /bin/ln -s /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages /usr/share/phpMyAdmin
+if [ ! -d /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages ] ; then
+  /usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/${PHP_MY_ADMIN_VER}/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
+  if [ -f phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip ]; then
+    /usr/bin/unzip /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
+    /bin/rm /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
+    /bin/rm /usr/share/phpMyAdmin
+    /bin/ln -s /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages /usr/share/phpMyAdmin
+  fi
 fi
 
 #install DSaaS Client
 /usr/bin/wget https://app.deepsecurity.trendmicro.com:443/software/agent/amzn1/x86_64/ -O /tmp/agent.rpm --no-check-certificate --quiet
-/bin/rpm -ihv /tmp/agent.rpm
+/bin/rpm -ihv /tmp/agent.rpm || /bin/rpm -Uhv /tmp/agent.rpm
 /bin/rm -rf /tmp/agent.rpm
 
 /bin/rm -rf /tmp/amimoto
