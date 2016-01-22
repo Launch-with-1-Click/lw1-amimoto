@@ -7,6 +7,10 @@ node[:mod_php7][:packages].each do | pkg |
   end
 end
 
+file '/etc/httpd/conf.d/php.conf' do
+  action :delete
+end
+
 # configure php
 
 %w{ php.ini }.each do | file_name |
