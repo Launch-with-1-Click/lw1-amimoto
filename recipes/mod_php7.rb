@@ -21,6 +21,15 @@ end
   end
 end
 
+execute 'backup default php70.ini' do
+  command "cp /etc/opt/remi/php70/php.ini /etc/opt/remi/php70/php.ini.rpmdefault"
+  creates "/etc/opt/remi/php70/php.ini.rpmdefault"
+end
+
+link '/etc/opt/remi/php70/php.ini' do
+  to '/etc/php.ini'
+end
+
 %w{ /var/tmp/php /var/tmp/php/session /var/log/php-fpm }.each do | dir_name |
   directory dir_name do
     owner node[:php][:config][:user]
