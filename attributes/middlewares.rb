@@ -50,7 +50,7 @@ default[:httpd][:config][:keep_alive_timeout] = 5
 default[:mod_php7][:enabled] = false
 default[:mod_php7][:install_checker] = '127.0.0.1:8081'
 # default[:mod_php7][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-opcache }
-default[:mod_php7][:packages] = %w{ php70-mod_php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-opcache }
+default[:mod_php7][:packages] = %w{ php70-php php70-mod_php php70-php-cli php70-php-fpm php70-php-devel php70-php-mbstring php70-php-gd php70-php-pear php70-php-xml php70-php-mcrypt php70-php-mysqlnd php70-php-pdo php70-php-opcache }
 if node[:mod_php7][:enabled]
   force_default[:httpd][:enabled] = true
   force_default[:httpd][:service_action] = [:enable, :start]
