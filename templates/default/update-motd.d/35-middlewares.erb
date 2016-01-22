@@ -2,6 +2,8 @@
 nginx_ver=`rpm -q --qf '%{version}' nginx`
 <% if @hhvm %>
 hhvm_ver=`rpm -q --qf '%{version}' hhvm`
+<% else if @mod_php7 %>
+mod_php_ver=`rpm -q --qf '%{version}' php70-php`
 <% else %>
 php_ver=`rpm -q --qf '%{version}' php`
 <% end %>
@@ -11,6 +13,8 @@ cat << EOF
 
 <% if @hhvm %>
  Nginx ${nginx_ver}, HHVM ${hhvm_ver}, Percona MySQL ${mysql_ver}, $(/usr/local/bin/wp --allow-root --version)
+<% else if @mod_php7 %>
+ Nginx ${nginx_ver}, MOD_PHP ${mod_php_ver}, Percona MySQL ${mysql_ver}, $(/usr/local/bin/wp --allow-root --version)
 <% else %>
  Nginx ${nginx_ver}, PHP ${php_ver}, Percona MySQL ${mysql_ver}, $(/usr/local/bin/wp --allow-root --version)
 <% end %>
