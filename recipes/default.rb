@@ -27,6 +27,7 @@ end
 include_recipe 'amimoto::mysql'
 
 # install httpd
+#include_recipe 'amimoto::httpd_default'
 include_recipe 'amimoto::httpd'
 
 # install nginx
@@ -37,7 +38,11 @@ include_recipe 'amimoto::nginx'
 if node[:hhvm][:enabled]
   include_recipe 'amimoto::hhvm'
 else
-  include_recipe 'amimoto::php'
+  if node[:mod_php7][:enabled]
+    include_recipe 'amimoto::mod_php7'
+  else
+    include_recipe 'amimoto::php'
+  end
 end
 
 if (node.memory.total.to_i / 1024) > 1024

@@ -92,11 +92,27 @@ http {
 
     upstream backend {
         server <%= @backend_upstream %>;
+        <% if node[:mod_php7][:enabled] %>
+        keepalive <%= @upstream_keepalive %>;
+        <% end %>
     }
 
     upstream phpfpm {
         server <%= @php_upstream %>;
     }
+
+    <% if node[:mod_php7][:enabled] %>
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    upstream php-httpd {
+        server <%= @backend_upstream %>;
+        keepalive <%= @upstream_keepalive %>;
+    }
+
+    upstream install-check {
+        server <%= node[:mod_php7][:install_checker] %>;
+    }
+    <% end %>
 
     include /etc/nginx/conf.d/*.conf;
 }

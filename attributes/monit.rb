@@ -4,7 +4,7 @@ default[:monit][:config][:alert] = []
 
 default[:monit][:monitor] = {
   'nginx'     => node[:nginx][:enabled],
-  'httpd'     => node[:httpd][:enabled],
+  'httpd'     => node[:httpd][:enabled] || node[:mod_php7][:enabled],
   'hhvm'      => node[:hhvm][:enabled],
   'php-fpm'   => node[:phpfpm][:enabled],
   'mysql'     => node[:mysql][:enabled],
@@ -30,6 +30,16 @@ default[:monit][:settings][:processes] = [
    :pidfile => '/var/run/nginx.pid',
    :start => '/sbin/service nginx start',
    :stop  => '/sbin/service nginx stop',
+   :user  => node[:nginx][:config][:user],
+   :group => node[:nginx][:config][:group],
+   :rules => [
+   ]
+  },
+  {
+   :name => 'httpd',
+   :pidfile => '/var/run/httpd/httpd.pid',
+   :start => '/sbin/service httpd start',
+   :stop  => '/sbin/service httpd stop',
    :user  => node[:nginx][:config][:user],
    :group => node[:nginx][:config][:group],
    :rules => [

@@ -73,20 +73,20 @@ Timeout 60
 # KeepAlive: Whether or not to allow persistent connections (more than
 # one request per connection). Set to "Off" to deactivate.
 #
-KeepAlive Off
+KeepAlive On
 
 #
 # MaxKeepAliveRequests: The maximum number of requests to allow
 # during a persistent connection. Set to 0 to allow an unlimited amount.
 # We recommend you leave this number high, for maximum performance.
 #
-MaxKeepAliveRequests 100
+MaxKeepAliveRequests <%= @max_keep_alive_requests %>
 
 #
 # KeepAliveTimeout: Number of seconds to wait for the next request from the
 # same client on the same connection.
 #
-KeepAliveTimeout 15
+KeepAliveTimeout <%= @keep_alive_timeout %>
 
 ##
 ## Server-Pool Size Regulation (MPM specific)
@@ -100,12 +100,12 @@ KeepAliveTimeout 15
 # MaxClients: maximum number of server processes allowed to start
 # MaxRequestsPerChild: maximum number of requests a server process serves
 <IfModule prefork.c>
-StartServers       8
-MinSpareServers    5
-MaxSpareServers   20
-ServerLimit      256
-MaxClients       256
-MaxRequestsPerChild  4000
+StartServers      <%= node[:nginx][:config][:upstream_keepalive].to_i + 2 %>
+MinSpareServers   <%= node[:nginx][:config][:upstream_keepalive].to_i + 2 %>
+MaxSpareServers   <%= node[:nginx][:config][:upstream_keepalive].to_i + 2 %>
+ServerLimit       <%= node[:nginx][:config][:upstream_keepalive].to_i + 2 %>
+MaxClients        <%= node[:nginx][:config][:upstream_keepalive].to_i + 2 %>
+MaxRequestsPerChild <%= @max_requests_per_child %>
 </IfModule>
 
 # worker MPM
@@ -119,7 +119,7 @@ MaxRequestsPerChild  4000
 StartServers         4
 MaxClients         300
 MinSpareThreads     25
-MaxSpareThreads     75 
+MaxSpareThreads     75
 ThreadsPerChild     25
 MaxRequestsPerChild  0
 </IfModule>
@@ -174,11 +174,11 @@ LoadModule headers_module modules/mod_headers.so
 LoadModule usertrack_module modules/mod_usertrack.so
 LoadModule setenvif_module modules/mod_setenvif.so
 LoadModule mime_module modules/mod_mime.so
-LoadModule dav_module modules/mod_dav.so
+# LoadModule dav_module modules/mod_dav.so
 LoadModule status_module modules/mod_status.so
 LoadModule autoindex_module modules/mod_autoindex.so
 LoadModule info_module modules/mod_info.so
-LoadModule dav_fs_module modules/mod_dav_fs.so
+# LoadModule dav_fs_module modules/mod_dav_fs.so
 LoadModule vhost_alias_module modules/mod_vhost_alias.so
 LoadModule negotiation_module modules/mod_negotiation.so
 LoadModule dir_module modules/mod_dir.so
@@ -188,16 +188,16 @@ LoadModule userdir_module modules/mod_userdir.so
 LoadModule alias_module modules/mod_alias.so
 LoadModule substitute_module modules/mod_substitute.so
 LoadModule rewrite_module modules/mod_rewrite.so
-LoadModule proxy_module modules/mod_proxy.so
-LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
-LoadModule proxy_ftp_module modules/mod_proxy_ftp.so
-LoadModule proxy_http_module modules/mod_proxy_http.so
-LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
-LoadModule proxy_connect_module modules/mod_proxy_connect.so
+# LoadModule proxy_module modules/mod_proxy.so
+# LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+# LoadModule proxy_ftp_module modules/mod_proxy_ftp.so
+# LoadModule proxy_http_module modules/mod_proxy_http.so
+# LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
+# LoadModule proxy_connect_module modules/mod_proxy_connect.so
 LoadModule cache_module modules/mod_cache.so
 LoadModule suexec_module modules/mod_suexec.so
-LoadModule disk_cache_module modules/mod_disk_cache.so
-LoadModule cgi_module modules/mod_cgi.so
+# LoadModule disk_cache_module modules/mod_disk_cache.so
+# LoadModule cgi_module modules/mod_cgi.so
 LoadModule version_module modules/mod_version.so
 
 #
@@ -500,7 +500,7 @@ LogFormat "%{User-agent}i" agent
 # For a single logfile with access, agent, and referer information
 # (Combined Logfile Format), use the following directive:
 #
-CustomLog logs/access_log combined
+# CustomLog logs/access_log combined
 
 #
 # Optionally add a line containing the server version and virtual host
@@ -537,10 +537,10 @@ Alias /icons/ "/var/www/icons/"
 #
 # WebDAV module configuration section.
 # 
-<IfModule mod_dav_fs.c>
-    # Location of the WebDAV lock database.
-    DAVLockDB /var/lib/dav/lockdb
-</IfModule>
+# <IfModule mod_dav_fs.c>
+#     # Location of the WebDAV lock database.
+#     DAVLockDB /var/lib/dav/lockdb
+# </IfModule>
 
 #
 # ScriptAlias: This controls which directories contain server scripts.
@@ -550,18 +550,18 @@ Alias /icons/ "/var/www/icons/"
 # The same rules about trailing "/" apply to ScriptAlias directives as to
 # Alias.
 #
-ScriptAlias /cgi-bin/ "/var/www/cgi-bin/"
+# ScriptAlias /cgi-bin/ "/var/www/cgi-bin/"
 
 #
 # "/var/www/cgi-bin" should be changed to whatever your ScriptAliased
 # CGI directory exists, if you have that configured.
 #
-<Directory "/var/www/cgi-bin">
-    AllowOverride None
-    Options None
-    Order allow,deny
-    Allow from all
-</Directory>
+# <Directory "/var/www/cgi-bin">
+#     AllowOverride None
+#     Options None
+#     Order allow,deny
+#     Allow from all
+# </Directory>
 
 #
 # Redirect allows you to tell clients about documents which used to exist in
@@ -782,7 +782,7 @@ AddType application/x-pkcs7-crl    .crl
 # (This is enabled by default to allow the Apache "It Worked" page
 #  to be distributed in multiple languages.)
 #
-AddHandler type-map var
+# AddHandler type-map var
 
 #
 # Filters allow you to process content before it is sent to the client.
@@ -790,8 +790,8 @@ AddHandler type-map var
 # To parse .shtml files for server-side includes (SSI):
 # (You will also need to add "Includes" to the "Options" directive.)
 #
-AddType text/html .shtml
-AddOutputFilter INCLUDES .shtml
+# AddType text/html .shtml
+# AddOutputFilter INCLUDES .shtml
 
 #
 # Action lets you define media types that will execute a script whenever

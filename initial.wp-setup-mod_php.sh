@@ -28,8 +28,6 @@ SERVERNAME=$INSTANCEID
 /sbin/service monit stop
 /sbin/service mysql stop
 
-/bin/rpm -Uvh https://s3-ap-northeast-1.amazonaws.com/nginx-next-amimoto/nginx-1.9.9-1.amzn1.amimoto.x86_64.rpm
-
 /bin/cp /dev/null /root/.mysql_history > /dev/null 2>&1
 /bin/cp /dev/null /root/.bash_history > /dev/null 2>&1
 /bin/cp /dev/null /home/ec2-user/.bash_history > /dev/null 2>&1
@@ -63,6 +61,15 @@ if [ -f /etc/nginx/conf.d/default.backend.conf ]; then
   /bin/rm -f /etc/nginx/conf.d/default.backend.conf
 fi
 
+if [ -f /etc/httpd/conf/httpd.conf ]; then
+  /bin/rm -f /etc/httpd/conf/httpd.conf
+fi
+if [ -f /etc/httpd/conf.d/wordpress.conf ]; then
+  /bin/rm -f /etc/httpd/conf.d/wordpress.conf
+  /bin/rm -f /etc/httpd/conf.d/install_check.conf
+  /bin/rm -f /etc/httpd/conf.d/mod_remoteip.conf
+fi
+
 /usr/bin/git -C /opt/local/chef-repo/ pull origin master
 /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin ${AMIMOTO_BRANCH}
 /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
@@ -72,8 +79,9 @@ fi
 if [ ! -f /etc/nginx/conf.d/default.conf ]; then
   /usr/bin/chef-solo -o amimoto::nginx_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
-if [ ! -d /etc/hhvm ]; then
-  /usr/bin/chef-solo -o amimoto::hhvm -c /opt/local/solo.rb -j /opt/local/amimoto.json
+if [ ! -f /etc/httpd/conf/httpd.conf ]; then
+  /usr/bin/chef-solo -o amimoto::httpd_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
+  /usr/bin/chef-solo -o amimoto::httpd -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
 /usr/sbin/update-motd
 
@@ -138,6 +146,7 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   plugin_install "nginx-champuru" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "wpbooster-cdn-client" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "nephila-clavata" "$SERVERNAME" > /dev/null 2>&1
+  plugin_install "c3-cloudfront-clear-cache" "$SERVERNAME" > /dev/null 2>&1
 
   # Developer
   plugin_install "debug-bar" "$SERVERNAME" > /dev/null 2>&1
@@ -145,7 +154,7 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   plugin_install "debug-bar-console" "$SERVERNAME" > /dev/null 2>&1
 
   #Security
-  plugin_install "crazy-bone" "$SERVERNAME" > /dev/null 2>&1
+  #plugin_install "crazy-bone" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "login-lockdown" "$SERVERNAME" > /dev/null 2>&1
   plugin_install "rublon" "$SERVERNAME" > /dev/null 2>&1
 
@@ -171,6 +180,12 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   fi
   if [ -d /tmp/amimoto/mu-plugins ]; then
     /bin/cp -rf /tmp/amimoto/mu-plugins/* $MU_PLUGINS
+  fi
+  if [ -f /tmp/amimoto/cf_option_check.php ]; then
+    CF_OPTION=`/usr/bin/php /tmp/amimoto/cf_option_check.php`
+    if [ "$CF_OPTION" = "cloudfront" ]; then
+      /bin/cp -rf /tmp/amimoto/options/mu-plugins/* $MU_PLUGINS
+    fi
   fi
 
   /bin/rm /var/www/vhosts/${INSTANCEID}/index.html
