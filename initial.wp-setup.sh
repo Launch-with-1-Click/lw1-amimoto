@@ -17,6 +17,7 @@ function plugin_install(){
 
 WP_VER="4.4.1"
 PHP_MY_ADMIN_VER="4.5.3.1"
+AMIMOTO_BRANCH='2016.01'
 
 INSTANCETYPE=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-type`
 INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
@@ -80,7 +81,7 @@ if [ "t1.micro" != "${INSTANCETYPE}" ]; then
     /usr/sbin/alternatives --set python /usr/bin/python2.6
   fi
   #/usr/bin/git -C /opt/local/chef-repo/ pull origin master
-  /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin 2015.10
+  /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin ${AMIMOTO_BRANCH}
   /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
   if [ ! -f /etc/nginx/nginx.conf ]; then
     /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
