@@ -81,6 +81,7 @@ if [ ! -f /etc/nginx/conf.d/default.conf ]; then
 fi
 if [ ! -f /etc/httpd/conf/httpd.conf ]; then
   /usr/bin/chef-solo -o amimoto::httpd_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
+  /usr/bin/chef-solo -o amimoto::mod_php7 -c /opt/local/solo.rb -j /opt/local/amimoto.json
   /usr/bin/chef-solo -o amimoto::httpd -c /opt/local/solo.rb -j /opt/local/amimoto.json
 fi
 /usr/sbin/update-motd
