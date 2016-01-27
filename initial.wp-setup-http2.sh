@@ -27,7 +27,7 @@ SERVERNAME=$INSTANCEID
 /sbin/service monit stop
 /sbin/service mysql stop
 
-/bin/rpm -Uvh https://s3-ap-northeast-1.amazonaws.com/nginx-next-amimoto/nginx-1.9.9-1.amzn1.amimoto.x86_64.rpm
+/bin/rpm -Uvh https://s3-ap-northeast-1.amazonaws.com/nginx-next-amimoto/nginx-1.9.10-1.amzn1.amimoto.x86_64.rpm
 
 /bin/cp /dev/null /root/.mysql_history > /dev/null 2>&1
 /bin/cp /dev/null /root/.bash_history > /dev/null 2>&1
