@@ -1,4 +1,9 @@
-LoadModule remoteip_module modules/mod_remoteip.so
-RemoteIPHeader X-Real-IP
-RemoteIPProxiesHeader X-Forwarded-For
-RemoteIPInternalProxy 127.0.0.0/8
+## - Apache HTTP Server 2.2.x mod_remoteip backport
+## -- This is a backport of apache 2.4.1 mod_remoteip to apache 2.2.x.
+## - Distribution
+## -- Latest version available from https://github.com/ttkzw/mod_remoteip-http22
+
+# LoadModule remoteip_module modules/mod_remoteip.so
+# RemoteIPHeader X-Real-IP
+# RemoteIPProxiesHeader X-Forwarded-For
+# RemoteIPInternalProxy 127.0.0.0/8
