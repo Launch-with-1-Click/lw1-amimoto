@@ -35,3 +35,11 @@ end
 service "nginx" do
   action node[:nginx][:service_action]
 end
+
+# amimoto-nginx-mainline
+# default => disable
+%w{ amimoto-nginx-mainline.repo }.each do | file_name |
+  template "/etc/yum.repos.d/" + file_name do
+    source "yum/" + file_name + ".erb"
+  end
+end
