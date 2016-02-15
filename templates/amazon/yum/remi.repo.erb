@@ -1,11 +1,14 @@
 [remi]
 name=Les RPM de remi pour Enterprise Linux 6 - $basearch
 #baseurl=http://rpms.famillecollet.com/enterprise/6/remi/$basearch/
-mirrorlist=http://rpms.famillecollet.com/enterprise/6/remi/mirror
+#mirrorlist=http://rpms.famillecollet.com/enterprise/6/remi/mirror
+baseurl=http://repos.amimoto-ami.com/enterprise/6/remi/x86_64/
 enabled=1
 gpgcheck=1
 priority=10
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
+skip_if_unavailable = 1
+keepcache = 0
 
 [remi-php55]
 name=Les RPM de remi de PHP 5.5 pour Enterprise Linux 6 - $basearch
@@ -20,9 +23,29 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
 [remi-php56]
 name=Les RPM de remi de PHP 5.6 pour Enterprise Linux 6 - $basearch
 #baseurl=http://rpms.famillecollet.com/enterprise/6/php56/$basearch/
-mirrorlist=http://rpms.famillecollet.com/enterprise/6/php56/mirror
+#mirrorlist=http://rpms.famillecollet.com/enterprise/6/php56/mirror
+baseurl=http://repos.amimoto-ami.com/enterprise/6/remi-php56/x86_64/
 # WARNING: If you enable this repository, you must also enable "remi"
+<% if node[:mod_php7][:enabled] %>
+enabled=0
+<% else %>
 enabled=1
+<% end %>
+gpgcheck=1
+priority=10
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
+
+[remi-php70]
+name=Les RPM de remi de PHP 7.0 pour Enterprise Linux 6 - $basearch
+#baseurl=http://rpms.famillecollet.com/enterprise/6/php70/$basearch/
+#mirrorlist=http://rpms.famillecollet.com/enterprise/6/php70/mirror
+baseurl=http://repos.amimoto-ami.com/enterprise/6/remi-php70/x86_64/
+# WARNING: If you enable this repository, you must also enable "remi"
+<% if node[:mod_php7][:enabled] %>
+enabled=1
+<% else %>
+enabled=0
+<% end %>
 gpgcheck=1
 priority=10
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
@@ -53,6 +76,13 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
 [remi-php56-debuginfo]
 name=Les RPM de remi de PHP 5.6 pour Enterprise Linux 6 - $basearch - debuginfo
 baseurl=http://rpms.famillecollet.com/enterprise/6/debug-php56/$basearch/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
+
+[remi-php70-debuginfo]
+name=Les RPM de remi de PHP 7.0 pour Enterprise Linux 6 - $basearch - debuginfo
+baseurl=http://rpms.famillecollet.com/enterprise/6/debug-php70/$basearch/
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
