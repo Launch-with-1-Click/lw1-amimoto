@@ -7,13 +7,13 @@ php-pecl-memcache
   end
 end
 
-%w{ php.d/memcache.ini }.each do | file_name |
-  template "/etc/" + file_name do
-    variables node[:php][:config]
-    source "php/" + file_name + ".erb"
-    notifies :reload, 'service[php-fpm]'
-  end
-end
+#%w{ php.d/memcache.ini }.each do | file_name |
+#  template "/etc/" + file_name do
+#    variables node[:php][:config]
+#    source "php/" + file_name + ".erb"
+#    notifies :reload, 'service[php-fpm]'
+#  end
+#end
 
 package 'memcached' do
   action [:install, :upgrade]
