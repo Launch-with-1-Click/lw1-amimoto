@@ -28,8 +28,8 @@ SERVERNAME=$INSTANCEID
 /sbin/service monit stop
 /sbin/service mysql stop
 
-# /bin/rpm -Uvh https://s3-ap-northeast-1.amazonaws.com/nginx-next-amimoto/nginx-1.9.10-1.amzn1.amimoto.x86_64.rpm
-/usr/bin/yum update nginx -y --enablerepo=amimoto-nginx-mainline
+/bin/rpm -Uvh https://packagecloud.io/amimoto-nginx-mainline/main/packages/el/6/nginx-1.9.11-1.amzn1.amimoto.x86_64.rpm/download
+# /usr/bin/yum update nginx -y --enablerepo=amimoto-nginx-mainline
 
 /bin/cp /dev/null /root/.mysql_history > /dev/null 2>&1
 /bin/cp /dev/null /root/.bash_history > /dev/null 2>&1
