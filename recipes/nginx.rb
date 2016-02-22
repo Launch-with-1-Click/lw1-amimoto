@@ -36,6 +36,16 @@ service "nginx" do
   action node[:nginx][:service_action]
 end
 
+## For autoscaled amimoto
+if File.exists?('/opt/aws/cf_option.json')
+  cfn_opts = JSON.parse(File.read('/opt/aws/cf_option.json'))
+  link " /var/www/vhosts/#{node[:ec2][:instance_id]}" do
+    to '/var/www/html'
+    only_if { cfn_opts['autoscale'] }
+  end
+end
+
+
 # amimoto-nginx-mainline
 # default => disable
 %w{ amimoto-nginx-mainline.repo }.each do | file_name |
