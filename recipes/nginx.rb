@@ -39,9 +39,16 @@ end
 ## For autoscaled amimoto
 if File.exists?('/opt/aws/cf_option.json')
   cfn_opts = JSON.parse(File.read('/opt/aws/cf_option.json'))
-  link "/var/www/html" do
-    to "/var/www/vhosts/#{node[:ec2][:instance_id]}"
-    only_if { cfn_opts['autoscale'] }
+  if cfn_opts['autoscale']
+    directory '/var/www/html' do
+      recursive true
+      action :delete
+    end
+    link "/var/www/html" do
+      to "/var/www/vhosts/#{node[:ec2][:instance_id]}"
+      owner node[:nginx][:config][:user]
+      group node[:nginx][:config][:group]
+    end
   end
 end
 
