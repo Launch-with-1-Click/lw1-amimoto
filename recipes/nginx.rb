@@ -43,6 +43,7 @@ if File.exists?('/opt/aws/cf_option.json')
     directory '/var/www/html' do
       recursive true
       action :delete
+      not_if "test -L /var/www/html"
     end
     link "/var/www/html" do
       to "/var/www/vhosts/#{node[:ec2][:instance_id]}"
