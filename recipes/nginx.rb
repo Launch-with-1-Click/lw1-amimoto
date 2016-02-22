@@ -39,8 +39,8 @@ end
 ## For autoscaled amimoto
 if File.exists?('/opt/aws/cf_option.json')
   cfn_opts = JSON.parse(File.read('/opt/aws/cf_option.json'))
-  link "/var/www/vhosts/#{node[:ec2][:instance_id]}" do
-    to '/var/www/html'
+  link "/var/www/html" do
+    to "/var/www/vhosts/#{node[:ec2][:instance_id]}" do
     only_if { cfn_opts['autoscale'] }
   end
 end
