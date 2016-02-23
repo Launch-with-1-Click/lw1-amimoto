@@ -36,6 +36,24 @@ service "nginx" do
   action node[:nginx][:service_action]
 end
 
+## For autoscaled amimoto
+if File.exists?('/opt/aws/cf_option.json')
+  cfn_opts = JSON.parse(File.read('/opt/aws/cf_option.json'))
+  if cfn_opts['autoscale']
+    directory '/var/www/html' do
+      recursive true
+      action :delete
+      not_if "test -L /var/www/html"
+    end
+    link "/var/www/html" do
+      to "/var/www/vhosts/#{node[:ec2][:instance_id]}"
+      owner node[:nginx][:config][:user]
+      group node[:nginx][:config][:group]
+    end
+  end
+end
+
+
 # amimoto-nginx-mainline
 # default => disable
 %w{ amimoto-nginx-mainline.repo }.each do | file_name |
