@@ -17,7 +17,7 @@ function plugin_install(){
 
 WP_VER="4.4.1"
 PHP_MY_ADMIN_VER="4.5.3.1"
-AMIMOTO_BRANCH='2016.01'
+AMIMOTO_BRANCH='staging'
 
 INSTANCETYPE=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-type`
 INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
