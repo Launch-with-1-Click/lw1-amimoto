@@ -194,6 +194,7 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
     CF_OPTION=`/usr/bin/php /tmp/amimoto/cf_option_check.php`
     if [ "$CF_OPTION" = "cloudfront" ]; then
       /bin/cp -rf /tmp/amimoto/options/mu-plugins/* $MU_PLUGINS
+      /bin/cp -rf /tmp/amimoto/options/mu-for-woo/* $MU_PLUGINS
     fi
   fi
 
