@@ -1,9 +1,8 @@
 [amimoto-nginx-mainline]
 name=Nginx Mainline for Amazon Linux Repository
-baseurl=https://packagecloud.io/amimoto-nginx-mainline/main/el/6/$basearch
-enabled=0
+baseurl=https://repos.amimoto-ami.com/enterprise/6/amimoto-nginx-mainline/$basearch
+enabled=1
 priority=10
 gpgcheck=0
-gpgkey=https://packagecloud.io/gpg.key
-includepkgs=nginx
+includepkgs=nginx*
 sslverify=true
