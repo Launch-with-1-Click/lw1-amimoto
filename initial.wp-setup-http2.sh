@@ -28,7 +28,8 @@ SERVERNAME=$INSTANCEID
 /sbin/service monit stop
 /sbin/service mysql stop
 
-/bin/rpm -Uvh https://packagecloud.io/amimoto-nginx-mainline/main/packages/el/6/nginx-1.9.11-1.amzn1.amimoto.x86_64.rpm/download
+## already enabled
+# /bin/rpm -Uvh https://packagecloud.io/amimoto-nginx-mainline/main/packages/el/6/nginx-1.9.11-1.amzn1.amimoto.x86_64.rpm/download
 # /usr/bin/yum update nginx -y --enablerepo=amimoto-nginx-mainline
 
 /bin/cp /dev/null /root/.mysql_history > /dev/null 2>&1
