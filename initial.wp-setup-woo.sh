@@ -189,6 +189,7 @@ if [ "$CF_PATTERN" != "nfs_client" ]; then
   fi
   if [ -d /tmp/amimoto/mu-plugins ]; then
     /bin/cp -rf /tmp/amimoto/mu-plugins/* $MU_PLUGINS
+	/bin/cp -rf /tmp/amimoto/options/mu-for-woo/* $MU_PLUGINS
   fi
   if [ -f /tmp/amimoto/cf_option_check.php ]; then
     CF_OPTION=`/usr/bin/php /tmp/amimoto/cf_option_check.php`
