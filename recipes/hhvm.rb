@@ -38,13 +38,17 @@ end
 template "/etc/hhvm/server.ini" do
   variables node[:hhvm][:config]
   source "hhvm/server.ini.erb"
-  notifies :restart, 'service[hhvm]'
+  if node[:hhvm][:enabled]
+    notifies :restart, 'service[hhvm]'
+  end
 end
 
 template "/etc/hhvm/php.ini" do
   variables node[:php][:config]
   source "php/php.ini.erb"
-  notifies :restart, 'service[hhvm]'
+  if node[:hhvm][:enabled]
+    notifies :restart, 'service[hhvm]'
+  end
 end
 
 template "/etc/logrotate.d/hhvm" do
