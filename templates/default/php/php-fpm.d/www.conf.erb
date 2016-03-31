@@ -15,8 +15,8 @@ pm.min_spare_servers = <%= @min_spare_servers %>
 pm.max_spare_servers = <%= @max_spare_servers %>
 pm.max_requests = <%= @max_requests %>
 
-rlimit_files = 131072
-rlimit_core = unlimited
+rlimit_files = <%= @rlimit_files %>
+rlimit_core = <%= @rlimit_core %>
 
 request_terminate_timeout = <%= @request_terminate_timeout %>
 request_slowlog_timeout = 60

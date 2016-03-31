@@ -95,6 +95,8 @@ if node[:phpfpm][:enabled]
   default[:nginx][:config][:php_upstream] = 'unix:/var/run/php-fpm.sock'
 end
 default[:php][:config][:listen_backlog] = '65536'
+default[:php][:config][:rlimit_files] = '131072'
+default[:php][:config][:rlimit_core] = '0'
 default[:php][:config][:pm] = 'dynamic'
 default[:php][:config][:max_children] = '5'
 default[:php][:config][:start_servers] = '1'
