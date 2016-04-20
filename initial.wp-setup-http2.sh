@@ -121,10 +121,10 @@ fi
 /sbin/service monit start
 
 WP_CLI=/usr/local/bin/wp
-if [ ! -f $WP_CLI ]; then
-  cd /usr/local/bin
-  /usr/bin/curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-  mv wp-cli.phar /usr/local/bin/wp
+cd /usr/local/bin
+/usr/bin/curl -fO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+if [ -f wp-cli.phar ] ; then
+  mv -f wp-cli.phar /usr/local/bin/wp
   chmod +x /usr/local/bin/wp
 fi
 
