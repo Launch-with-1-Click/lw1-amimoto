@@ -68,7 +68,8 @@ if [ "t1.micro" != "${INSTANCETYPE}" ]; then
     /usr/sbin/alternatives --set python /usr/bin/python2.6
   fi
   #/usr/bin/git -C /opt/local/chef-repo/ pull origin master
-  /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin ${AMIMOTO_BRANCH}
+  /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin ${AMIMOTO_BRANCH} || \
+    /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull mirror ${AMIMOTO_BRANCH}
   /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
   if [ ! -f /etc/nginx/nginx.conf ]; then
     /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json

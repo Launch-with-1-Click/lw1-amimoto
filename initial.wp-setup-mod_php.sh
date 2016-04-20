@@ -70,8 +70,9 @@ if [ -f /etc/httpd/conf.d/wordpress.conf ]; then
   /bin/rm -f /etc/httpd/conf.d/mod_remoteip.conf
 fi
 
-/usr/bin/git -C /opt/local/chef-repo/ pull origin master
-/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin ${AMIMOTO_BRANCH}
+# /usr/bin/git -C /opt/local/chef-repo/ pull origin master
+/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin ${AMIMOTO_BRANCH} || \
+  /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull mirror ${AMIMOTO_BRANCH}
 if [ ! -f /etc/httpd/conf/httpd.conf ]; then
   /usr/bin/chef-solo -o amimoto::httpd_default -c /opt/local/solo.rb -j /opt/local/amimoto.json
   /usr/bin/chef-solo -o amimoto::mod_php7 -c /opt/local/solo.rb -j /opt/local/amimoto.json
