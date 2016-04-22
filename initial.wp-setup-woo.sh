@@ -76,8 +76,9 @@ if [ -f /etc/nginx/conf.d/default.backend.conf ]; then
   /bin/rm -f /etc/nginx/conf.d/default.backend.conf
 fi
 
-/usr/bin/git -C /opt/local/chef-repo/ pull origin master
-/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin ${AMIMOTO_BRANCH}
+# /usr/bin/git -C /opt/local/chef-repo/ pull origin master
+/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin ${AMIMOTO_BRANCH} || \
+  /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull mirror ${AMIMOTO_BRANCH}
 /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
 if [ ! -f /etc/nginx/nginx.conf ]; then
   /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json
@@ -91,7 +92,7 @@ fi
 /usr/sbin/update-motd
 
 cd /tmp
-/usr/bin/git clone git://github.com/megumiteam/amimoto.git
+/usr/bin/git clone git://github.com/megumiteam/amimoto.git || /usr/bin/git clone http://repos.amimoto-ami.com/amimoto.git
 
 #CF_PATTERN=`/usr/bin/curl -s https://raw.githubusercontent.com/megumiteam/amimoto/master/cf_patern_check.php | /usr/bin/php`
 CF_PATTERN=`/usr/bin/php /tmp/amimoto/cf_patern_check.php`
@@ -132,10 +133,10 @@ fi
 /sbin/service monit start
 
 WP_CLI=/usr/local/bin/wp
-if [ ! -f $WP_CLI ]; then
-  cd /usr/local/bin
-  /usr/bin/curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-  mv wp-cli.phar /usr/local/bin/wp
+cd /usr/local/bin
+/usr/bin/curl -fO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+if [ -f wp-cli.phar ] ; then
+  mv -f wp-cli.phar /usr/local/bin/wp
   chmod +x /usr/local/bin/wp
 fi
 
