@@ -12,6 +12,7 @@
             fastcgi_pass   phpfpm;
             fastcgi_index  index.php;
             fastcgi_param  SCRIPT_FILENAME /usr/share$fastcgi_script_name;
+            fastcgi_param  HTTPS            $proxy_https  if_not_empty;
             include        fastcgi_params;
             <% end %>
         }

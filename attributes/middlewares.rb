@@ -1,7 +1,11 @@
 ## Nginx
 default[:nginx][:enabled] = true
 default[:nginx][:http2_enable] = false
+default[:nginx][:ngx_cache_purge_enable] = false
 default[:nginx][:packages] = %w{ nginx }
+if node[:nginx][:ngx_cache_purge_enable]
+  default[:nginx][:packages] = %w{ nginx nginx-mod-http_cache_purge23 }
+end
 default[:nginx][:service_action] = [:disable, :stop]
 if node[:nginx][:enabled]
   default[:nginx][:service_action] = [:enable, :start]
@@ -25,6 +29,11 @@ default[:nginx][:config][:mobile_detect_enable] = false
 default[:nginx][:config][:UA_ktai] = '(DoCoMo|J-PHONE|Vodafone|MOT-|UP\.Browser|DDIPOCKET|ASTEL|PDXGW|Palmscape|Xiino|sharp pda browser|Windows CE|L-mode|WILLCOM|SoftBank|Semulator|Vemulator|J-EMULATOR|emobile|mixi-mobile-converter|PSP)'
 default[:nginx][:config][:UA_smartphone] ='(iPhone|iPod|incognito|webmate|Android|dream|CUPCAKE|froyo|BlackBerry|webOS|s8000|bada|IEMobile|Googlebot\-Mobile|AdsBot\-Google)'
 default[:nginx][:config][:UA_smartphone_off] ='wptouch[^\\=]+\\=(normal|desktop)'
+default[:nginx][:config][:expires_default] = 'off'
+default[:nginx][:config][:expires_image] = 'max'
+default[:nginx][:config][:expires_css] = '30d'
+default[:nginx][:config][:expires_js] = '30d'
+default[:nginx][:config][:expires_pdf] = 'max'
 
 ## Apache
 default[:httpd][:enable] = false
@@ -46,7 +55,6 @@ default[:httpd][:config][:max_keep_alive_requests] = 2500
 default[:httpd][:config][:keep_alive_timeout] = 5
 
 ### mod_php7
-
 default[:mod_php7][:enabled] = false
 default[:mod_php7][:install_checker] = '127.0.0.1:8081'
 # default[:mod_php7][:packages] = %w{ php php-cli php-fpm php-devel php-mbstring php-gd php-pear php-xml php-mcrypt php-mysqlnd php-pdo php-opcache }
@@ -126,7 +134,7 @@ default[:mysql][:config][:query_cache_size] = '64M'
 default[:mysql][:config][:tmp_table_size]  = '64M'
 default[:mysql][:config][:max_connections] = '128'
 default[:mysql][:config][:thread_cache] = '128'
-default[:mysql][:config][:sort_buffer_size] = '512k'
+default[:mysql][:config][:sort_buffer_size] = '512K'
 default[:mysql][:config][:read_buffer_size] = '256K'
 default[:mysql][:config][:read_rnd_buffer_size] = '256K'
 default[:mysql][:config][:join_buffer_size] = '256K'

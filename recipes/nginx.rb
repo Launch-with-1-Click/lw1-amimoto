@@ -21,6 +21,16 @@ template "/etc/nginx/nginx.conf" do
   notifies :restart, 'service[nginx]'
 end
 
+%W{ /etc/nginx/modules.d /etc/nginx/conf.d }.each do | dir_name |
+  directory dir_name do
+    owner "root"
+    group "root"
+    mode 00755
+    recursive true
+    action :create
+  end
+end
+
 %w{ drop expires mobile-detect phpmyadmin php-fpm wp-multisite-subdir wp-singlesite }.each do | file_name |
   template "/etc/nginx/" + file_name do
     variables node[:nginx][:config]
@@ -36,6 +46,26 @@ end
     mode 00755
     recursive true
     action :create
+  end
+end
+
+template "/etc/nginx/modules.d/default_module.conf" do
+  variables node[:nginx][:config]
+  source "nginx/modules.d/default_module.conf.erb"
+  notifies :reload, 'service[nginx]'
+end
+
+template "/etc/nginx/conf.d/01_expires_map.conf" do
+  variables node[:nginx][:config]
+  source "nginx/conf.d/01_expires_map.conf.erb"
+  notifies :reload, 'service[nginx]'
+end
+
+if node[:nginx][:ngx_cache_purge_enable]
+  template "/etc/nginx/modules.d/ngx_http_cache_purge_module.conf" do
+    variables node[:nginx][:config]
+    source "nginx/modules.d/ngx_http_cache_purge_module.conf.erb"
+    notifies :restart, 'service[nginx]'
   end
 end
 

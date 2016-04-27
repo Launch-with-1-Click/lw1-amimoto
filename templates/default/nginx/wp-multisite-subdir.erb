@@ -25,11 +25,6 @@ location / {
 
 rewrite /wp-admin$ $scheme://$host$uri/ permanent;
 
-location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
-    expires 24h;
-    log_not_found off;
-}
-
 rewrite /files/$ /index.php last;
 
 set $cachetest "$document_root/wp-content/cache/ms-filemap/${host}${uri}";
@@ -53,14 +48,8 @@ if (!-e $request_filename) {
 location ~ \.php$ {
     #limit_req zone=method;
 
-    set $proxy_https '';
-    if ( $http_x_forwarded_proto = 'https' ) {
-        set $proxy_https 'on';
-    }
-
     include /etc/nginx/php-fpm;
     fastcgi_param  REMOTE_ADDR      $http_x_real_ip;
-    fastcgi_param  HTTPS            $proxy_https  if_not_empty;
     fastcgi_pass_header "X-Accel-Redirect";
     fastcgi_pass_header "X-Accel-Buffering";
     fastcgi_pass_header "X-Accel-Charset";

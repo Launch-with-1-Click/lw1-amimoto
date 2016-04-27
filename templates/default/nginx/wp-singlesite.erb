@@ -1,5 +1,3 @@
-include /etc/nginx/drop;
-
 ##fastcgi_cache start
 #set $no_cache 0;
 #
@@ -29,23 +27,12 @@ location / {
 # Add trailing slash to */wp-admin requests.
 rewrite /wp-admin$ $uri/ permanent;
 
-location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
-    include /etc/nginx/expires;
-    log_not_found off;
-}
-
 # Pass all .php files onto a php-fpm/php-fcgi server.
 location ~ \.php$ {
     #limit_req zone=method;
 
-    set $proxy_https '';
-    if ( $http_x_forwarded_proto = 'https' ) {
-        set $proxy_https 'on';
-    }
-
     include /etc/nginx/php-fpm;
     fastcgi_param  REMOTE_ADDR      $http_x_real_ip;
-    fastcgi_param  HTTPS            $proxy_https  if_not_empty;
     fastcgi_pass_header "X-Accel-Redirect";
     fastcgi_pass_header "X-Accel-Buffering";
     fastcgi_pass_header "X-Accel-Charset";
