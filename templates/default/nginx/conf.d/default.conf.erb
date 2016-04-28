@@ -25,7 +25,7 @@ server {
     if ( $http_cloudfront_forwarded_proto = 'https' ) {
         set $proxy_https 'on';
     }
-    if ( $https = 'on' ) {
+    if ( $scheme = 'https' ) {
         set $proxy_https 'on';
     }
 
