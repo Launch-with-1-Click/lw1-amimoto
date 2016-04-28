@@ -1,6 +1,11 @@
 server {
+<% if @server_name == node[:ec2][:instance_id] %>
     listen      <%= @listen_backend %> default;
     server_name _;
+<% else %>
+    listen      <%= @listen_backend %>;
+    server_name <%= @server_name %>;
+<% end %>
     root        /var/www/vhosts/<%= @server_name %>;
     index       index.php index.html index.htm;
 

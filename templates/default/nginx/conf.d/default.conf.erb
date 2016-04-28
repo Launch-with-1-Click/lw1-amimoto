@@ -1,6 +1,11 @@
 server {
+<% if @server_name == node[:ec2][:instance_id] %>
     listen      <%= @listen %> default;
     server_name _;
+<% else %>
+    listen      <%= @listen %>;
+    server_name <%= @server_name %>;
+<% end %>
     root        /var/www/vhosts/<%= @server_name %>;
     index       index.html index.htm;
     charset     utf-8;
