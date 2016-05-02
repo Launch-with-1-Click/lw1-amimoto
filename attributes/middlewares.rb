@@ -34,6 +34,7 @@ default[:nginx][:config][:expires_image] = 'max'
 default[:nginx][:config][:expires_css] = '30d'
 default[:nginx][:config][:expires_js] = '30d'
 default[:nginx][:config][:expires_pdf] = 'max'
+default[:nginx][:config][:abuse_ua_blocking] = false
 
 ## Apache
 default[:httpd][:enable] = false

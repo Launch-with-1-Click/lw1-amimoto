@@ -14,6 +14,7 @@ location ~* /wp-(config|blog-header)\.php$ { access_log off; log_not_found off; 
 location ~* /(readme|readme-[^\.]+)\.(txt|html?)$ { access_log off; log_not_found off; return 404; }
 location ~* .*\.(cache|sql|log)$ { access_log off; log_not_found off; return 404; }
 
+<% if node[:nginx][:config][:abuse_ua_blocking] %>
 # Enable HackRepair.com's blacklist
 # Start HackRepair.com Blacklist
 # Start Abuse Agent Blocking
@@ -195,6 +196,7 @@ if ($http_referer ~* "^https?://(?:[^/]+\.)?kambasoft\.com"){return 403;}
 if ($http_referer ~* "^https?://(?:[^/]+\.)?savetubevideo\.com"){return 403;}
 # End Abuse HTTP Referrer Blocking
 # End HackRepair.com Blacklist, http://pastebin.com/u/hackrepair
+<% end %>
 
 # Filter Request Methods
 if ($request_method ~* "^(TRACE|DELETE|TRACK)") { return 403; }
