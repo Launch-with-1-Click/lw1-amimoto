@@ -30,7 +30,7 @@ function theme_install(){
   /bin/rm -r /tmp/${1}.zip
 }
 
-WP_VER="4.4.1"
+WP_VER="4.5.2"
 PHP_MY_ADMIN_VER="4.5.3.1"
 AMIMOTO_BRANCH='2016.01'
 
