@@ -13,10 +13,26 @@ server {
     access_log  /var/log/nginx/<%= @server_name %>.access.log  main;
     error_log   /var/log/nginx/<%= @server_name %>.error.log;
 
-    include     /etc/nginx/drop;
+    expires $expires;
 
-    rewrite /wp-admin$ $scheme://$host$uri/ permanent;
-    #rewrite ^(.*)(index|home|default)\.html? $1 permanent;
+    set $do_not_cache 0;
+    if ($http_cookie ~* "comment_author_|wordpress_(?!test_cookie)|wp-postpass_" ) {
+        set $do_not_cache 1;
+    }
+    if ($request_method = POST) {
+        set $do_not_cache 1;
+    }
+
+    set $proxy_https '';
+    if ( $http_x_forwarded_proto = 'https' ) {
+        set $proxy_https 'on';
+    }
+    if ( $http_cloudfront_forwarded_proto = 'https' ) {
+        set $proxy_https 'on';
+    }
+    if ( $scheme = 'https' ) {
+        set $proxy_https 'on';
+    }
 
     set $mobile '';
 <% if @mobile_detect_enable %>
@@ -25,29 +41,23 @@ server {
     #include /etc/nginx/mobile-detect;
 <% end %>
 
-    set $do_not_cache 0;
-    if ($http_cookie ~* "comment_author_|wordpress_(?!test_cookie)|wp-postpass_" ) {
-        set $do_not_cache 1;
-    }
-    if ($request_method != GET) {
-        set $do_not_cache 1;
+    include     /etc/nginx/drop;
+
+    rewrite /wp-admin$ $scheme://$host$uri/ permanent;
+    #rewrite ^(.*)(index|home|default)\.html? $1 permanent;
+
+    location ~ \.php$ {
+        try_files $uri @wordpress;
+
+        proxy_no_cache     1;
+        proxy_cache_bypass 1;
+        proxy_redirect     off;
+        proxy_pass         http://backend;
     }
 
     location / {
         try_files $uri @wordpress;
-
-        location ~ \.php$ {
-            try_files $uri @wordpress;
-            <% if node[:mod_php7][:enabled] %>
-            # Pass all .php files onto a apache httpd server.
-            proxy_pass http://php-httpd;
-            <% else %>
-            # Pass all .php files onto a php-fpm/php-fcgi server.
-            include /etc/nginx/php-fpm;
-            <% end %>
-        }
     }
-
 
     location @wordpress {
         internal;
@@ -59,7 +69,7 @@ server {
         proxy_cache        czone;
         proxy_cache_key    "$scheme://$host$request_uri$mobile";
         proxy_cache_valid  200 0m;
-        proxy_pass http://backend;
+        proxy_pass         http://backend;
     }
 
     location = /wp-admin/install.php {
@@ -89,6 +99,7 @@ server {
         fastcgi_pass   phpfpm;
         fastcgi_index  index.php;
         fastcgi_param  SCRIPT_FILENAME  $script_root$fastcgi_script_name;
+        fastcgi_param  HTTPS            $proxy_https  if_not_empty;
         include        fastcgi_params;
         <% end %>
     }
@@ -120,6 +131,7 @@ server {
         fastcgi_pass   phpfpm;
         fastcgi_index  index.php;
         fastcgi_param  SCRIPT_FILENAME  $script;
+        fastcgi_param  HTTPS            $proxy_https  if_not_empty;
         include        fastcgi_params;
         <% end %>
     }

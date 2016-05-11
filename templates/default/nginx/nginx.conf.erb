@@ -1,6 +1,8 @@
-user              <%= @user %> <%= @group %>;
-worker_processes  <%= @worker_processes %>;
+user                 <%= @user %> <%= @group %>;
+worker_processes     <%= @worker_processes %>;
 worker_rlimit_nofile <%= @worker_rlimit_nofile %>;
+
+include /etc/nginx/modules.d/*.conf;
 
 error_log  /var/log/nginx/error.log warn;
 pid        /var/run/nginx.pid;
@@ -11,17 +13,16 @@ events {
     accept_mutex_delay 100ms;
 }
 
-
 http {
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
-    log_format main    '$remote_addr - $remote_user [$time_local] "$request" '
+    log_format main    '$remote_addr $server_name $remote_user [$time_local] "$request" '
                        '$status $body_bytes_sent "$http_referer" '
-                       '"$http_user_agent" "$http_x_forwarded_for"';
-    log_format backend '$http_x_forwarded_for - $remote_user [$time_local] "$request" '
+                       '"$http_user_agent" "$http_x_forwarded_for" $request_time';
+    log_format backend '$remote_addr $server_name $remote_user [$time_local] "$request" '
                        '$status $body_bytes_sent "$http_referer" '
-                       '"$http_user_agent"';
+                       '"$http_user_agent" "$http_x_forwarded_for" $request_time';
 
     access_log  /var/log/nginx/access.log  main;
 
