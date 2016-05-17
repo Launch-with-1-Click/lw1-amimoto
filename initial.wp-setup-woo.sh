@@ -76,7 +76,6 @@ if [ -f /etc/nginx/conf.d/default.backend.conf ]; then
   /bin/rm -f /etc/nginx/conf.d/default.backend.conf
 fi
 
-# /usr/bin/git -C /opt/local/chef-repo/ pull origin master
 /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin ${AMIMOTO_BRANCH} || \
   /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull mirror ${AMIMOTO_BRANCH}
 /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json
@@ -94,7 +93,6 @@ fi
 cd /tmp
 /usr/bin/git clone git://github.com/megumiteam/amimoto.git || /usr/bin/git clone http://repos.amimoto-ami.com/amimoto.git
 
-#CF_PATTERN=`/usr/bin/curl -s https://raw.githubusercontent.com/megumiteam/amimoto/master/cf_patern_check.php | /usr/bin/php`
 CF_PATTERN=`/usr/bin/php /tmp/amimoto/cf_patern_check.php`
 if [ "$CF_PATTERN" = "nfs_server" ]; then
   /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json

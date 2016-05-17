@@ -1,11 +1,11 @@
 server {
-<% if @server_name == node[:ec2][:instance_id] %>
+    <% if @server_name == node[:ec2][:instance_id] %>
     listen      <%= @listen %> default;
     server_name _;
-<% else %>
+    <% else %>
     listen      <%= @listen %>;
     server_name <%= @server_name %>;
-<% end %>
+    <% end %>
     root        /var/www/vhosts/<%= @server_name %>;
     index       index.html index.htm;
     charset     utf-8;
@@ -24,26 +24,29 @@ server {
     }
 
     set $proxy_https '';
+    set $proxy_proto $scheme;
     if ( $http_x_forwarded_proto = 'https' ) {
         set $proxy_https 'on';
+        set $proxy_proto $http_x_forwarded_proto;
     }
     if ( $http_cloudfront_forwarded_proto = 'https' ) {
         set $proxy_https 'on';
+        set $proxy_proto $http_cloudfront_forwarded_proto;
     }
     if ( $scheme = 'https' ) {
         set $proxy_https 'on';
     }
 
     set $mobile '';
-<% if @mobile_detect_enable %>
+    <% if @mobile_detect_enable %>
     include /etc/nginx/mobile-detect;
-<% else %>
+    <% else %>
     #include /etc/nginx/mobile-detect;
-<% end %>
+    <% end %>
 
     include     /etc/nginx/drop;
 
-    rewrite /wp-admin$ $scheme://$host$uri/ permanent;
+    rewrite /wp-admin$ $uri/ permanent;
     #rewrite ^(.*)(index|home|default)\.html? $1 permanent;
 
     location ~ \.php$ {
@@ -67,7 +70,7 @@ server {
 
         proxy_redirect     off;
         proxy_cache        czone;
-        proxy_cache_key    "$scheme://$host$request_uri$mobile";
+        proxy_cache_key    "$proxy_proto://$host$request_uri$mobile";
         proxy_cache_valid  200 0m;
         proxy_pass         http://backend;
     }
@@ -136,10 +139,10 @@ server {
         <% end %>
     }
 
-<% if @phpmyadmin_enable %>
+    <% if @phpmyadmin_enable %>
     # phpMyAdmin
     include     /etc/nginx/phpmyadmin;
-<% else %>
+    <% else %>
     #
     # When you use phpMyAdmin, uncomment the line "include /etc/nginx/phpmyadmin;"
     # and delete or comment out the below line "location ~* /(phpmyadmin|myadmin|pma) { }".
@@ -150,7 +153,7 @@ server {
         log_not_found off;
         return 404;
     }
-<% end %>
+    <% end %>
 
     #
     # redirect server error pages to the static page /50x.html

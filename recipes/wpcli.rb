@@ -25,3 +25,13 @@ file wp_setup do
   action :create
   only_if { ::File.exists?(bin) }
 end
+
+wp_plugin_install = "/usr/local/bin/wp-plugin-install"
+template wp_plugin_install do
+  source "wp-plugin-install.erb"
+end
+file wp_plugin_install do
+  mode '0755'
+  action :create
+  only_if { ::File.exists?(bin) }
+end

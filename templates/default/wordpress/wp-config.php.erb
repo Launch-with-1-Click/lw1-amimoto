@@ -26,7 +26,7 @@ require_once( dirname(__FILE__).'/local-config.php' );
  *
  * @since 2.6.0
  */
-require_once( dirname(__FILE__).'/salt.php' );
+require_once( dirname(__FILE__).'/local-salt.php' );
 
 /**#@-*/
 
@@ -45,7 +45,9 @@ $table_prefix  = '<%= @table_prefix %>';
  * It is strongly recommended that plugin and theme developers use WP_DEBUG
  * in their development environments.
  */
-define('WP_DEBUG', false);
+if ( ! defined('WP_DEBUG') ) {
+    define('WP_DEBUG', false);
+}
 //define('WP_DEBUG', true);
 //define('SAVEQUERIES', true);
 //define('WP_DEBUG_DISPLAY', false);
@@ -53,7 +55,11 @@ define('WP_DEBUG', false);
 /**
  * Multisite Settings
  */
+<% if @wp_multisite %>
+define ('WP_ALLOW_MULTISITE', true);
+<% else %>
 // define ('WP_ALLOW_MULTISITE', true);
+<% end %>
 //
 // define('MULTISITE', true);
 // define('SUBDOMAIN_INSTALL', false);
