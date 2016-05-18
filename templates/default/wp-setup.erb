@@ -24,15 +24,22 @@ cd /tmp/
 /usr/bin/git clone git://github.com/Launch-with-1-Click/lw1-amimoto.git amimoto
 cd /tmp/amimoto
 /usr/bin/git checkout 2016.01.wp-setup
-/usr/bin/chef-solo -o amimoto::wpcli -c /opt/local/solo.rb -l error
+/usr/bin/chef-solo -o amimoto::wpcli -c /tmp/amimoto/solo.rb -l error
 if [ -f /usr/local/bin/wp-setup-json ]; then
   if [ ! -f /opt/local/${SITENAME}.json ]; then
     /usr/local/bin/wp-setup-json ${SITENAME} | /usr/bin/jq '.' > /opt/local/${SITENAME}.json
+    chmod 0600 /opt/local/${SITENAME}.json
   fi
-  /usr/bin/chef-solo -o amimoto::wordpress -c /opt/local/solo.rb -j /opt/local/${SITENAME}.json -l error
+  /bin/cp -r /opt/local/${SITENAME}.json /tmp/wp-setup.json
+  if [ -f /opt/local/amimoto.json ]; then
+    /usr/bin/jq -s '.[0] * .[1]' /opt/local/${SITENAME}.json /opt/local/amimoto.json > /tmp/wp-setup.json
+  fi
+  /usr/bin/chef-solo -o amimoto::wordpress -c /tmp/amimoto/solo.rb -j /tmp/wp-setup.json -l error
 fi
-/bin/rm -Rf /tmp/amimoto
-/bin/rm -Rf /tmp/.cache/wpplugins
+/bin/rm -rf /tmp/amimoto
+/bin/rm -rf /tmp/.cache/wpplugins
+/bin/rm -rf /tmp/.cache/wpthemes
+/bin/rm -f /tmp/wp-setup.json
 
 echo ""
 echo "...done"

@@ -123,3 +123,33 @@ node[:wordpress][:plugins].each do | plugin_name |
     action :install
   end
 end
+
+# install mu-plugins
+mu_plugins_path = "/var/www/vhosts/" + node[:wordpress][:servername] + "/wp-content/mu-plugins"
+directory mu_plugins_path do
+  owner node[:nginx][:config][:user]
+  group node[:nginx][:config][:group]
+  mode 00755
+  recursive true
+  action :create
+end
+
+node[:wordpress][:mu_plugins].each do | file_name |
+  template mu_plugins_path + "/" + file_name do
+    owner node[:nginx][:config][:user]
+    group node[:nginx][:config][:group]
+    mode 00644
+    variables node[:nginx][:config]
+    source "wordpress/wp-content/mu-plugins/" + file_name + ".erb"
+  end
+end
+
+# install themes
+node[:wordpress][:themes].each do | theme_name |
+  amimoto_wptheme "install #{theme_name}" do
+    theme_name theme_name
+    install_path "/var/www/vhosts/" + node[:wordpress][:servername]
+    action :install
+  end
+end
+

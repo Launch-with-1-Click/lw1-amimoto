@@ -7,6 +7,9 @@ action :install do
 
   directory '/tmp/.cache/wpplugins/' do
     recursive true
+    owner node[:nginx][:config][:user]
+    group node[:nginx][:config][:group]
+    mode 00755
     action :create
   end
 
@@ -32,6 +35,10 @@ action :install do
     cwd "/tmp"
     code <<-EOH
       /usr/bin/unzip #{work_file} -d #{plugins_path}
+      if [ "wp-redis" = "#{new_resource.plugin_name}" ]; then
+        /bin/cp -p #{::File.join(install_path,'object-cache.php')} #{::File.join(new_resource.install_path,'/wp-content')}
+        chown -R #{node[:nginx][:config][:user]}:#{node[:nginx][:config][:group]} #{::File.join(new_resource.install_path,'/wp-content/object-cache.php')}
+      fi
       chown -R #{node[:nginx][:config][:user]}:#{node[:nginx][:config][:group]} #{install_path}
     EOH
   end
