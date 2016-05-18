@@ -114,3 +114,12 @@ template create_db_sql do
   source "wordpress/createdb.sql.erb"
   notifies :run, "execute[mysql-create-database]", :immediately
 end
+
+# install plugins
+node[:wordpress][:plugins].each do | plugin_name |
+  amimoto_wpplugin "install #{plugin_name}" do
+    plugin_name plugin_name
+    install_path "/var/www/vhosts/" + node[:wordpress][:servername]
+    action :install
+  end
+end
