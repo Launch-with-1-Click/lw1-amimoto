@@ -88,6 +88,14 @@ if [ "$CF_PATTERN" = "nfs_client" ]; then
   /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json -l error
 fi
 
+CF_OPTION=$(/usr/bin/php /opt/local/cf_option_check.php)
+if [ "$CF_OPTION" = "cloudfront" ]; then
+  # node[:wordpress][:jinkei_cf] enabled
+  echo '{"wordpress":{"jinkei_cf":true}}' > /opt/local/jinkei_cf.json
+  /usr/bin/jq -s '.[0] * .[1]' /opt/local/jinkei_cf.json /opt/local/amimoto.json > /tmp/amimoto.json
+  /bin/mv -f /tmp/amimoto.json /opt/local/amimoto.json
+fi
+
 if [ -f /usr/sbin/getenforce ]; then
   if [ "Enforcing" = "`/usr/sbin/getenforce`" ]; then
     /usr/bin/yum install -y setools-console

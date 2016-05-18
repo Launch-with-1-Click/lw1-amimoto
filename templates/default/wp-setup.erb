@@ -31,7 +31,9 @@ if [ -f /usr/local/bin/wp-setup-json ]; then
     chmod 0600 /opt/local/${SITENAME}.json
   fi
   /bin/cp -r /opt/local/${SITENAME}.json /tmp/wp-setup.json
-  if [ -f /opt/local/amimoto.json ]; then
+  if [ -f /opt/local/amimoto-managed.json ]; then
+    /usr/bin/jq -s '.[0] * .[1]' /opt/local/${SITENAME}.json /opt/local/amimoto-managed.json > /tmp/wp-setup.json
+  elif [ -f /opt/local/amimoto.json ]; then
     /usr/bin/jq -s '.[0] * .[1]' /opt/local/${SITENAME}.json /opt/local/amimoto.json > /tmp/wp-setup.json
   fi
   /usr/bin/chef-solo -o amimoto::wordpress -c /tmp/amimoto/solo.rb -j /tmp/wp-setup.json -l error

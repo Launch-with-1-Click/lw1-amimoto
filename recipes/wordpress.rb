@@ -9,13 +9,25 @@ include_recipe 'amimoto::mysql'
 # install wp-cli
 include_recipe 'amimoto::wpcli'
 
-# create web document root and /etc/nginx/conf.d/*.conf
-directory "/var/www/vhosts/" + node[:wordpress][:servername] do
+# create web document root
+%W{ /opt/local/amimoto /opt/local/amimoto/wp-admin /var/www/vhosts/#{node[:wordpress][:servername]} }.each do | dir_name |
+  directory dir_name do
+    owner node[:nginx][:config][:user]
+    group node[:nginx][:config][:group]
+    mode 00755
+    recursive true
+    action :create
+  end
+end
+
+template "/opt/local/amimoto/wp-admin/install.php" do
   owner node[:nginx][:config][:user]
   group node[:nginx][:config][:group]
   mode 00755
-  recursive true
-  action :create
+  variables(
+    :instance_id => node[:ec2][:instance_id]
+  )
+  source "install.php.erb"
 end
 
 # config files
@@ -152,4 +164,3 @@ node[:wordpress][:themes].each do | theme_name |
     action :install
   end
 end
-

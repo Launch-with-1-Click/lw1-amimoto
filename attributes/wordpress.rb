@@ -7,6 +7,7 @@ default[:wordpress][:mobile_detect_enable] = node[:nginx][:config][:mobile_detec
 default[:wordpress][:phpmyadmin_enable] = node[:nginx][:config][:phpmyadmin_enable]
 default[:wordpress][:table_prefix] = 'wp_'
 default[:wordpress][:woocommerce] = false
+default[:wordpress][:jinkei_cf] = false
 
 default[:wordpress][:db][:db_name] = node[:wordpress][:servername]
 default[:wordpress][:db][:user_name] = node[:wordpress][:servername]
@@ -50,4 +51,11 @@ if node[:wordpress][:woocommerce]
   default[:wordpress][:plugins].push('woocommerce')
   default[:wordpress][:mu_plugins].push('require-plugins-for-woo.php')
   default[:wordpress][:themes].push('storefront')
+end
+
+if node[:wordpress][:jinkei_cf]
+  default[:wordpress][:mu_plugins].push('amimoto-utilities.php')
+  default[:wordpress][:mu_plugins].push('cf-hostfix.php')
+  default[:wordpress][:mu_plugins].push('cf-previewfix.php')
+  default[:wordpress][:mu_plugins].push('init-plugins.php')
 end
