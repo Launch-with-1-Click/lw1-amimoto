@@ -13,6 +13,8 @@ server {
     access_log  /var/log/nginx/<%= @server_name %>.access.log  main;
     error_log   /var/log/nginx/<%= @server_name %>.error.log;
 
+    include     /etc/nginx/drop;
+
     expires $expires;
 
     set $do_not_cache 0;
@@ -43,8 +45,6 @@ server {
     <% else %>
     #include /etc/nginx/mobile-detect;
     <% end %>
-
-    include     /etc/nginx/drop;
 
     rewrite /wp-admin$ $uri/ permanent;
     #rewrite ^(.*)(index|home|default)\.html? $1 permanent;

@@ -18,15 +18,21 @@ directory "/var/www/vhosts/" + node[:wordpress][:servername] do
   action :create
 end
 
-# expires map
-template "/etc/nginx/conf.d/01_expires_map.conf" do
-  variables node[:nginx][:config]
-  source "nginx/conf.d/01_expires_map.conf.erb"
-  notifies :reload, 'service[nginx]'
+# config files
+%w{ drop expires mobile-detect phpmyadmin php-fpm wp-multisite-subdir wp-singlesite conf.d/01_expires_map.conf }.each do | file_name |
+  template "/etc/nginx/" + file_name do
+    variables node[:nginx][:config]
+    source "nginx/" + file_name + ".erb"
+    notifies :reload, 'service[nginx]'
+  end
 end
 
 # site_name.conf
-template "/etc/nginx/conf.d/" + node[:wordpress][:servername] + '.conf' do
+site_conf = "/etc/nginx/conf.d/" + node[:wordpress][:servername] + '.conf'
+if node[:wordpress][:servername] == node[:ec2][:instance_id] then
+	site_conf = "/etc/nginx/conf.d/default.conf"
+end
+template site_conf do
   variables(
     :listen => node[:nginx][:config][:listen],
     :listen_backend => node[:nginx][:config][:listen_backend],
@@ -40,7 +46,11 @@ template "/etc/nginx/conf.d/" + node[:wordpress][:servername] + '.conf' do
 end
 
 # site_name.backend.conf
-template "/etc/nginx/conf.d/" + node[:wordpress][:servername] + '.backend.conf' do
+site_backend_conf = "/etc/nginx/conf.d/" + node[:wordpress][:servername] + '.backend.conf'
+if node[:wordpress][:servername] == node[:ec2][:instance_id] then
+	site_backend_conf = "/etc/nginx/conf.d/default.backend.conf"
+end
+template site_backend_conf do
   variables(
     :listen => node[:nginx][:config][:listen],
     :listen_backend => node[:nginx][:config][:listen_backend],
