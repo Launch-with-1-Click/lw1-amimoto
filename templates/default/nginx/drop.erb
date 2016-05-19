@@ -197,27 +197,3 @@ if ($http_referer ~* "^https?://(?:[^/]+\.)?savetubevideo\.com"){return 403;}
 # End Abuse HTTP Referrer Blocking
 # End HackRepair.com Blacklist, http://pastebin.com/u/hackrepair
 <% end %>
-
-# Filter Request Methods
-if ($request_method ~* "^(TRACE|DELETE|TRACK)") { return 403; }
-
-# Help reduce spam
-location ~* /wp-comments-post\.php$ {
-    limit_except POST { deny all; }
-    if ($http_user_agent ~ "^$") { return 403; }
-
-    fastcgi_split_path_info ^(.+\.php)(/.+)$;
-    fastcgi_pass   phpfpm;
-    fastcgi_index  index.php;
-    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-    fastcgi_param  HTTPS            $proxy_https  if_not_empty;
-    include        fastcgi_params;
-    fastcgi_intercept_errors on;
-    fastcgi_connect_timeout 60;
-    fastcgi_send_timeout 180;
-    fastcgi_read_timeout 180;
-    fastcgi_buffers 16 16k;
-    fastcgi_buffer_size 32k;
-    fastcgi_busy_buffers_size 32k;
-    fastcgi_temp_file_write_size 256k;
-}
