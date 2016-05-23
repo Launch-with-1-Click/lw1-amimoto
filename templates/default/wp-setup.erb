@@ -23,7 +23,6 @@ fi
 cd /tmp/
 /usr/bin/git clone git://github.com/Launch-with-1-Click/lw1-amimoto.git amimoto
 cd /tmp/amimoto
-/usr/bin/git checkout 2016.01.wp-setup
 /usr/bin/chef-solo -o amimoto::wpcli -c /tmp/amimoto/solo.rb -l error
 if [ -f /usr/local/bin/wp-setup-json ]; then
   if [ ! -f /opt/local/${SITENAME}.json ]; then
