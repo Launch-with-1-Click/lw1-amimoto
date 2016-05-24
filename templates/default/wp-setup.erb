@@ -23,7 +23,7 @@ fi
 cd /tmp/
 /usr/bin/git clone git://github.com/Launch-with-1-Click/lw1-amimoto.git amimoto
 cd /tmp/amimoto
-/usr/bin/chef-solo -o amimoto::wpcli -c /tmp/amimoto/solo.rb -l error
+/usr/bin/chef-solo -o amimoto::wpcli -c /opt/local/amimoto/solo.rb -l error
 if [ -f /usr/local/bin/wp-setup-json ]; then
   if [ ! -f /opt/local/${SITENAME}.json ]; then
     /usr/local/bin/wp-setup-json ${SITENAME} | /usr/bin/jq '.' > /opt/local/${SITENAME}.json
@@ -35,7 +35,7 @@ if [ -f /usr/local/bin/wp-setup-json ]; then
   elif [ -f /opt/local/amimoto.json ]; then
     /usr/bin/jq -s '.[0] * .[1]' /opt/local/${SITENAME}.json /opt/local/amimoto.json > /tmp/wp-setup.json
   fi
-  /usr/bin/chef-solo -o amimoto::wordpress -c /tmp/amimoto/solo.rb -j /tmp/wp-setup.json -l error
+  /usr/bin/chef-solo -o amimoto::wordpress -c /opt/local/amimoto/solo.rb -j /tmp/wp-setup.json -l error
 fi
 /bin/rm -rf /tmp/amimoto
 /bin/rm -rf /tmp/.cache/wpplugins
