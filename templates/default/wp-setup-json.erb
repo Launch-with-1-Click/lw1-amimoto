@@ -1,0 +1,41 @@
+#!/usr/bin/php
+<?php
+function random_password($length = 8, $str_org = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ()-^=#$%&')
+{
+    return substr(str_shuffle(str_repeat($str_org, $length)), 0, $length);
+}
+
+$json_data = array( 'wordpress' => array() );
+
+$mysql_db = $mysql_user = $mysql_pwd = "";
+switch($argc) {
+    case 1:
+        $site_name = "<%= @default_server_name %>";
+        break;
+    default:
+        $site_name = $argv[1];
+}
+$mysql_db   = $site_name !== 'default' ? str_replace(array('.','-'), '_', $site_name) : 'wordpress';
+$mysql_user = empty($mysql_user) ? 'wp_'.random_password(13,'0123456789abcdefghijklmn') : $mysql_user;
+$mysql_pwd  = empty($mysql_pwd)  ? random_password(32)    : $mysql_pwd;
+$mysql_host = 'localhost';
+
+$json_data['wordpress']['servername'] = $site_name;
+
+$json_data['wordpress']['db'] = array(
+	'db_name' => $mysql_db,
+	'user_name' => $mysql_user,
+	'password' => $mysql_pwd,
+	'host' => $mysql_host,
+	);
+
+$salts  = preg_split('/[\r\n]+/ms', file_get_contents('https://api.wordpress.org/secret-key/1.1/salt/'));
+$json_data['wordpress']['salt'] = array();
+foreach ( $salts as $salt ) {
+    if ( preg_match('/define\([\s]*[\'"](AUTH_KEY|SECURE_AUTH_KEY|LOGGED_IN_KEY|NONCE_KEY|AUTH_SALT|SECURE_AUTH_SALT|LOGGED_IN_SALT|NONCE_SALT)[\'"][\s]*,[\s]*[\'"]([^\'"]*)[\'"][\s]*\);/i', $salt, $matches) ) {
+    	$json_data['wordpress']['salt'][strtolower($matches[1])] = $matches[2];
+    }
+    unset($matches);
+}
+
+echo json_encode($json_data);

@@ -60,6 +60,13 @@ end
 # install monit
 include_recipe 'amimoto::monit'
 
+# utilitie
+%w{ cf_option_check.php cf_patern_check.php }.each do | file_name |
+  template "/opt/local/" + file_name do
+    source "cfn/" + file_name + ".erb"
+  end
+end
+
 # install wp-cli
 include_recipe 'amimoto::wpcli'
 

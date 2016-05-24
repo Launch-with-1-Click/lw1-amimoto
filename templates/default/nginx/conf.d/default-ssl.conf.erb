@@ -1,6 +1,11 @@
 server {
-    listen      <%= @listen_ssl %> default ssl http2;
+    <% if @server_name == node[:ec2][:instance_id] %>
+    listen      <%= @listen %> default ssl http2;
     server_name _;
+    <% else %>
+    listen      <%= @listen %> ssl http2;
+    server_name <%= @server_name %>;
+    <% end %>
     root        /var/www/vhosts/<%= @server_name %>;
     index       index.html index.htm;
     charset     utf-8;
@@ -29,11 +34,11 @@ server {
     set $proxy_https 'on';
 
     set $mobile '';
-<% if @mobile_detect_enable %>
+    <% if @mobile_detect_enable %>
     include /etc/nginx/mobile-detect;
-<% else %>
+    <% else %>
     #include /etc/nginx/mobile-detect;
-<% end %>
+    <% end %>
 
     include     /etc/nginx/drop;
 
@@ -131,10 +136,10 @@ server {
         <% end %>
     }
 
-<% if @phpmyadmin_enable %>
+    <% if @phpmyadmin_enable %>
     # phpMyAdmin
     include     /etc/nginx/phpmyadmin;
-<% else %>
+    <% else %>
     #
     # When you use phpMyAdmin, uncomment the line "include /etc/nginx/phpmyadmin;"
     # and delete or comment out the below line "location ~* /(phpmyadmin|myadmin|pma) { }".
@@ -145,7 +150,7 @@ server {
         log_not_found off;
         return 404;
     }
-<% end %>
+    <% end %>
 
     #
     # redirect server error pages to the static page /50x.html
