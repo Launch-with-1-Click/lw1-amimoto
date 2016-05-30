@@ -1,5 +1,10 @@
 # mod_php7 install
 
+yum_package 'libwebp' do
+  action [:install, :upgrade]
+  options '--enablerepo=epel --disablerepo=amzn-main'
+end
+
 node[:mod_php7][:packages].each do | pkg |
   yum_package pkg do
     options "--enablerepo=epel"
