@@ -1,5 +1,10 @@
 # php56 install
 
+yum_package 'libwebp' do
+  action [:install, :upgrade]
+  options '--enablerepo=epel --disablerepo=amzn-main'
+end
+
 node[:php][:packages].each do | pkg |
   package pkg do
     action [:install, :upgrade]
