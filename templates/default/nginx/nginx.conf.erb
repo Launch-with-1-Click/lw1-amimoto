@@ -38,6 +38,11 @@ http {
     client_max_body_size    <%= @client_max_body_size %>;
     client_body_buffer_size 256k;
 
+    <% if node[:hhvm][:enabled] %>
+    ## Avoid POST 405 for HHVM AMIMOTO
+    error_page 405 =200 $uri;
+    <% end %>
+
     if_modified_since before;
 
     gzip              on;
