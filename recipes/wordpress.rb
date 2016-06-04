@@ -31,10 +31,18 @@ template "/opt/local/amimoto/wp-admin/install.php" do
 end
 
 # config files
-%w{ drop expires mobile-detect phpmyadmin php-fpm wp-multisite-subdir wp-singlesite conf.d/01_expires_map.conf }.each do | file_name |
+%w{ drop mobile-detect phpmyadmin php-fpm wp-multisite-subdir wp-singlesite }.each do | file_name |
   template "/etc/nginx/" + file_name do
     variables node[:nginx][:config]
     source "nginx/" + file_name + ".erb"
+    notifies :reload, 'service[nginx]'
+  end
+end
+
+%w{ 00_real_ip.conf 01_expires_map.conf }.each do | file_name |
+  template "/etc/nginx/conf.d/" + file_name do
+    variables node[:nginx][:config]
+    source "nginx/conf.d/" + file_name + ".erb"
     notifies :reload, 'service[nginx]'
   end
 end

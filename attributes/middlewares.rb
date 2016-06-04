@@ -35,6 +35,29 @@ default[:nginx][:config][:expires_css] = '30d'
 default[:nginx][:config][:expires_js] = '30d'
 default[:nginx][:config][:expires_pdf] = 'max'
 default[:nginx][:config][:abuse_ua_blocking] = false
+default[:nginx][:config][:vpc_ips] = %w{
+  10.0.0.0/8
+  172.16.0.0/12
+  192.168.0.0/16
+  }
+default[:nginx][:config][:cf_ips] = %w{
+  54.182.0.0/16
+  54.192.0.0/16
+  54.230.0.0/16
+  54.239.128.0/18
+  54.239.192.0/19
+  54.240.128.0/18
+  204.246.164.0/22
+  204.246.168.0/22
+  204.246.174.0/23
+  204.246.176.0/20
+  205.251.192.0/19
+  205.251.249.0/24
+  205.251.250.0/23
+  205.251.252.0/23
+  205.251.254.0/24
+  216.137.32.0/19
+  }
 
 ## Apache
 default[:httpd][:enable] = false

@@ -31,7 +31,7 @@ end
   end
 end
 
-%w{ drop expires mobile-detect phpmyadmin php-fpm wp-multisite-subdir wp-singlesite }.each do | file_name |
+%w{ drop mobile-detect phpmyadmin php-fpm wp-multisite-subdir wp-singlesite }.each do | file_name |
   template "/etc/nginx/" + file_name do
     variables node[:nginx][:config]
     source "nginx/" + file_name + ".erb"
@@ -49,15 +49,17 @@ end
   end
 end
 
+%w{ 00_real_ip.conf 01_expires_map.conf }.each do | file_name |
+  template "/etc/nginx/conf.d/" + file_name do
+    variables node[:nginx][:config]
+    source "nginx/conf.d/" + file_name + ".erb"
+    notifies :reload, 'service[nginx]'
+  end
+end
+
 template "/etc/nginx/modules.d/default_module.conf" do
   variables node[:nginx][:config]
   source "nginx/modules.d/default_module.conf.erb"
-  notifies :reload, 'service[nginx]'
-end
-
-template "/etc/nginx/conf.d/01_expires_map.conf" do
-  variables node[:nginx][:config]
-  source "nginx/conf.d/01_expires_map.conf.erb"
   notifies :reload, 'service[nginx]'
 end
 
