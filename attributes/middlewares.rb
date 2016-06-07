@@ -2,14 +2,21 @@
 default[:nginx][:enabled] = true
 default[:nginx][:http2_enable] = false
 default[:nginx][:ngx_cache_purge_enable] = false
+default[:nginx][:ngx_mruby] = false
+
 default[:nginx][:packages] = %w{ nginx }
 if node[:nginx][:ngx_cache_purge_enable]
-  default[:nginx][:packages] = %w{ nginx nginx-mod-http_cache_purge23 }
+  default[:nginx][:packages].push('nginx-mod-http_cache_purge23')
 end
+if node[:nginx][:ngx_mruby]
+  default[:nginx][:packages].push('nginx-mod-ngx_mruby')
+end
+
 default[:nginx][:service_action] = [:disable, :stop]
 if node[:nginx][:enabled]
   default[:nginx][:service_action] = [:enable, :start]
 end
+
 default[:nginx][:config][:user] = node[:web][:user]
 default[:nginx][:config][:group] = node[:web][:group]
 default[:nginx][:config][:backend_upstream] = 'unix:/var/run/nginx-backend.sock'
