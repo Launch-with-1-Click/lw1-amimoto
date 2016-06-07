@@ -69,12 +69,22 @@ if node[:nginx][:ngx_cache_purge_enable]
     source "nginx/modules.d/ngx_http_cache_purge_module.conf.erb"
     notifies :restart, 'service[nginx]'
   end
+else
+  file "/etc/nginx/modules.d/ngx_http_cache_purge_module.conf" do
+    action :delete
+    notifies :restart, 'service[nginx]'
+  end
 end
 
 if node[:nginx][:ngx_mruby]
   template "/etc/nginx/modules.d/ngx_http_mruby_module.conf" do
     #variables node[:nginx][:config]
     source "nginx/modules.d/ngx_http_mruby_module.conf.erb"
+    notifies :restart, 'service[nginx]'
+  end
+else
+  file "/etc/nginx/modules.d/ngx_http_mruby_module.conf" do
+    action :delete
     notifies :restart, 'service[nginx]'
   end
 end
