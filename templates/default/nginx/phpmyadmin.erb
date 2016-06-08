@@ -2,7 +2,6 @@
     location /phpMyAdmin {
         alias /usr/share/phpMyAdmin;
         index index.php;
-        include /etc/nginx/expires;
 
         location ~ ^/phpMyAdmin/.+\.php$ {
             alias /usr/share/phpMyAdmin;
