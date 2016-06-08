@@ -5,6 +5,9 @@ if ($http_user_agent ~* '<%= @UA_ktai %>') {
 if ($http_user_agent ~* '<%= @UA_smartphone %>') {
     set $mobile "@smartphone";
 }
+if ( $http_cloudfront_is_mobile_viewer = 'true' ) {
+    set $mobile '@smartphone';
+}
 if ($http_cookie ~* "<%= @UA_smartphone_off %>") {
     set $mobile_off "${mobile}.off";
 }
@@ -13,7 +16,7 @@ if ($mobile_off = "@smartphone.off") {
 }
 
 location ~* @(ktai|smartphone|smartphone\.off)$ {
-    access_log /dev/null;
+    access_log off;
     log_not_found off;
     return 404;
 }
