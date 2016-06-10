@@ -230,19 +230,19 @@ when "t1.micro"
   default[:redis][:service_action] = [:stop, :disable]
 
   ## Nginx
-  default[:nginx][:config][:worker_processes] = '2'
+  default[:nginx][:config][:worker_processes] = '1'
 
   ## PHP
-  default[:php][:config][:max_children] = '5'
+  default[:php][:config][:max_children] = '4'
   default[:php][:config][:start_servers] = '1'
   default[:php][:config][:min_spare_servers] = '1'
   default[:php][:config][:max_spare_servers] = '4'
   default[:php][:config][:max_requests] = '200'
 
   ## MySQL
-  default[:mysql][:config][:innodb_buffer_pool_size] = '64M'
-  default[:mysql][:config][:query_cache_size] = '64M'
-  default[:mysql][:config][:tmp_table_size]  = '64M'
+  default[:mysql][:config][:innodb_buffer_pool_size] = '32M'
+  default[:mysql][:config][:query_cache_size] = '32M'
+  default[:mysql][:config][:tmp_table_size]  = '32M'
   default[:mysql][:config][:max_connections] = '128'
   default[:mysql][:config][:thread_cache] = '128'
 when "t2.micro"
