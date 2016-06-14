@@ -15,7 +15,15 @@ name=Les RPM de remi de PHP 5.5 pour Enterprise Linux 6 - $basearch
 #baseurl=http://rpms.famillecollet.com/enterprise/6/php55/$basearch/
 mirrorlist=http://rpms.famillecollet.com/enterprise/6/php55/mirror
 # WARNING: If you enable this repository, you must also enable "remi"
+<% if node[:mod_php7][:enabled] %>
 enabled=0
+<% else %>
+<% if node[:phpfpm][:version] == '55' %>
+enabled=1
+<% else %>
+enabled=0
+<% end %>
+<% end %>
 gpgcheck=1
 priority=10
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
@@ -29,7 +37,11 @@ baseurl=http://repos.amimoto-ami.com/enterprise/6/remi-php56/x86_64/
 <% if node[:mod_php7][:enabled] %>
 enabled=0
 <% else %>
+<% if node[:phpfpm][:version] == '56' %>
 enabled=1
+<% else %>
+enabled=0
+<% end %>
 <% end %>
 gpgcheck=1
 priority=10
@@ -44,7 +56,11 @@ baseurl=http://repos.amimoto-ami.com/enterprise/6/remi-php70/x86_64/
 <% if node[:mod_php7][:enabled] %>
 enabled=1
 <% else %>
+<% if node[:phpfpm][:version] == '70' %>
+enabled=1
+<% else %>
 enabled=0
+<% end %>
 <% end %>
 gpgcheck=1
 priority=10

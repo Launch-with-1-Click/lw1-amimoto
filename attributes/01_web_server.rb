@@ -1,0 +1,91 @@
+## Nginx
+default[:nginx][:enabled] = true
+default[:nginx][:http2_enable] = false
+default[:nginx][:ngx_cache_purge_enable] = false
+default[:nginx][:ngx_mruby] = false
+
+default[:nginx][:packages] = %w{ nginx }
+if node[:nginx][:ngx_cache_purge_enable]
+  default[:nginx][:packages].push('nginx-mod-http_cache_purge23')
+end
+if node[:nginx][:ngx_mruby]
+  default[:nginx][:packages].push('nginx-mod-ngx_mruby')
+end
+
+default[:nginx][:service_action] = [:disable, :stop]
+if node[:nginx][:enabled]
+  default[:nginx][:service_action] = [:enable, :start]
+end
+
+default[:nginx][:config][:user] = node[:web][:user]
+default[:nginx][:config][:group] = node[:web][:group]
+default[:nginx][:config][:backend_upstream] = 'unix:/var/run/nginx-backend.sock'
+default[:nginx][:config][:php_upstream] = 'unix:/var/run/php-fpm.sock'
+default[:nginx][:config][:upstream_keepalive] = 16
+default[:nginx][:config][:listen] = '80'
+default[:nginx][:config][:listen_ssl] = '443'
+default[:nginx][:config][:listen_backend] = node[:nginx][:config][:backend_upstream]
+default[:nginx][:config][:worker_processes] = node[:cpu][:total]
+default[:nginx][:config][:client_max_body_size] = '4M'
+default[:nginx][:config][:proxy_read_timeout] = '90'
+default[:nginx][:config][:worker_rlimit_nofile] = '10240'
+default[:nginx][:config][:worker_connections] = '8192'
+default[:nginx][:config][:phpmyadmin_enable] = false
+default[:nginx][:config][:wp_multisite] = false
+default[:nginx][:config][:mobile_detect_enable] = false
+default[:nginx][:config][:UA_ktai] = '(DoCoMo|J-PHONE|Vodafone|MOT-|UP\.Browser|DDIPOCKET|ASTEL|PDXGW|Palmscape|Xiino|sharp pda browser|Windows CE|L-mode|WILLCOM|SoftBank|Semulator|Vemulator|J-EMULATOR|emobile|mixi-mobile-converter|PSP)'
+default[:nginx][:config][:UA_smartphone] ='(iPhone|iPod|incognito|webmate|Android|dream|CUPCAKE|froyo|BlackBerry|webOS|s8000|bada|IEMobile|Googlebot\-Mobile|AdsBot\-Google)'
+default[:nginx][:config][:UA_smartphone_off] ='wptouch[^\\=]+\\=(normal|desktop)'
+default[:nginx][:config][:expires_default] = 'off'
+default[:nginx][:config][:expires_image] = 'max'
+default[:nginx][:config][:expires_css] = '30d'
+default[:nginx][:config][:expires_js] = '30d'
+default[:nginx][:config][:expires_pdf] = 'max'
+default[:nginx][:config][:abuse_ua_blocking] = false
+default[:nginx][:config][:vpc_ips] = %w{
+  10.0.0.0/8
+  172.16.0.0/12
+  192.168.0.0/16
+  }
+default[:nginx][:config][:cf_ips] = %w{
+  54.182.0.0/16
+  54.192.0.0/16
+  54.230.0.0/16
+  54.239.128.0/18
+  54.239.192.0/19
+  54.240.128.0/18
+  204.246.164.0/22
+  204.246.168.0/22
+  204.246.174.0/23
+  204.246.176.0/20
+  205.251.192.0/19
+  205.251.249.0/24
+  205.251.250.0/23
+  205.251.252.0/23
+  205.251.254.0/24
+  216.137.32.0/19
+  }
+
+## Apache
+default[:httpd][:enable] = false
+default[:httpd][:packages] = %w{
+  httpd
+  httpd-devel
+  httpd-manual
+  httpd-tools
+  }
+default[:httpd][:service_action] = [:stop, :disable]
+if node[:httpd][:enable]
+  default[:httpd][:service_action] = [:enable, :start]
+end
+default[:httpd][:config][:user]  = node[:web][:user]
+default[:httpd][:config][:group] = node[:web][:group]
+default[:httpd][:config][:servername] = node[:web][:servername]
+default[:httpd][:config][:listen] = '8080'
+if node[:nginx][:enable]
+  default[:httpd][:config][:listen] = '8080'
+end
+default[:httpd][:config][:allow_override] = 'NONE'
+default[:httpd][:config][:max_requests_per_child] = 4000
+default[:httpd][:config][:max_keep_alive_requests] = 2500
+default[:httpd][:config][:keep_alive_timeout] = 5
