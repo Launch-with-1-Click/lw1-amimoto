@@ -10,16 +10,12 @@ template '/etc/yum.repos.d/Percona.repo' do
   action :create
 end
 
-# epel
-template '/etc/yum.repos.d/epel.repo' do
-  source 'yum/epel.repo.erb'
-  action :create
-end
-
-# rpmforge
-template '/etc/yum.repos.d/rpmforge.repo' do
-  source 'yum/rpmforge.repo.erb'
-  action :create
+# epel, rpmforge
+%w{ epel.repo rpmforge.repo }.each do | file_name |
+  template '/etc/yum.repos.d/' + file_name do
+    source 'yum/' + file_name + '.erb'
+    action :create
+  end
 end
 
 # remi
@@ -32,6 +28,11 @@ end
 template '/etc/yum.repos.d/remi.repo' do
   source 'yum/remi.repo.erb'
   action :create
+end
+
+# amimoto-nginx-mainline
+template "/etc/yum.repos.d/amimoto-nginx-mainline.repo" do
+  source "yum/amimoto-nginx-mainline.repo.erb"
 end
 
 # RHEL
