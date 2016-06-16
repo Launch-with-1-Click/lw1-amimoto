@@ -12,7 +12,8 @@ when "t1.micro"
   default[:nginx][:config][:worker_processes] = '1'
 
   ## PHP
-  default[:php][:config][:max_children] = '4'
+  default[:php][:config][:pm] = 'static'
+  default[:php][:config][:max_children] = '2'
   default[:php][:config][:start_servers] = '1'
   default[:php][:config][:min_spare_servers] = '1'
   default[:php][:config][:max_spare_servers] = '4'
@@ -22,22 +23,17 @@ when "t1.micro"
   default[:mysql][:config][:innodb_buffer_pool_size] = '32M'
   default[:mysql][:config][:query_cache_size] = '32M'
   default[:mysql][:config][:tmp_table_size]  = '32M'
-  default[:mysql][:config][:max_connections] = '128'
-  default[:mysql][:config][:thread_cache] = '128'
+  default[:mysql][:config][:table_open_cache] = '512'
+  default[:mysql][:config][:max_connections] = '64'
+  default[:mysql][:config][:thread_cache] = '64'
 when "t2.micro"
   ## memcached
   default[:memcached][:enabled] = false
   default[:memcached][:service_action] = [:disable, :stop]
-  if node[:memcached][:enabled]
-    default[:memcached][:service_action] = [:enable, :start]
-  end
 
   ## redis
   default[:redis][:enabled] = false
   default[:redis][:service_action] = [:disable, :stop]
-  if node[:redis][:enabled]
-    default[:redis][:service_action] = [:enable, :start]
-  end
 
   ## Nginx
   default[:nginx][:config][:worker_processes] = '2'
@@ -73,6 +69,23 @@ when "t2.small"
   default[:mysql][:config][:max_connections] = '128'
   default[:mysql][:config][:thread_cache] = '128'
 when "t2.medium"
+  ## Nginx
+  default[:nginx][:config][:worker_processes] = '2'
+
+  ## PHP
+  default[:php][:config][:max_children] = '20'
+  default[:php][:config][:start_servers] = '4'
+  default[:php][:config][:min_spare_servers] = '4'
+  default[:php][:config][:max_spare_servers] = '16'
+  default[:php][:config][:max_requests] = '200'
+
+  ## MySQL
+  default[:mysql][:config][:innodb_buffer_pool_size] = '256M'
+  default[:mysql][:config][:query_cache_size] = '256M'
+  default[:mysql][:config][:tmp_table_size]  = '256M'
+  default[:mysql][:config][:max_connections] = '256'
+  default[:mysql][:config][:thread_cache] = '256'
+when "t2.large"
   ## Nginx
   default[:nginx][:config][:worker_processes] = '2'
 
@@ -281,7 +294,7 @@ when "c3.4xlarge"
   default[:nginx][:config][:worker_processes] = '8'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '50'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -298,7 +311,7 @@ when "c3.8xlarge"
   default[:nginx][:config][:worker_processes] = '32'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '80'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -366,7 +379,7 @@ when "c4.4xlarge"
   default[:nginx][:config][:worker_processes] = '8'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '50'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -383,7 +396,7 @@ when "c4.8xlarge"
   default[:nginx][:config][:worker_processes] = '32'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '80'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -434,7 +447,7 @@ when "cc2.8xlarge"
   default[:nginx][:config][:worker_processes] = '32'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '80'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -468,7 +481,7 @@ when "cg1.4xlarge"
   default[:nginx][:config][:worker_processes] = '16'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '50'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -519,7 +532,7 @@ when "m2.4xlarge"
   default[:nginx][:config][:worker_processes] = '8'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '50'
   default[:php][:config][:start_servers] = '10'
   default[:php][:config][:min_spare_servers] = '10'
   default[:php][:config][:max_spare_servers] = '25'
@@ -536,7 +549,7 @@ when "cr1.8xlarge"
   default[:nginx][:config][:worker_processes] = '32'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '80'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -587,7 +600,7 @@ when "i2.4xlarge"
   default[:nginx][:config][:worker_processes] = '16'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '50'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -604,7 +617,7 @@ when "i2.8xlarge"
   default[:nginx][:config][:worker_processes] = '32'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '80'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -621,7 +634,7 @@ when "hs1.8xlarge"
   default[:nginx][:config][:worker_processes] = '16'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '80'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -638,7 +651,7 @@ when "hi1.4xlarge"
   default[:nginx][:config][:worker_processes] = '16'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '50'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -706,7 +719,7 @@ when "r3.4xlarge"
   default[:nginx][:config][:worker_processes] = '8'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '50'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -723,7 +736,7 @@ when "r3.8xlarge"
   default[:nginx][:config][:worker_processes] = '32'
 
   ## PHP
-  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:max_children] = '80'
   default[:php][:config][:start_servers] = '5'
   default[:php][:config][:min_spare_servers] = '5'
   default[:php][:config][:max_spare_servers] = '25'
@@ -735,4 +748,14 @@ when "r3.8xlarge"
   default[:mysql][:config][:tmp_table_size]  = '256M'
   default[:mysql][:config][:max_connections] = '256'
   default[:mysql][:config][:thread_cache] = '256'
+end
+
+## memcached
+if node[:memcached][:enabled]
+  default[:memcached][:service_action] = [:enable, :start]
+end
+
+## redis
+if node[:redis][:enabled]
+  default[:redis][:service_action] = [:enable, :start]
 end

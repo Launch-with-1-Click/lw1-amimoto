@@ -32,7 +32,7 @@ query_cache_type=1
 tmp_table_size=<%= @tmp_table_size %>
 max_heap_table_size=<%= @tmp_table_size %>
 
-table_open_cache=1024
+table_open_cache=<%= @table_open_cache %>
 max_allowed_packet=<%= @max_allowed_packet %>
 sort_buffer_size=<%= @sort_buffer_size %>
 read_buffer_size=<%= @read_buffer_size %>
