@@ -18,11 +18,23 @@ server {
     ssl_certificate     /etc/pki/tls/certs/amimoto.default.crt;
     ssl_certificate_key /etc/pki/tls/private/amimoto.default.key;
 
-    access_log  /var/log/nginx/<%= @server_name %>.access.log  main;
-    error_log   /var/log/nginx/<%= @server_name %>.error.log;
+    access_log  /var/log/nginx/<%= @server_name %>-ssl.access.log  main;
+    error_log   /var/log/nginx/<%= @server_name %>-ssl.error.log;
+
+    include     /etc/nginx/drop;
 
     add_header X-Cache-Status $upstream_cache_status;
     expires $expires;
+
+    rewrite /wp-admin$ $uri/ permanent;
+    #rewrite ^(.*)(index|home|default)\.html? $1 permanent;
+
+    set $mobile '';
+    <% if @mobile_detect_enable %>
+    include /etc/nginx/mobile-detect;
+    <% else %>
+    #include /etc/nginx/mobile-detect;
+    <% end %>
 
     set $do_not_cache 0;
     if ($http_cookie ~* "comment_author_|wordpress_(?!test_cookie)|wp-postpass_" ) {
@@ -34,18 +46,6 @@ server {
 
     set $proxy_https 'on';
     set $proxy_proto $scheme;
-
-    set $mobile '';
-    <% if @mobile_detect_enable %>
-    include /etc/nginx/mobile-detect;
-    <% else %>
-    #include /etc/nginx/mobile-detect;
-    <% end %>
-
-    include     /etc/nginx/drop;
-
-    rewrite /wp-admin$ $scheme://$host$uri/ permanent;
-    #rewrite ^(.*)(index|home|default)\.html? $1 permanent;
 
     # Pass all .php files onto a php-fpm/php-fcgi server.
     location ~ \.php$ {
