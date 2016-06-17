@@ -17,7 +17,7 @@ end
 if node[:nginx][:http2_enable]
   template "/etc/nginx/conf.d/default-ssl.conf" do
     variables(
-      :listen_ssl => node[:nginx][:config][:listen_ssl],
+      :listen => node[:nginx][:config][:listen_ssl],
       :listen_backend => node[:nginx][:config][:listen_backend],
       :server_name => node[:ec2][:instance_id],
       :wp_multisite => node[:nginx][:config][:wp_multisite],
