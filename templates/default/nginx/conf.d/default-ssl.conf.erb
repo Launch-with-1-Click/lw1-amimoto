@@ -21,6 +21,7 @@ server {
     access_log  /var/log/nginx/<%= @server_name %>.access.log  main;
     error_log   /var/log/nginx/<%= @server_name %>.error.log;
 
+    add_header X-Cache-Status $upstream_cache_status;
     expires $expires;
 
     set $do_not_cache 0;
@@ -32,6 +33,7 @@ server {
     }
 
     set $proxy_https 'on';
+    set $proxy_proto $scheme;
 
     set $mobile '';
     <% if @mobile_detect_enable %>
@@ -67,7 +69,7 @@ server {
 
         proxy_redirect     off;
         proxy_cache        czone;
-        proxy_cache_key    "$scheme://$host$request_uri$mobile";
+        proxy_cache_key    "$proxy_proto://$host$request_uri$mobile";
         proxy_cache_valid  200 0m;
         proxy_pass         http://backend;
     }

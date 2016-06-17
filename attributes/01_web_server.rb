@@ -38,6 +38,8 @@ default[:nginx][:config][:UA_smartphone] ='(iPhone|iPod|incognito|webmate|Androi
 default[:nginx][:config][:UA_smartphone_off] ='wptouch[^\\=]+\\=(normal|desktop)'
 default[:nginx][:config][:expires_default] = 'off'
 default[:nginx][:config][:expires_image] = 'max'
+default[:nginx][:config][:expires_audio] = 'max'
+default[:nginx][:config][:expires_video] = 'max'
 default[:nginx][:config][:expires_css] = '30d'
 default[:nginx][:config][:expires_js] = '30d'
 default[:nginx][:config][:expires_pdf] = 'max'

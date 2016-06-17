@@ -15,6 +15,7 @@ server {
 
     include     /etc/nginx/drop;
 
+    add_header X-Cache-Status $upstream_cache_status;
     expires $expires;
 
     set $do_not_cache 0;

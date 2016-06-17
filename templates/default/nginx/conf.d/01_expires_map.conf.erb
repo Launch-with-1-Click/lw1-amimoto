@@ -1,6 +1,8 @@
 map $sent_http_content_type $expires {
     default                <%= @expires_default %>;
     ~image/                <%= @expires_image %>;
+    ~audio/                <%= @expires_audio %>;
+    ~video/                <%= @expires_video %>;
     text/css               <%= @expires_css %>;
     text/javascript        <%= @expires_js %>;
     application/javascript <%= @expires_js %>;
