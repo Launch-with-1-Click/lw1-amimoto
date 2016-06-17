@@ -65,6 +65,26 @@ template site_conf do
   notifies :reload, 'service[nginx]'
 end
 
+# site_name-ssl.conf
+if node[:nginx][:http2_enable]
+  site_ssl_conf = "/etc/nginx/conf.d/" + node[:wordpress][:servername] + '-ssl.conf'
+  if node[:wordpress][:servername] == node[:ec2][:instance_id] then
+      site_ssl_conf = "/etc/nginx/conf.d/default-ssl.conf"
+  end
+  template site_ssl_conf do
+    variables(
+      :listen_ssl => node[:nginx][:config][:listen_ssl],
+      :listen_backend => node[:nginx][:config][:listen_backend],
+      :server_name => node[:ec2][:instance_id],
+      :wp_multisite => node[:nginx][:config][:wp_multisite],
+      :mobile_detect_enable => node[:nginx][:config][:mobile_detect_enable],
+      :phpmyadmin_enable => node[:nginx][:config][:phpmyadmin_enable]
+    )
+    source "nginx/conf.d/default-ssl.conf.erb"
+    notifies :restart, 'service[nginx]'
+  end
+end
+
 # site_name.backend.conf
 site_backend_conf = "/etc/nginx/conf.d/" + node[:wordpress][:servername] + '.backend.conf'
 if node[:wordpress][:servername] == node[:ec2][:instance_id] then
