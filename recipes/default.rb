@@ -57,6 +57,11 @@ if (node.memory.total.to_i / 1024) > 1024
   end
 end
 
+# install goofys
+if node[:goofys][:install]
+  include_recipe 'amimoto::goofys'
+end
+
 # install monit
 include_recipe 'amimoto::monit'
 
