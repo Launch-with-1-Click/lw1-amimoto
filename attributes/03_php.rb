@@ -83,6 +83,7 @@ default[:php][:config][:min_spare_servers] = '1'
 default[:php][:config][:max_spare_servers] = '4'
 default[:php][:config][:memory_limit] = '128M'
 default[:php][:config][:max_requests] = '200'
+default[:php][:config][:max_input_vars] = '1000'
 default[:php][:config][:upload_max_filesize] = node[:nginx][:config][:client_max_body_size]
 default[:php][:config][:post_max_size] = node[:php][:config][:upload_max_filesize]
 default[:php][:config][:request_terminate_timeout] = node[:nginx][:config][:proxy_read_timeout]
