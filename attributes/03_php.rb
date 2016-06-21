@@ -90,3 +90,6 @@ default[:php][:config][:upload_max_filesize] = node[:nginx][:config][:client_max
 default[:php][:config][:post_max_size] = node[:php][:config][:upload_max_filesize]
 default[:php][:config][:request_terminate_timeout] = node[:nginx][:config][:proxy_read_timeout]
 default[:php][:config][:max_execution_time] = node[:nginx][:config][:proxy_read_timeout]
+default[:php][:config][:session_save_hundler] = 'files'
+default[:php][:config][:session_save_path] = '/var/tmp/php/session'
+
