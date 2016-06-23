@@ -1,7 +1,7 @@
 require 'securerandom'
 
 default[:wordpress][:servername] =  node[:ec2][:instance_id]
-default[:wordpress][:version] = '4.5.2'
+default[:wordpress][:version] = '4.5.3'
 default[:wordpress][:wp_multisite] = node[:nginx][:config][:wp_multisite]
 default[:wordpress][:mobile_detect_enable] = node[:nginx][:config][:mobile_detect_enable]
 default[:wordpress][:phpmyadmin_enable] = node[:nginx][:config][:phpmyadmin_enable]
