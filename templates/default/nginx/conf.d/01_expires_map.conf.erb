@@ -6,5 +6,7 @@ map $sent_http_content_type $expires {
     text/css               <%= @expires_css %>;
     text/javascript        <%= @expires_js %>;
     application/javascript <%= @expires_js %>;
+    application/x-javascript <%= @expires_js %>;
     application/pdf        <%= @expires_pdf %>;
+    application/x-shockwave-flash <%= @expires_flash %>;
 }

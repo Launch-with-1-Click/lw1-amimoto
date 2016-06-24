@@ -36,6 +36,7 @@ default[:nginx][:config][:mobile_detect_enable] = false
 default[:nginx][:config][:UA_ktai] = '(DoCoMo|J-PHONE|Vodafone|MOT-|UP\.Browser|DDIPOCKET|ASTEL|PDXGW|Palmscape|Xiino|sharp pda browser|Windows CE|L-mode|WILLCOM|SoftBank|Semulator|Vemulator|J-EMULATOR|emobile|mixi-mobile-converter|PSP)'
 default[:nginx][:config][:UA_smartphone] ='(iPhone|iPod|incognito|webmate|Android|dream|CUPCAKE|froyo|BlackBerry|webOS|s8000|bada|IEMobile|Googlebot\-Mobile|AdsBot\-Google)'
 default[:nginx][:config][:UA_smartphone_off] ='wptouch[^\\=]+\\=(normal|desktop)'
+
 default[:nginx][:config][:expires_default] = 'off'
 default[:nginx][:config][:expires_image] = 'max'
 default[:nginx][:config][:expires_audio] = 'max'
@@ -43,7 +44,9 @@ default[:nginx][:config][:expires_video] = 'max'
 default[:nginx][:config][:expires_css] = '30d'
 default[:nginx][:config][:expires_js] = '30d'
 default[:nginx][:config][:expires_pdf] = 'max'
+default[:nginx][:config][:expires_flash] = '30d'
 default[:nginx][:config][:abuse_ua_blocking] = false
+
 default[:nginx][:config][:vpc_ips] = %w{
   10.0.0.0/8
   172.16.0.0/12
