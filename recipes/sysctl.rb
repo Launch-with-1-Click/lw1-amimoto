@@ -1,6 +1,7 @@
 execute 'reload sysctl' do
   action :nothing
   command 'sysctl -e -p'
+  not_if { node[:virtualization][:system] == 'docker' }
 end
 
 
@@ -14,4 +15,6 @@ ruby_block 'sysctl tuning' do
   not_if 'grep swappiness /etc/sysctl.conf'
 end
 
-mount_swap_file
+if node[:virtualization][:system] != 'docker'
+  mount_swap_file
+end
