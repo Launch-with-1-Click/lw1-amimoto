@@ -6,16 +6,18 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-include_recipe 'amimoto::timezone'
-include_recipe 'amimoto::iptables'
-include_recipe 'amimoto::sysctl'
 include_recipe 'amimoto::repos'
-template "/etc/sysconfig/i18n" do
-  source "i18n.erb"
+if node[:virtualization][:system] != 'docker'
+  include_recipe 'amimoto::timezone'
+  include_recipe 'amimoto::iptables'
+  include_recipe 'amimoto::sysctl'
+  template "/etc/sysconfig/i18n" do
+    source "i18n.erb"
+  end
+  #template "/etc/sudoers" do
+  #  source "sudoers.erb"
+  #end
 end
-#template "/etc/sudoers" do
-#  source "sudoers.erb"
-#end
 
 %w{ zip unzip wget git openssl bash }.each do | pkg |
   package pkg do
