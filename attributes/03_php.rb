@@ -92,4 +92,4 @@ default[:php][:config][:request_terminate_timeout] = node[:nginx][:config][:prox
 default[:php][:config][:max_execution_time] = node[:nginx][:config][:proxy_read_timeout]
 default[:php][:config][:session_save_hundler] = 'files'
 default[:php][:config][:session_save_path] = '/var/tmp/php/session'
-
+default[:php][:config][:sendmail_path] = '/usr/sbin/sendmail -t -i'

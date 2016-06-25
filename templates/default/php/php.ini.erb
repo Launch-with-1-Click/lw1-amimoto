@@ -83,7 +83,7 @@ define_syslog_variables  = Off
 [mail function]
 SMTP = localhost
 smtp_port = 25
-sendmail_path = /usr/sbin/sendmail -t -i
+sendmail_path = <%= @sendmail_path %>
 mail.add_x_header = On
 
 [SQL]
