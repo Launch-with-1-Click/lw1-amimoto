@@ -26,7 +26,6 @@
     location ~ /wp-content/.*$ {
         try_files $uri $uri/ =404;
         location ~ /wp-content/(themes|plugins).*\.php$ {
-            limit_req zone=limit_req_by_ip burst=2 nodelay;
             try_files $uri =404;
             proxy_no_cache     1;
             proxy_cache_bypass 1;
