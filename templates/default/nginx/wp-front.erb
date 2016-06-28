@@ -25,7 +25,7 @@
 
     location ~ /wp-content/.*$ {
         try_files $uri $uri/ =404;
-        location ~ /wp-content/(themes|plugins).*\.php$ {
+        location ~ /wp-content/(themes|plugins|mu-plugins)/.*\.php$ {
             try_files $uri =404;
             proxy_no_cache     1;
             proxy_cache_bypass 1;
