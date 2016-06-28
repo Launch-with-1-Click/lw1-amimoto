@@ -21,6 +21,10 @@ rlimit_core = <%= @rlimit_core %>
 request_terminate_timeout = <%= @request_terminate_timeout %>
 request_slowlog_timeout = 60
 
+<% if @limit_extensions != '.php' %>
+security.limit_extensions = <%= @limit_extensions %>
+<% end %>
+
 slowlog = /var/log/php-fpm/www-slow.log
 
 php_admin_value[error_log] = /var/log/php-fpm/www-error.log

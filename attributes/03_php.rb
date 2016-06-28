@@ -93,3 +93,4 @@ default[:php][:config][:max_execution_time] = node[:nginx][:config][:proxy_read_
 default[:php][:config][:session_save_hundler] = 'files'
 default[:php][:config][:session_save_path] = '/var/tmp/php/session'
 default[:php][:config][:sendmail_path] = '/usr/sbin/sendmail -t -i'
+default[:php][:config][:limit_extensions] = '.php'
