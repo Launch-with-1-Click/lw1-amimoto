@@ -2,6 +2,7 @@ tztable = {
   "eu-west-1" => "WET",
   "ap-southeast-1" => "Asia/Singapore",
   "ap-southeast-2" => "Australia/Sydney",
+  "ap-south-1" => "Asia/Kolkata",
   "eu-central-1" => "Europe/Berlin",
   "ap-northeast-2" => "Asia/Seoul",
   "ap-northeast-1" => "Asia/Tokyo",
