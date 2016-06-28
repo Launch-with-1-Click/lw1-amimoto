@@ -7,8 +7,9 @@ location /.well-known { auth_basic off; allow all; break; }
 # Protect System Files
 location ~ /\.(?!well-known) { deny all; access_log off; log_not_found off; }
 location ~* /wp-includes/.*\.php$ { access_log off; log_not_found off; return 404; }
-location ~* /wp-admin/includes/.*$ { access_log off; log_not_found off; return 404; }
-location ~* /wp-content/themes/.*/index\.php { access_log off; log_not_found off; return 404; }
+location ~* /wp-admin/includes/.*\.php$ { access_log off; log_not_found off; return 404; }
+location ~* /wp-content/themes/.*/index\.php$ { access_log off; log_not_found off; return 404; }
+location ~* /wp-content/languages/.*$ { access_log off; log_not_found off; return 404; }
 location ~* /wp-content/uploads/.*\.php$ { access_log off; log_not_found off; return 404; }
 location ~* /wp-(config|blog-header)\.php$ { access_log off; log_not_found off; return 404; }
 location ~* /(readme|readme-[^\.]+)\.(txt|html?)$ { access_log off; log_not_found off; return 404; }

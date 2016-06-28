@@ -1,0 +1,125 @@
+    set $do_not_cache 0;
+    if ($http_cookie ~* "comment_author_|wordpress_(?!test_cookie)|wp-postpass_" ) {
+        set $do_not_cache 1;
+    }
+    if ($request_method = POST) {
+        set $do_not_cache 1;
+    }
+
+    set $proxy_https '';
+    set $proxy_proto $scheme;
+    if ( $http_x_forwarded_proto = 'https' ) {
+        set $proxy_https 'on';
+        set $proxy_proto $http_x_forwarded_proto;
+    }
+    if ( $http_cloudfront_forwarded_proto = 'https' ) {
+        set $proxy_https 'on';
+        set $proxy_proto $http_cloudfront_forwarded_proto;
+    }
+    if ( $scheme = 'https' ) {
+        set $proxy_https 'on';
+    }
+
+    rewrite /wp-admin$ $uri/ permanent;
+    #rewrite ^(.*)(index|home|default)\.html? $1 permanent;
+
+    location ~ /wp-content/.*$ {
+        try_files $uri $uri/ =404;
+        location ~ /wp-content/(themes|plugins|mu-plugins)/.*\.php$ {
+            try_files $uri =404;
+            proxy_no_cache     1;
+            proxy_cache_bypass 1;
+            proxy_redirect     off;
+            proxy_pass         http://backend;
+        }
+    }
+
+    location ~ \.php$ {
+        try_files $uri @wordpress;
+
+        proxy_no_cache     1;
+        proxy_cache_bypass 1;
+        proxy_redirect     off;
+        proxy_pass         http://backend;
+    }
+
+    location / {
+        try_files $uri @wordpress;
+    }
+
+    location @wordpress {
+        internal;
+
+        proxy_no_cache     $do_not_cache;
+        proxy_cache_bypass $do_not_cache;
+
+        proxy_redirect     off;
+        proxy_cache        czone;
+        proxy_cache_key    "$proxy_proto://$host$request_uri$mobile";
+        proxy_cache_valid  200 0m;
+        proxy_pass         http://backend;
+    }
+
+    location = /wp-admin/install.php {
+        set $script_root '/opt/local/amimoto';
+        <% if node[:mod_php7][:enabled] %>
+        set $php_upstream 'install-check';
+        if ( -e /opt/local/amimoto/.valid.$host ) {
+        <% else %>
+        if ( -e /opt/local/amimoto/.valid.$server_name ) {
+        <% end %>
+            set $script_root $document_root;
+            <% if node[:mod_php7][:enabled] %>
+            set $php_upstream 'php-httpd';
+            <% end %>
+        }
+        if ( !-e /opt/local/amimoto/$fastcgi_script_name ) {
+            set $script_root $document_root;
+            <% if node[:mod_php7][:enabled] %>
+            set $php_upstream 'php-httpd';
+            <% end %>
+        }
+        expires        off;
+        <% if node[:mod_php7][:enabled] %>
+        proxy_pass http://$php_upstream;
+        <% else %>
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass   phpfpm;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $script_root$fastcgi_script_name;
+        fastcgi_param  HTTPS            $proxy_https  if_not_empty;
+        include        fastcgi_params;
+        <% end %>
+    }
+
+    location = /wp-admin/setup-config.php {
+        set $script '/opt/local/amimoto/wp-admin/install.php';
+        <% if node[:mod_php7][:enabled] %>
+        set $php_upstream 'install-check';
+        if ( -e /opt/local/amimoto/.valid.$host ) {
+        <% else %>
+        if ( -e /opt/local/amimoto/.valid.$server_name ) {
+        <% end %>
+            set $script $document_root$fastcgi_script_name;
+            <% if node[:mod_php7][:enabled] %>
+            set $php_upstream 'php-httpd';
+            <% end %>
+        }
+        if ( !-e $script ) {
+            set $script $document_root$fastcgi_script_name;
+            <% if node[:mod_php7][:enabled] %>
+            set $php_upstream 'php-httpd';
+            <% end %>
+        }
+        expires        off;
+        <% if node[:mod_php7][:enabled] %>
+        proxy_pass http://$php_upstream;
+        <% else %>
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass   phpfpm;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $script;
+        fastcgi_param  HTTPS            $proxy_https  if_not_empty;
+        include        fastcgi_params;
+        <% end %>
+    }

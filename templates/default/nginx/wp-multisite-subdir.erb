@@ -23,7 +23,7 @@ location / {
     try_files $uri $uri/ /index.php?$args;
 }
 
-rewrite /wp-admin$ $scheme://$host$uri/ permanent;
+rewrite /wp-admin$ $uri/ permanent;
 
 rewrite /files/$ /index.php last;
 
