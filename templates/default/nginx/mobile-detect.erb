@@ -8,6 +8,9 @@ if ($http_user_agent ~* '<%= @UA_smartphone %>') {
 if ( $http_cloudfront_is_mobile_viewer = 'true' ) {
     set $mobile '@smartphone';
 }
+if ( $http_cloudfront_is_tablet_viewer = 'true' ) {
+    set $mobile '';
+}
 if ($http_cookie ~* "<%= @UA_smartphone_off %>") {
     set $mobile_off "${mobile}.off";
 }

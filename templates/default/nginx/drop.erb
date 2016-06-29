@@ -13,7 +13,7 @@ location ~* /wp-content/languages/.*$ { access_log off; log_not_found off; retur
 location ~* /wp-content/uploads/.*\.php$ { access_log off; log_not_found off; return 404; }
 location ~* /wp-(config|blog-header)\.php$ { access_log off; log_not_found off; return 404; }
 location ~* /(readme|readme-[^\.]+)\.(txt|html?)$ { access_log off; log_not_found off; return 404; }
-location ~* .*\.(cache|sql|log)$ { access_log off; log_not_found off; return 404; }
+location ~* .*\.(cache|sql|log|ba?k|org)$ { access_log off; log_not_found off; return 404; }
 
 <% if node[:nginx][:config][:abuse_ua_blocking] %>
 # Enable HackRepair.com's blacklist
