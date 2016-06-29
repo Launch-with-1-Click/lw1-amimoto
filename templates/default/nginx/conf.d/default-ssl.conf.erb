@@ -45,14 +45,12 @@ server {
     # and delete or comment out the below line "location ~* /(phpmyadmin|myadmin|pma) { }".
     #
     #include     /etc/nginx/phpmyadmin;
-    location ~* /(phpmyadmin|myadmin|pma) {
-        access_log off;
-        log_not_found off;
-        return 404;
-    }
+    location ~* /(phpmyadmin|myadmin|pma) { access_log off; log_not_found off; return 404; }
+    <% end %>
+    <% else %>
+    location ~* /(phpmyadmin|myadmin|pma) { access_log off; log_not_found off; return 404; }
+    <% end %>
 
-    <% end %>
-    <% end %>
     #
     # redirect server error pages to the static page /50x.html
     #
