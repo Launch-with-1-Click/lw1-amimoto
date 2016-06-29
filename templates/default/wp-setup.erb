@@ -16,13 +16,7 @@ if [ ! -f /usr/bin/chef-solo ]; then
   ln -s /opt/chef/bin/chef-solo /usr/bin/chef-solo
 fi
 
-if [ -e /tmp/amimoto ]; then
-  /bin/rm -Rf /tmp/amimoto
-fi
-
-cd /tmp/
-/usr/bin/git clone git://github.com/Launch-with-1-Click/lw1-amimoto.git amimoto
-cd /tmp/amimoto
+cd /opt/local
 /usr/bin/chef-solo -o amimoto::wpcli -c /opt/local/solo.rb -l error
 if [ -f /usr/local/bin/wp-setup-json ]; then
   if [ ! -f /opt/local/${SITENAME}.json ]; then
@@ -37,7 +31,6 @@ if [ -f /usr/local/bin/wp-setup-json ]; then
   fi
   /usr/bin/chef-solo -o amimoto::wordpress -c /opt/local/solo.rb -j /tmp/wp-setup.json -l error
 fi
-/bin/rm -rf /tmp/amimoto
 /bin/rm -rf /tmp/.cache/wpplugins
 /bin/rm -rf /tmp/.cache/wpthemes
 /bin/rm -f /tmp/wp-setup.json

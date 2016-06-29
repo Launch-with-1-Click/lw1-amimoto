@@ -35,6 +35,7 @@ server {
 
     include     /etc/nginx/wp-front;
 
+    <% if @server_name == node[:ec2][:instance_id] %>
     <% if @phpmyadmin_enable %>
     # phpMyAdmin
     include     /etc/nginx/phpmyadmin;
@@ -49,8 +50,9 @@ server {
         log_not_found off;
         return 404;
     }
-    <% end %>
 
+    <% end %>
+    <% end %>
     #
     # redirect server error pages to the static page /50x.html
     #
