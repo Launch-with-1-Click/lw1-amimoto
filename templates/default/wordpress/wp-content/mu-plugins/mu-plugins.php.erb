@@ -28,7 +28,7 @@ class just_do_it {
 
   public function plugins_loaded() {
     $activated = false;
-    $activePlugins = get_settings('active_plugins');
+    $activePlugins = get_option('active_plugins');
     foreach ($this->must_plugins as $key => $plugin) {
       if ( !array_search($plugin, $activePlugins) && file_exists(WP_PLUGIN_DIR.'/'.$plugin) ) {
         activate_plugin( $plugin, '', $this->is_multisite() );
