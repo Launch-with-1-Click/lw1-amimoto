@@ -24,3 +24,6 @@ default[:goofys][:mount] = false
 default[:goofis][:config][:reagion] = 'us-east-1'
 default[:goofys][:config][:s3_bucket] = 's3_bucket_name'
 default[:goofys][:config][:mount_point] = '/mnt/s3'
+
+## letsencrypt
+default[:letsencrypt][:install] = false

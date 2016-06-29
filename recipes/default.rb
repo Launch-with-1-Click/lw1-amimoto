@@ -64,6 +64,11 @@ if node[:goofys][:install]
   include_recipe 'amimoto::goofys'
 end
 
+# install letsencrypt
+if node[:letsencrypt][:install]
+  include_recipe 'amimoto::letsencrypt'
+end
+
 # install monit
 include_recipe 'amimoto::monit'
 
