@@ -37,6 +37,7 @@ default[:wordpress][:plugins] = %w{
   flamingo
   contact-form-7
   simple-ga-ranking
+  amimoto-dashboard
   }
 default[:wordpress][:mu_plugins] = %w{
   mu-plugins.php
