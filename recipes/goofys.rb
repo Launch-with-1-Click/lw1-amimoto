@@ -16,17 +16,6 @@ remote_file "/usr/local/bin/goofys" do
   group 'root'
   mode 00755
   action :create
-  if node[:goofys][:mount]
-    notifies :run, "bash[goofys-mount]", :immediately
-  end
-end
-
-remote_file "/usr/local/bin/goofys" do
-  source node[:goofys][:source_url]
-  owner 'root'
-  group 'root'
-  mode 00755
-  action :create
 end
 
 if node[:goofys][:mount]
