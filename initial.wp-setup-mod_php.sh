@@ -14,12 +14,14 @@ elif [ -f /usr/bin/python2.6 ]; then
   /usr/sbin/alternatives --set python /usr/bin/python2.6
 fi
 
+/usr/bin/yum clean all
+
 # node[:mod_php7][:enabled] enabled
 if [ ! -e /opt/local ]; then
   mkdir -p /opt/local
 fi
 echo '{"mod_php7":{"enabled":true}}' > /opt/local/mod_php7.json
-/usr/bin/yum install -y jq
+hash jq || /usr/bin/yum install -y jq
 /usr/bin/jq -s '.[0] * .[1]' /opt/local/mod_php7.json /opt/local/amimoto.json > /tmp/amimoto.json
 /bin/mv -f /tmp/amimoto.json /opt/local/amimoto.json
 

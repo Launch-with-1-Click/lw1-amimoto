@@ -14,6 +14,8 @@ elif [ -f /usr/bin/python2.6 ]; then
   /usr/sbin/alternatives --set python /usr/bin/python2.6
 fi
 
+/usr/bin/yum clean all
+
 /sbin/service monit stop
 /sbin/service mysql stop
 

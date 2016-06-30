@@ -15,7 +15,7 @@ function plugin_install(){
   /bin/rm -r /tmp/${1}.zip
 }
 
-WP_VER="4.5.2"
+WP_VER="4.5.3"
 PHP_MY_ADMIN_VER="4.5.3.1"
 AMIMOTO_BRANCH='2016.01'
 
@@ -24,6 +24,8 @@ INSTANCEID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id
 AZ=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone/`
 
 SERVERNAME=$INSTANCEID
+
+/usr/bin/yum clean all
 
 /sbin/service monit stop
 /sbin/service mysql stop
