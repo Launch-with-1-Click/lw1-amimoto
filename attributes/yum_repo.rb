@@ -1,4 +1,4 @@
-default[:yum][:repo][:amimoto_repo] = true
+default[:yum][:repo][:amimoto_repo] = false
 default[:yum][:repo][:remi][:php][:mirrorlist] = 'http://rpms.famillecollet.com/enterprise/6/remi/mirror'
 default[:yum][:repo][:remi][:php][:baseurl] = 'http://rpms.famillecollet.com/enterprise/6/remi/$basearch/'
 default[:yum][:repo][:remi][:php55][:mirrorlist] = 'http://rpms.famillecollet.com/enterprise/6/php55/mirror'
