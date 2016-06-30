@@ -38,6 +38,7 @@ default[:wordpress][:plugins] = %w{
   contact-form-7
   simple-ga-ranking
   amimoto-dashboard
+  disabled-newrelic-for-amp
   }
 default[:wordpress][:mu_plugins] = %w{
   mu-plugins.php
