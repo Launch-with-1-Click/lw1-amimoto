@@ -6,7 +6,7 @@ server {
     listen      <%= @listen %>;
     server_name <%= @server_name %>;
     <% end %>
-    root        /var/www/vhosts/<%= @server_name %>;
+    root        <%= @document_root %>;
     index       index.html index.htm;
     charset     utf-8;
 

@@ -6,7 +6,7 @@ server {
     listen      <%= @listen_backend %>;
     server_name <%= @server_name %>;
     <% end %>
-    root        /var/www/vhosts/<%= @server_name %>;
+    root        <%= @document_root %>;
     index       index.php index.html index.htm;
 
     access_log  /var/log/nginx/<%= @server_name %>.backend.access.log backend;

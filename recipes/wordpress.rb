@@ -10,7 +10,7 @@ include_recipe 'amimoto::mysql'
 include_recipe 'amimoto::wpcli'
 
 # create web document root
-%W{ /opt/local/amimoto /opt/local/amimoto/wp-admin /var/www/vhosts/#{node[:wordpress][:servername]} }.each do | dir_name |
+%W{ /opt/local/amimoto /opt/local/amimoto/wp-admin #{node[:wordpress][:document_root]} }.each do | dir_name |
   directory dir_name do
     owner node[:nginx][:config][:user]
     group node[:nginx][:config][:group]
@@ -57,6 +57,7 @@ template site_conf do
     :listen => node[:nginx][:config][:listen],
     :listen_backend => node[:nginx][:config][:listen_backend],
     :server_name => node[:wordpress][:servername],
+    :document_root => node[:wordpress][:document_root],
     :wp_multisite => node[:wordpress][:wp_multisite],
     :mobile_detect_enable => node[:wordpress][:mobile_detect_enable],
     :phpmyadmin_enable => node[:wordpress][:phpmyadmin_enable]
@@ -76,6 +77,7 @@ if node[:nginx][:http2_enable]
       :listen => node[:nginx][:config][:listen_ssl],
       :listen_backend => node[:nginx][:config][:listen_backend],
       :server_name => node[:wordpress][:servername],
+      :document_root => node[:wordpress][:document_root],
       :wp_multisite => node[:wordpress][:wp_multisite],
       :mobile_detect_enable => node[:wordpress][:mobile_detect_enable],
       :phpmyadmin_enable => node[:wordpress][:phpmyadmin_enable]
@@ -95,6 +97,7 @@ template site_backend_conf do
     :listen => node[:nginx][:config][:listen],
     :listen_backend => node[:nginx][:config][:listen_backend],
     :server_name => node[:wordpress][:servername],
+    :document_root => node[:wordpress][:document_root],
     :wp_multisite => node[:wordpress][:wp_multisite],
     :mobile_detect_enable => node[:wordpress][:mobile_detect_enable],
     :phpmyadmin_enable => node[:wordpress][:phpmyadmin_enable]
@@ -109,13 +112,13 @@ bash "wp-download" do
   user "root"
   cwd "/tmp"
   code <<-EOH
-    wp --allow-root --path=#{::File.join("/var/www/vhosts/",node[:wordpress][:servername])} --version=#{node[:wordpress][:version]} --force core download
-    chown -R #{node[:nginx][:config][:user]}:#{node[:nginx][:config][:group]} #{::File.join("/var/www/vhosts/",node[:wordpress][:servername])}
+    wp --allow-root --path=#{node[:wordpress][:document_root]} --version=#{node[:wordpress][:version]} --force core download
+    chown -R #{node[:nginx][:config][:user]}:#{node[:nginx][:config][:group]} #{node[:wordpress][:document_root]}
   EOH
 end
 
 # create wp-config.php
-template "/var/www/vhosts/" + node[:wordpress][:servername] + "/wp-config.php" do
+template node[:wordpress][:document_root] + "/wp-config.php" do
   variables(
     :servername => node[:wordpress][:servername],
     :table_prefix => node[:wordpress][:table_prefix],
@@ -126,14 +129,14 @@ template "/var/www/vhosts/" + node[:wordpress][:servername] + "/wp-config.php" d
 end
 
 ## create local-config.php
-template "/var/www/vhosts/" + node[:wordpress][:servername] + "/local-config.php" do
+template node[:wordpress][:document_root] + "/local-config.php" do
   variables node[:wordpress][:db]
   source "wordpress/local-config.php.erb"
   notifies :run, 'bash[wp-download]', :immediately
 end
 
 # create local-salt.php
-template "/var/www/vhosts/" + node[:wordpress][:servername] + "/local-salt.php" do
+template node[:wordpress][:document_root] + "/local-salt.php" do
   variables node[:wordpress][:salt]
   source "wordpress/local-salt.php.erb"
   notifies :run, 'bash[wp-download]', :immediately
@@ -159,13 +162,13 @@ end
 node[:wordpress][:plugins].each do | plugin_name |
   amimoto_wpplugin "install #{plugin_name}" do
     plugin_name plugin_name
-    install_path "/var/www/vhosts/" + node[:wordpress][:servername]
+    install_path node[:wordpress][:document_root]
     action :install
   end
 end
 
 # install mu-plugins
-mu_plugins_path = "/var/www/vhosts/" + node[:wordpress][:servername] + "/wp-content/mu-plugins"
+mu_plugins_path = node[:wordpress][:document_root] + "/wp-content/mu-plugins"
 directory mu_plugins_path do
   owner node[:nginx][:config][:user]
   group node[:nginx][:config][:group]
@@ -188,7 +191,7 @@ end
 node[:wordpress][:themes].each do | theme_name |
   amimoto_wptheme "install #{theme_name}" do
     theme_name theme_name
-    install_path "/var/www/vhosts/" + node[:wordpress][:servername]
+    install_path node[:wordpress][:document_root]
     action :install
   end
 end

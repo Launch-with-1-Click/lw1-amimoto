@@ -5,6 +5,7 @@
       :listen => node[:nginx][:config][:listen],
       :listen_backend => node[:nginx][:config][:listen_backend],
       :server_name => node[:ec2][:instance_id],
+      :document_root => node[:wordpress][:document_root],
       :wp_multisite => node[:nginx][:config][:wp_multisite],
       :mobile_detect_enable => node[:nginx][:config][:mobile_detect_enable],
       :phpmyadmin_enable => node[:nginx][:config][:phpmyadmin_enable]
@@ -20,6 +21,7 @@ if node[:nginx][:http2_enable]
       :listen => node[:nginx][:config][:listen_ssl],
       :listen_backend => node[:nginx][:config][:listen_backend],
       :server_name => node[:ec2][:instance_id],
+      :document_root => node[:wordpress][:document_root],
       :wp_multisite => node[:nginx][:config][:wp_multisite],
       :mobile_detect_enable => node[:nginx][:config][:mobile_detect_enable],
       :phpmyadmin_enable => node[:nginx][:config][:phpmyadmin_enable]
@@ -29,7 +31,7 @@ if node[:nginx][:http2_enable]
   end
 end
 
-%W{ /opt/local/amimoto /opt/local/amimoto/wp-admin /var/www/vhosts/#{node[:ec2][:instance_id]} }.each do | dir_name |
+%W{ /opt/local/amimoto /opt/local/amimoto/wp-admin #{node[:wordpress][:document_root]} }.each do | dir_name |
   directory dir_name do
     owner node[:nginx][:config][:user]
     group node[:nginx][:config][:group]
