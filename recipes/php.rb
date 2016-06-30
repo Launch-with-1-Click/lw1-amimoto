@@ -1,5 +1,7 @@
 # php56 install
 
+execute '/usr/bin/yum clean all'
+
 yum_package 'libwebp' do
   action [:install, :upgrade]
   options '--enablerepo=epel --disablerepo=amzn-main'

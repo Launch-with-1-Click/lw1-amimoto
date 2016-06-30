@@ -1,4 +1,5 @@
 # mod_php7 install
+execute '/usr/bin/yum clean all'
 
 yum_package 'libwebp' do
   action [:install, :upgrade]
