@@ -45,6 +45,10 @@ fi
 
 /usr/bin/yum clean all
 
+[ ! -e /opt/local ] && mkdir -p /opt/local
+[ ! -f /opt/local/amimoto.json ] && echo '{"run_list":["recipe[amimoto]"]}' > /opt/local/amimoto.json
+[ "$(cat /opt/local/amimoto.json)" = "" ] && echo '{"run_list":["recipe[amimoto]"]}' > /opt/local/amimoto.json
+
 [ ! -d /var/www/vhosts/${SERVERNAME} ] && \
   /bin/mkdir -p /var/www/vhosts/${SERVERNAME}
 

@@ -5,6 +5,7 @@ hash jq  || /usr/bin/yum -y install jq
 
 [ ! -e /opt/local ] && mkdir -p /opt/local
 [ ! -f /opt/local/amimoto.json ] && echo '{"run_list":["recipe[amimoto]"]}' > /opt/local/amimoto.json
+[ "$(cat /opt/local/amimoto.json)" = "" ] && echo '{"run_list":["recipe[amimoto]"]}' > /opt/local/amimoto.json
 
 # node[:mod_php7][:enabled] enabled
 /usr/bin/jq -s '.[0] * .[1]' \
