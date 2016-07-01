@@ -20,10 +20,12 @@ hash jq  || /usr/bin/yum -y install jq
 /sbin/service mysql stop
 /sbin/service php-fpm stop
 /sbin/service nginx stop
+/sbin/service httpd stop
 if [ "t1.micro" = "${INSTANCETYPE}" ]; then
   /sbin/chkconfig memcached off
   /sbin/service memcached stop
 fi
+[ -f /var/run/nginx-backend.sock ] && rm -f /var/run/nginx-backend.sock
 
 /bin/rm -f  /root/.mysql_history
 /bin/rm -f  /root/.bash_history
@@ -33,6 +35,7 @@ fi
 /bin/rm -rf /var/log/nginx/*
 /bin/rm -rf /var/cache/nginx/*
 /bin/rm -rf /var/log/php-fpm/*
+/bin/rm -rf /var/log/httpd/*
 /bin/rm -f  /var/lib/mysql/ib_logfile*
 /bin/rm -f  /var/log/mysqld.log*
 /bin/rm -f  /etc/php-fpm.d/www.conf

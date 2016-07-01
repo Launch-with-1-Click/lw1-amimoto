@@ -16,7 +16,7 @@ end
   end
 end
 
-%W{ /opt/local/amimoto /opt/local/amimoto/wp-admin /var/www/vhosts/#{node[:ec2][:instance_id]} }.each do | dir_name |
+%W{ /opt/local/amimoto /opt/local/amimoto/wp-admin #{node[:wordpress][:document_root]} }.each do | dir_name |
   directory dir_name do
     owner node[:httpd][:config][:user]
     group node[:httpd][:config][:group]

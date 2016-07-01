@@ -289,7 +289,7 @@ UseCanonicalName Off
 # documents. By default, all requests are taken from this directory, but
 # symbolic links and aliases may be used to point to other locations.
 #
-DocumentRoot "/var/www/vhosts/<%= node.ec2.instance_id %>"
+DocumentRoot "<%= node.wordpress.document_root %>"
 
 #
 # Each directory to which Apache has access can be configured with respect
@@ -314,7 +314,7 @@ DocumentRoot "/var/www/vhosts/<%= node.ec2.instance_id %>"
 #
 # This should be changed to whatever you set DocumentRoot to.
 #
-<Directory "/var/www/vhosts/<%= node.ec2.instance_id %>">
+<Directory "<%= node.wordpress.document_root %>">
     DirectoryIndex index.html index.htm index.php
     Options -Indexes FollowSymLinks
     AllowOverride <%= @allow_override %>

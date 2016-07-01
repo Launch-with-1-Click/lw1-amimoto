@@ -29,7 +29,7 @@ end
 include_recipe 'amimoto::mysql'
 
 # install httpd
-#include_recipe 'amimoto::httpd_default'
+include_recipe 'amimoto::httpd_default'
 include_recipe 'amimoto::httpd'
 
 # install nginx
