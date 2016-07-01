@@ -1,10 +1,10 @@
 # memcached install
-%w[
-php-pecl-memcache 
-].map do |pkg|
-  package pkg do
-    action [:install, :upgrade]
-  end
+pecl_pkg = 'php-pecl-memcache'
+if node[:mod_php7][:enabled]
+  pecl_pkg = 'php70-php-pecl-memcache'
+end
+package pecl_pkg do
+  action [:install, :upgrade]
 end
 
 #%w{ php.d/memcache.ini }.each do | file_name |

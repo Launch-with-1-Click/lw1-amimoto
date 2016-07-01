@@ -60,6 +60,7 @@ default[:php][:packages] = %w{
   php-devel
   php-mbstring
   php-gd
+  php-pear
   php-xml
   php-mcrypt
   php-mysqlnd
