@@ -1,5 +1,5 @@
 #!/bin/bash
-AMIMOTO_BRANCH='2016.01.initial-script'
+AMIMOTO_BRANCH='2016.01'
 
 hash jq  || /usr/bin/yum -y install jq
 
