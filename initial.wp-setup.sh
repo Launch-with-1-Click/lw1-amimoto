@@ -48,9 +48,12 @@ fi
 
 /usr/bin/yum clean all
 
-[ ! -e /opt/local ] && mkdir -p /opt/local
-[ ! -f /opt/local/amimoto.json ] && echo '{"run_list":["recipe[amimoto]"]}' > /opt/local/amimoto.json
-[ "$(cat /opt/local/amimoto.json)" = "" ] && echo '{"run_list":["recipe[amimoto]"]}' > /opt/local/amimoto.json
+[ ! -e /opt/local ] && \
+  mkdir -p /opt/local
+[ ! -f /opt/local/amimoto.json ] && \
+  echo '{"run_list":["recipe[amimoto]"]}' > /opt/local/amimoto.json
+[ "$(cat /opt/local/amimoto.json)" = "" ] && \
+  echo '{"run_list":["recipe[amimoto]"]}' > /opt/local/amimoto.json
 
 [ ! -d /var/www/vhosts/${SERVERNAME} ] && \
   /bin/mkdir -p /var/www/vhosts/${SERVERNAME}
@@ -77,9 +80,6 @@ AMIMOTO_COOKBOOK_PATH='/opt/local/chef-repo/cookbooks/amimoto/'
 AMIMOTO_JSON='/opt/local/amimoto.json'
 [ -f /opt/local/amimoto-managed.json ] && \
   AMIMOTO_JSON='/opt/local/amimoto-managed.json'
-
-[ ! -f ${AMIMOTO_JSON} ] && \
-  echo '{"run_list":["recipe[amimoto]"]}' > ${AMIMOTO_JSON}
 
 chef_solo='/opt/chef/bin/chef-solo'
 [ -f /usr/bin/chef-solo ] && \
