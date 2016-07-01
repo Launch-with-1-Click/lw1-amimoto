@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 PHP_MY_ADMIN_VER="4.5.3.1"
-AMIMOTO_BRANCH='2016.01'
+AMIMOTO_BRANCH='2016.01.initial-script'
 
 INSTANCETYPE=$(/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-type)
 INSTANCEID=$(/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id)
@@ -8,71 +8,103 @@ AZ=$(/usr/bin/curl -s http://169.254.169.254/latest/meta-data/placement/availabi
 
 SERVERNAME=${INSTANCEID}
 
-if [ -f /usr/bin/python2.7 ]; then
-  /usr/sbin/alternatives --set python /usr/bin/python2.7
-elif [ -f /usr/bin/python2.6 ]; then
-  /usr/sbin/alternatives --set python /usr/bin/python2.6
-fi
 
-/usr/bin/yum clean all
+## cleanup and initialyze
+[ -f /usr/bin/python2.7 ] && \
+  /usr/sbin/alternatives --set python /usr/bin/python2.7
+
+hash git || /usr/bin/yum -y install git
+hash jq  || /usr/bin/yum -y install jq
 
 /sbin/service monit stop
 /sbin/service mysql stop
-
-/bin/cp /dev/null /root/.mysql_history > /dev/null 2>&1
-/bin/cp /dev/null /root/.bash_history > /dev/null 2>&1
-/bin/cp /dev/null /home/ec2-user/.bash_history > /dev/null 2>&1
-/bin/rm -rf /var/www/vhosts/i-* > /dev/null 2>&1
-/bin/rm -rf /opt/local/amimoto > /dev/null 2>&1
-/usr/bin/yes | /usr/bin/crontab -r
-echo '@reboot /bin/sh /opt/local/provision > /dev/null 2>&1' | crontab
-
-if [ ! -d /var/www/vhosts/${SERVERNAME} ]; then
-  /bin/mkdir -p /var/www/vhosts/${SERVERNAME}
-fi
-echo '<html>
-<head>
-<title>Setting up your WordPress now.</title>
-</head>
- <body>
-<p>Setting up your WordPress now.</p>
-<p>After a while please reload your web browser.</p>
-</body>' > /var/www/vhosts/${SERVERNAME}/index.html
-
-/usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull origin ${AMIMOTO_BRANCH} || \
-  /usr/bin/git -C /opt/local/chef-repo/cookbooks/amimoto/ pull mirror ${AMIMOTO_BRANCH}
-if [ "t1.micro" != "${INSTANCETYPE}" ]; then
-  if [ -f /etc/php-fpm.d/www.conf ]; then
-    /bin/rm -f /etc/php-fpm.d/www.conf
-  fi
-  if [ -f /etc/nginx/nginx.conf ]; then
-    /bin/rm -f /etc/nginx/nginx.conf
-  fi
-  if [ -f /etc/nginx/conf.d/default.conf ]; then
-    /bin/rm -f /etc/nginx/conf.d/default.*
-  fi
-  /usr/bin/chef-solo -c /opt/local/solo.rb -j /opt/local/amimoto.json - l error
-elif [ "t1.micro" = "${INSTANCETYPE}" ]; then
+/sbin/service php-fpm stop
+/sbin/service nginx stop
+if [ "t1.micro" = "${INSTANCETYPE}" ]; then
   /sbin/chkconfig memcached off
   /sbin/service memcached stop
 fi
-if [ ! -f /etc/nginx/nginx.conf ]; then
-  /usr/bin/chef-solo -o amimoto::nginx -c /opt/local/solo.rb -j /opt/local/amimoto.json -l error
-fi
-if [ ! -f /etc/nginx/conf.d/default.conf ]; then
-  /usr/bin/chef-solo -o amimoto::nginx_default -c /opt/local/solo.rb -j /opt/local/amimoto.json -l error
-fi
-if [ ! -f /etc/php-fpm.d/www.conf ]; then
-  /usr/bin/chef-solo -o amimoto::php -c /opt/local/solo.rb -j /opt/local/amimoto.json -l error
-fi
+
+/bin/rm -f  /root/.mysql_history
+/bin/rm -f  /root/.bash_history
+/bin/rm -f  /home/ec2-user/.bash_history
+/bin/rm -rf /var/www/vhosts/i-*
+/bin/rm -rf /opt/local/amimoto
+/bin/rm -rf /var/log/nginx/*
+/bin/rm -rf /var/cache/nginx/*
+/bin/rm -rf /var/log/php-fpm/*
+/bin/rm -f  /var/lib/mysql/ib_logfile*
+/bin/rm -f  /var/log/mysqld.log*
+/bin/rm -f  /etc/php-fpm.d/www.conf
+/bin/rm -f  /etc/nginx/nginx.conf
+/bin/rm -f  /etc/nginx/conf.d/default.*
+/bin/rm -f  /etc/yum.repos.d/amimoto-nginx-mainline.repo
+/bin/rm -f  /etc/yum.repos.d/opsrock-*.repo
+/bin/rm -f  /etc/yum.repos.d/remi*.repo
+/bin/rm -f  /etc/yum.repos.d/Percona.repo
+
+/usr/bin/yum clean all
+
+[ ! -d /var/www/vhosts/${SERVERNAME} ] && \
+  /bin/mkdir -p /var/www/vhosts/${SERVERNAME}
+
+index_html='<html>
+<head><title>Setting up your WordPress now.</title></head>
+<body><p>Setting up your WordPress now.</p><p>After a while please reload your web browser.</p></body>
+</html>'
+echo $index_html > /var/www/vhosts/${SERVERNAME}/index.html
+echo $index_html > /var/www/html/index.html
+
+
+## git pull AMIMOTO cookbook
+AMIMOTO_COOKBOOK_PATH='/opt/local/chef-repo/cookbooks/amimoto/'
+
+/usr/bin/git -C ${AMIMOTO_COOKBOOK_PATH} fetch origin || \
+  /usr/bin/git -C ${AMIMOTO_COOKBOOK_PATH} fetch mirror
+/usr/bin/git -C ${AMIMOTO_COOKBOOK_PATH} checkout ${AMIMOTO_BRANCH}
+/usr/bin/git -C ${AMIMOTO_COOKBOOK_PATH} pull origin ${AMIMOTO_BRANCH} || \
+  /usr/bin/git -C ${AMIMOTO_COOKBOOK_PATH} pull mirror ${AMIMOTO_BRANCH}
+
+
+## create provision script
+AMIMOTO_JSON='/opt/local/amimoto.json'
+[ -f /opt/local/amimoto-managed.json ] && \
+  AMIMOTO_JSON='/opt/local/amimoto-managed.json'
+
+[ ! -f ${AMIMOTO_JSON} ] && \
+  echo '{"run_list":["recipe[amimoto]"]}' > ${AMIMOTO_JSON}
+
+chef_solo='/opt/chef/bin/chef-solo'
+[ -f /usr/bin/chef-solo ] && \
+  chef_solo='/usr/bin/chef-solo'
+
+cat << EOS > /opt/local/provision
+#!/bin/bash
+/sbin/service monit stop
+[ -f /usr/bin/python2.7 ] && /usr/sbin/alternatives --set python /usr/bin/python2.7
+/usr/bin/git -C ${AMIMOTO_COOKBOOK_PATH} pull origin ${AMIMOTO_BRANCH}
+${chef_solo} -c /opt/local/solo.rb -j ${AMIMOTO_JSON} -l error
+EOS
+chmod +x /opt/local/provision
+
+/usr/bin/crontab -r
+echo '@reboot /bin/sh /opt/local/provision > /dev/null 2>&1' | crontab
+
+
+## provision
+$chef_solo -c /opt/local/solo.rb -j ${AMIMOTO_JSON} - l error
+[ ! -f /etc/nginx/nginx.conf ] && \
+  $chef_solo -o amimoto::nginx -c /opt/local/solo.rb -j ${AMIMOTO_JSON} -l error
+[ ! -f /etc/nginx/conf.d/default.conf ] && \
+  $chef_solo -o amimoto::nginx_default -c /opt/local/solo.rb -j ${AMIMOTO_JSON} -l error
+[ ! -f /etc/php-fpm.d/www.conf ] && \
+  $chef_solo -o amimoto::php -c /opt/local/solo.rb -j ${AMIMOTO_JSON} -l error
 
 CF_PATTERN=$(/usr/bin/php /opt/local/cf_patern_check.php)
-if [ "$CF_PATTERN" = "nfs_server" ]; then
-  /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json -l error
-fi
-if [ "$CF_PATTERN" = "nfs_client" ]; then
-  /usr/bin/chef-solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j /opt/local/amimoto.json -l error
-fi
+[ "$CF_PATTERN" = "nfs_server" ] && \
+  $chef_solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j ${AMIMOTO_JSON} -l error
+[ "$CF_PATTERN" = "nfs_client" ] && \
+  $chef_solo -o amimoto::nfs_dispatcher -c /opt/local/solo.rb -j ${AMIMOTO_JSON} -l error
 
 if [ -f /usr/sbin/getenforce ]; then
   if [ "Enforcing" = "`/usr/sbin/getenforce`" ]; then
@@ -82,48 +114,36 @@ if [ -f /usr/sbin/getenforce ]; then
   fi
 fi
 
-# clear log files
-/sbin/service monit stop
 
-/sbin/service nginx stop
-/bin/rm -rf /var/log/nginx/*
-/bin/rm -rf /var/cache/nginx/*
-/sbin/service nginx start
-
-/sbin/service php-fpm stop
-/bin/rm -rf /var/log/php-fpm/*
-/sbin/service php-fpm start
-
-/sbin/service mysql stop
-/bin/rm -f /var/lib/mysql/ib_logfile*
-/bin/rm -f /var/log/mysqld.log*
-/sbin/service mysql start
-
-/sbin/service monit start
-
+## install default WordPress
 if [ "$CF_PATTERN" != "nfs_client" ]; then
+  SERVER_JSON="/opt/local/${SERVERNAME}.json"
+  TMP_JSON=$(mktemp)
+
   echo "WordPress install ..."
+
   cd /opt/local
-  if [ ! -f /opt/local/${SERVERNAME}.json ]; then
-    /usr/local/bin/wp-setup-json ${SERVERNAME} | /usr/bin/jq '.' > /opt/local/${SERVERNAME}.json
-    chmod 0600 /opt/local/${SERVERNAME}.json
-  fi
-  /bin/cp -r /opt/local/${SERVERNAME}.json /tmp/wp-setup.json
-  if [ -f /opt/local/amimoto.json ]; then
-    /usr/bin/jq -s '.[0] * .[1]' /opt/local/${SERVERNAME}.json /opt/local/amimoto.json > /tmp/wp-setup.json
-  fi
-  if [ -f /var/www/vhosts/${SERVERNAME}/wp-content/object-cache.php ]; then
+  /usr/local/bin/wp-setup-json ${SERVERNAME} | /usr/bin/jq '.' > ${SERVER_JSON}
+  [ "$(cat ${SERVER_JSON})" = "" ] && \
+    echo '{"wordpress":{}}' > ${SERVER_JSON}
+  chmod 0600 $SERVER_JSON
+  /bin/cp -f $SERVER_JSON $TMP_JSON
+  [ -f ${AMIMOTO_JSON} ] && \
+    /usr/bin/jq -s '.[0] * .[1]' ${SERVER_JSON} ${AMIMOTO_JSON} > ${TMP_JSON}
+
+  $chef_solo -o amimoto::wordpress -c /opt/local/solo.rb -j ${TMP_JSON} -l error
+
+  /bin/rm -f ${TMP_JSON}
+  [ -f /var/www/vhosts/${SERVERNAME}/wp-content/object-cache.php ] && \
     /bin/rm -f /var/www/vhosts/${SERVERNAME}/wp-content/object-cache.php
-  fi
-  /usr/bin/chef-solo -o amimoto::wordpress -c /opt/local/solo.rb -j /tmp/wp-setup.json -l error
-  /bin/rm -f /tmp/wp-setup.json
 
   echo "... WordPress installed"
-
-  /bin/rm -f /var/www/vhosts/${SERVERNAME}/index.html
-  /bin/chown -R nginx:nginx /var/cache/nginx
-  /bin/chown -R nginx:nginx /var/www/vhosts/${SERVERNAME}
 fi
+
+[ -f /var/www/html/index.html ] && \
+  /bin/rm -f /var/www/html/index.html
+[ -f /var/www/vhosts/${SERVERNAME}/index.html ] && \
+  /bin/rm -f /var/www/vhosts/${SERVERNAME}/index.html
 
 /bin/chown -R nginx:nginx /var/log/nginx
 /bin/chown -R nginx:nginx /var/log/php-fpm
@@ -131,7 +151,8 @@ fi
 /bin/chown -R nginx:nginx /var/lib/php
 /bin/chmod +x /usr/local/bin/wp-setup
 
-# install phpMyAdmin
+
+## install phpMyAdmin
 cd /usr/share/
 if [ ! -d /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages ] ; then
   /usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/${PHP_MY_ADMIN_VER}/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
@@ -143,7 +164,8 @@ if [ ! -d /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages ] ; then
   fi
 fi
 
-#install DSaaS Client
+
+## install DSaaS Client
 /usr/bin/wget https://app.deepsecurity.trendmicro.com:443/software/agent/amzn1/x86_64/ -O /tmp/agent.rpm --no-check-certificate --quiet
 /bin/rpm -ihv /tmp/agent.rpm || /bin/rpm -Uhv /tmp/agent.rpm
 /bin/rm -rf /tmp/agent.rpm
