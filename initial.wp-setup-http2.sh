@@ -8,9 +8,11 @@ hash jq  || /usr/bin/yum -y install jq
 [ "$(cat /opt/local/amimoto.json)" = "" ] && echo '{"run_list":["recipe[amimoto]"]}' > /opt/local/amimoto.json
 
 # node[:nginx][:http2_enable] enabled
+TMP_JSON=$(mktemp)
 /usr/bin/jq -s '.[0] * .[1]' \
   <(echo '{"nginx":{"http2_enable":true}}') \
-  <(cat /opt/local/amimoto.json) \
-  > /opt/local/amimoto.json
+  /opt/local/amimoto.json \
+  > ${TMP_JSON}
+[ -f ${TMP_JSON} ] && mv -f ${TMP_JSON} /opt/local/amimoto.json
 
 /usr/bin/curl -L -s https://raw.githubusercontent.com/Launch-with-1-Click/lw1-amimoto/${AMIMOTO_BRANCH}/initial.wp-setup.sh | /bin/bash
