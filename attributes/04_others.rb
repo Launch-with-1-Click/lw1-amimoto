@@ -3,6 +3,8 @@ default[:memcached][:enabled] = true
 default[:memcached][:service_action] = [:disable, :stop]
 if node[:memcached][:enabled]
   default[:memcached][:service_action] = [:enable, :start]
+  default[:php][:packages].push('php-pecl-memcache')
+  default[:mod_php7][:packages].push('php70-php-pecl-memcache')
 end
 
 ## redis
