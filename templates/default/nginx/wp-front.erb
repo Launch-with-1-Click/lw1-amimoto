@@ -24,9 +24,11 @@
     #rewrite ^(.*)(index|home|default)\.html? $1 permanent;
 
     location ~ /wp-content/.*$ {
-        try_files $uri $uri/ =404;
+        try_files $uri @wordpress;
+
         location ~ /wp-content/(themes|plugins|mu-plugins)/.*\.php$ {
-            try_files $uri =404;
+            try_files $uri @wordpress;
+
             proxy_no_cache     1;
             proxy_cache_bypass 1;
             proxy_redirect     off;
