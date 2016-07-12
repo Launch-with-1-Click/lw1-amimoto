@@ -99,7 +99,7 @@ echo '@reboot /bin/sh /opt/local/provision > /dev/null 2>&1' | crontab
 
 
 ## provision
-$chef_solo -c /opt/local/solo.rb -j ${AMIMOTO_JSON} - l error
+$chef_solo -c /opt/local/solo.rb -j ${AMIMOTO_JSON} -l error
 [ ! -f /etc/nginx/nginx.conf ] && \
   $chef_solo -o amimoto::nginx -c /opt/local/solo.rb -j ${AMIMOTO_JSON} -l error
 [ ! -f /etc/nginx/conf.d/default.conf ] && \
