@@ -2,6 +2,9 @@ set $proxy_https '';
 if ( $http_x_forwarded_proto = 'https' ) {
     set $proxy_https 'on';
 }
+if ( $http_x_forwarded_port = '443' ) {
+    set $proxy_https 'on';
+}
 if ( $http_cloudfront_forwarded_proto = 'https' ) {
     set $proxy_https 'on';
 }
