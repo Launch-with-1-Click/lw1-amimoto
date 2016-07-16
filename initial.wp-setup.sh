@@ -16,14 +16,14 @@ SERVERNAME=${INSTANCEID}
 hash git || /usr/bin/yum -y install git
 hash jq  || /usr/bin/yum -y install jq
 
-hash monit && /sbin/service monit stop
-hash mysqld && /sbin/service mysql stop
-hash php-fpm && /sbin/service php-fpm stop
-hash nginx && /sbin/service nginx stop
-hash httpd && /sbin/service httpd stop
+/sbin/service monit stop
+/sbin/service mysql stop
+/sbin/service php-fpm stop
+/sbin/service nginx stop
+/sbin/service httpd stop
 if [ "t1.micro" = "${INSTANCETYPE}" ]; then
-  hash memcached && /sbin/chkconfig memcached off
-  hash memcached && /sbin/service memcached stop
+  /sbin/chkconfig memcached off
+  /sbin/service memcached stop
 fi
 [ -f /var/run/nginx-backend.sock ] && \
   rm -f /var/run/nginx-backend.sock
