@@ -28,7 +28,7 @@ fi
 [ -f /var/run/nginx-backend.sock ] && \
   rm -f /var/run/nginx-backend.sock
 
-/bin/yum clean all
+/usr/bin/yum clean all
 
 /bin/rm -f  /root/.mysql_history
 /bin/rm -f  /root/.bash_history
