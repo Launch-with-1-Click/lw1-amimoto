@@ -16,16 +16,19 @@ SERVERNAME=${INSTANCEID}
 hash git || /usr/bin/yum -y install git
 hash jq  || /usr/bin/yum -y install jq
 
-/sbin/service monit stop
-/sbin/service mysql stop
-/sbin/service php-fpm stop
-/sbin/service nginx stop
-/sbin/service httpd stop
+hash monit && /sbin/service monit stop
+hash mysqld && /sbin/service mysql stop
+hash php-fpm && /sbin/service php-fpm stop
+hash nginx && /sbin/service nginx stop
+hash httpd && /sbin/service httpd stop
 if [ "t1.micro" = "${INSTANCETYPE}" ]; then
-  /sbin/chkconfig memcached off
-  /sbin/service memcached stop
+  hash memcached && /sbin/chkconfig memcached off
+  hash memcached && /sbin/service memcached stop
 fi
-[ -f /var/run/nginx-backend.sock ] && rm -f /var/run/nginx-backend.sock
+[ -f /var/run/nginx-backend.sock ] && \
+  rm -f /var/run/nginx-backend.sock
+
+/bin/yum clean all
 
 /bin/rm -f  /root/.mysql_history
 /bin/rm -f  /root/.bash_history
@@ -41,12 +44,13 @@ fi
 /bin/rm -f  /etc/php-fpm.d/www.conf
 /bin/rm -f  /etc/nginx/nginx.conf
 /bin/rm -f  /etc/nginx/conf.d/default.*
-/bin/rm -f  /etc/yum.repos.d/amimoto-nginx-mainline.repo
-/bin/rm -f  /etc/yum.repos.d/opsrock-*.repo
-/bin/rm -f  /etc/yum.repos.d/remi*.repo
-/bin/rm -f  /etc/yum.repos.d/Percona.repo
-
-/usr/bin/yum clean all
+/bin/rm -f  /etc/yum.repos.d/amimoto-nginx-mainline.repo*
+/bin/rm -f  /etc/yum.repos.d/opsrock-*.repo*
+/bin/rm -f  /etc/yum.repos.d/hop5.repo
+/bin/rm -f  /etc/yum.repos.d/remi*.repo*
+/bin/rm -f  /etc/yum.repos.d/Percona.repo*
+/bin/rm -f  /etc/yum.repos.d/percona-release.repo*
+/bin/rm -f  /etc/yum.repos.d/*.rpmsave
 
 [ ! -e /opt/local ] && \
   mkdir -p /opt/local

@@ -2,7 +2,7 @@
 # URL: http://www.percona.com/percona-lab.html
 [percona]
 name = CentOS $releasever - Percona
-baseurl=http://repo.percona.com/centos/6Server/os/$basearch/
+baseurl=<%= node[:yum][:repo][:percona][:baseurl] %>
 enabled = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-percona
 gpgcheck = 1
