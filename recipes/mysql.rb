@@ -6,6 +6,7 @@ node[:mysql][:packages].each do |package_name|
     if ['redhat'].include?(node[:platform])
       flush_cache [:before]
     end
+    notifies :run, 'bash[update-motd]', :immediately
   end
 end
 

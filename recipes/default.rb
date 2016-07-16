@@ -22,6 +22,7 @@ end
 %w{ zip unzip wget git openssl bash }.each do | pkg |
   package pkg do
     action [:install, :upgrade]
+    notifies :run, 'bash[update-motd]', :immediately
   end
 end
 
@@ -81,6 +82,9 @@ end
 
 # install wp-cli
 include_recipe 'amimoto::wpcli'
+
+# install phpMyAdmin
+include_recipe 'amimoto::phpmyadmin'
 
 # update-motd
 include_recipe 'amimoto::update-motd'

@@ -7,10 +7,12 @@
     )
     source "update-motd.d/" + file_name + ".erb"
     mode 00755
+    notifies :run, 'bash[update-motd]', :immediately
   end
 end
 
 bash "update-motd" do
+  action :nothing
   user "root"
   cwd "/tmp"
   code <<-EOH

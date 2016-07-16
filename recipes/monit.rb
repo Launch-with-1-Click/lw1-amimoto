@@ -3,10 +3,12 @@ if %w(redhat).include?(node[:platform])
     action [:install, :upgrade]
     options '--enablerepo=rpmforge'
     flush_cache [:before]
+    notifies :run, 'bash[update-motd]', :immediately
   end
 else
   package 'monit' do
     action [:install, :upgrade]
+    notifies :run, 'bash[update-motd]', :immediately
   end
 end
 

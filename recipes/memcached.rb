@@ -5,11 +5,13 @@ if node[:mod_php7][:enabled]
 end
 package pecl_pkg do
   action [:install, :upgrade]
+  notifies :run, 'bash[update-motd]', :immediately
 end
 
 package 'memcached' do
   action [:install, :upgrade]
   options '--disablerepo=remi'
+  notifies :run, 'bash[update-motd]', :immediately
 end
 
 service "memcached" do

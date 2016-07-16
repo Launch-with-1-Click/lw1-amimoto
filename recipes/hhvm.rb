@@ -24,6 +24,7 @@ end
   yum_package pkg do
     action [:install, :upgrade]
     options '-y --nogpgcheck'
+    notifies :run, 'bash[update-motd]', :immediately
   end
 end
 
@@ -31,6 +32,7 @@ yum_package 'libmemcached'
 yum_package 'hhvm' do
   action [:install]
   options '-y --nogpgcheck'
+  notifies :run, 'bash[update-motd]', :immediately
 end
 
 # hhvm configure

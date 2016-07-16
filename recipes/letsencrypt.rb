@@ -2,6 +2,7 @@
 %w{ python27-pip python27-virtualenv augeas-libs dialog gcc libffi-devel openssl-devel system-rpm-config }.each do | pkg |
   package pkg do
     action [:install, :upgrade]
+    notifies :run, 'bash[update-motd]', :immediately
   end
 end
 

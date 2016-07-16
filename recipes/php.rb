@@ -2,11 +2,13 @@
 yum_package 'libwebp' do
   action [:install, :upgrade]
   options '--enablerepo=epel --disablerepo=amzn-main'
+  notifies :run, 'bash[update-motd]', :immediately
 end
 
 node[:php][:packages].each do | pkg |
   package pkg do
     action [:install, :upgrade]
+    notifies :run, 'bash[update-motd]', :immediately
   end
 end
 
