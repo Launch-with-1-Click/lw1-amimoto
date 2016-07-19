@@ -32,3 +32,6 @@ directory letsencript_dir do
   action :create
   notifies :run, "bash[letsencript-install]", :immediately
 end
+
+# update-motd
+include_recipe 'amimoto::update-motd'

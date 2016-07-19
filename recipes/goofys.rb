@@ -38,3 +38,6 @@ if node[:goofys][:mount]
     EOH
   end
 end
+
+# update-motd
+include_recipe 'amimoto::update-motd'
