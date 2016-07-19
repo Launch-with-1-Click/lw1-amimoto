@@ -17,7 +17,6 @@ if [ ! -f /usr/bin/chef-solo ]; then
 fi
 
 cd /opt/local
-/usr/bin/chef-solo -o amimoto::wpcli -c /opt/local/solo.rb -l error
 if [ -f /usr/local/bin/wp-setup-json ]; then
   if [ ! -f /opt/local/${SITENAME}.json ]; then
     /usr/local/bin/wp-setup-json ${SITENAME} | /usr/bin/jq '.' > /opt/local/${SITENAME}.json
