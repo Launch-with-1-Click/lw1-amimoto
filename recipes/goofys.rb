@@ -1,6 +1,7 @@
 node[:goofys][:packages].map do |pkg|
   package pkg do
     action [:install, :upgrade]
+    notifies :run, 'bash[update-motd]', :immediately
   end
 end
 

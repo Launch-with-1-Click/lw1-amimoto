@@ -16,6 +16,7 @@ file bin do
   mode '0755'
   action :create
   only_if { ::File.exists?(bin) }
+  notifies :run, 'bash[update-motd]', :immediately
 end
 
 link node[:wpcli][:link] do

@@ -2,6 +2,7 @@
 node[:nginx][:packages].each do | pkg |
   package pkg do
     action [:install, :upgrade]
+    notifies :run, 'bash[update-motd]', :immediately
   end
 end
 

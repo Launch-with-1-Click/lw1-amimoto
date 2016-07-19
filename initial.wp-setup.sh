@@ -1,5 +1,4 @@
 #!/bin/bash
-PHP_MY_ADMIN_VER="4.5.3.1"
 AMIMOTO_BRANCH='2016.01'
 
 INSTANCETYPE=$(/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-type)
@@ -161,19 +160,6 @@ fi
 /bin/chown -R nginx:nginx /var/tmp/php
 /bin/chown -R nginx:nginx /var/lib/php
 /bin/chmod +x /usr/local/bin/wp-setup
-
-
-## install phpMyAdmin
-cd /usr/share/
-if [ ! -d /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages ] ; then
-  /usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/${PHP_MY_ADMIN_VER}/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
-  if [ -f phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip ]; then
-    /usr/bin/unzip /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
-    /bin/rm /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages.zip
-    /bin/rm /usr/share/phpMyAdmin
-    /bin/ln -s /usr/share/phpMyAdmin-${PHP_MY_ADMIN_VER}-all-languages /usr/share/phpMyAdmin
-  fi
-fi
 
 
 ## install DSaaS Client
