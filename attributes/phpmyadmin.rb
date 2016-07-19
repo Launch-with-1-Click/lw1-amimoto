@@ -8,6 +8,7 @@ default[:phpmyadmin][:servers] = [
     "host" => "localhost",
     "connect_type" => "tcp",
     "compress" => "false",
-    "allow_no_password" => "false"
+    "allow_no_password" => "false",
+    "hide_db" => ''
   }
 ]

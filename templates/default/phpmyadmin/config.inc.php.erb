@@ -30,6 +30,9 @@ $cfg['Servers'][$i]['host'] = '<%= server.host %>';
 $cfg['Servers'][$i]['connect_type'] = '<%= server.connect_type %>';
 $cfg['Servers'][$i]['compress'] = <%= server.compress %>;
 $cfg['Servers'][$i]['AllowNoPassword'] = <%= server.allow_no_password %>;
+<% if server.hide_db != '' %>
+$cfg['Servers'][$i]['hide_db'] = "<%= server.hide_db %>";
+<% end %>
 
 /**
  * phpMyAdmin configuration storage settings.
