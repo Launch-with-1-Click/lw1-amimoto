@@ -1,5 +1,4 @@
 #!/bin/bash
-PHP_MY_ADMIN_VER="4.5.3.1"
 AMIMOTO_BRANCH='2016.01'
 
 INSTANCETYPE=$(/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-type)
