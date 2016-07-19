@@ -195,3 +195,6 @@ node[:wordpress][:themes].each do | theme_name |
     action :install
   end
 end
+
+# update-motd
+include_recipe 'amimoto::update-motd'
