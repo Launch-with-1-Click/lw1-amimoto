@@ -17,14 +17,19 @@ http {
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
-    log_format main    '$remote_addr $server_name $remote_user [$time_local] "$request" '
-                       '$status $body_bytes_sent "$http_referer" '
-                       '"$http_user_agent" "$http_x_forwarded_for" $request_time';
-    log_format backend '$remote_addr $server_name $remote_user [$time_local] "$request" '
-                       '$status $body_bytes_sent "$http_referer" '
-                       '"$http_user_agent" "$http_x_forwarded_for" $request_time';
+    log_format main     '$remote_addr $server_name $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for" $request_time';
+    log_format backend  '$remote_addr $server_name $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for" $request_time';
+    log_format proxylog '$remote_addr $server_name $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for" $request_time '
+                        '"$http_proxy"';
 
     access_log  /var/log/nginx/access.log  main;
+    access_log  /var/log/nginx/badactor.log proxylog if=$http_proxy;
 
     server_name_in_redirect off;
     server_tokens      off;
@@ -76,6 +81,7 @@ http {
     proxy_set_header  X-Forwarded-Proto  $scheme;
     proxy_set_header  X-UA-Detect        $mobile;
     proxy_set_header  Accept-Encoding    "";
+    proxy_set_header  Proxy              "";
     proxy_hide_header X-Pingback;
     proxy_hide_header Link;
     proxy_hide_header ETag;

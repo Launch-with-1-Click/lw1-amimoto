@@ -18,6 +18,7 @@ fastcgi_pass   phpfpm;
 fastcgi_index  index.php;
 fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
 fastcgi_param  HTTPS            $proxy_https  if_not_empty;
+fastcgi_param  HTTP_PROXY       "";
 include        fastcgi_params;
 fastcgi_intercept_errors on;
 fastcgi_connect_timeout  60;
