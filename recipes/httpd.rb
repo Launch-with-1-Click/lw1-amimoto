@@ -3,7 +3,7 @@
 node[:httpd][:packages].each do | pkg |
   package pkg do
     action [:install, :upgrade]
-    notifies :run, 'bash[update-motd]', :immediately
+    notifies :run, 'bash[update-motd]', :delayed
   end
 end
 

@@ -7,7 +7,7 @@
     )
     source "update-motd.d/" + file_name + ".erb"
     mode 00755
-    notifies :run, 'bash[update-motd]', :immediately
+    notifies :run, 'bash[update-motd]', :delayed
   end
 end
 

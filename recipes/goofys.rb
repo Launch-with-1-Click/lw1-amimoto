@@ -1,7 +1,7 @@
 node[:goofys][:packages].map do |pkg|
   package pkg do
     action [:install, :upgrade]
-    notifies :run, 'bash[update-motd]', :immediately
+    notifies :run, 'bash[update-motd]', :delayed
   end
 end
 
@@ -24,7 +24,7 @@ if node[:goofys][:mount]
     owner node[:nginx][:config][:user]
     group node[:nginx][:config][:group]
     mode 00755
-    notifies :run, "bash[goofys-mount]", :immediately
+    notifies :run, "bash[goofys-mount]", :delayed
   end
 
   bash "goofys-mount" do

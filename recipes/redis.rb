@@ -4,13 +4,13 @@ php-pecl-igbinary
 ].map do |pkg|
   package pkg do
     action [:install, :upgrade]
-    notifies :run, 'bash[update-motd]', :immediately
+    notifies :run, 'bash[update-motd]', :delayed
   end
 end
 
 package 'redis' do
   action [:install, :upgrade]
-  notifies :run, 'bash[update-motd]', :immediately
+  notifies :run, 'bash[update-motd]', :delayed
 end
 
 service 'redis' do
