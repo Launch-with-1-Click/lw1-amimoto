@@ -29,13 +29,23 @@ $json_data['wordpress']['db'] = array(
 	'host' => $mysql_host,
 	);
 
-$salts  = preg_split('/[\r\n]+/ms', file_get_contents('https://api.wordpress.org/secret-key/1.1/salt/'));
+$salt_keys = array('AUTH_KEY','SECURE_AUTH_KEY','LOGGED_IN_KEY','NONCE_KEY','AUTH_SALT','SECURE_AUTH_SALT','LOGGED_IN_SALT','NONCE_SALT');
 $json_data['wordpress']['salt'] = array();
-foreach ( $salts as $salt ) {
-    if ( preg_match('/define\([\s]*[\'"](AUTH_KEY|SECURE_AUTH_KEY|LOGGED_IN_KEY|NONCE_KEY|AUTH_SALT|SECURE_AUTH_SALT|LOGGED_IN_SALT|NONCE_SALT)[\'"][\s]*,[\s]*[\'"]([^\'"]*)[\'"][\s]*\);/i', $salt, $matches) ) {
-    	$json_data['wordpress']['salt'][strtolower($matches[1])] = $matches[2];
+/*
+if ( $salts = file_get_contents('https://api.wordpress.org/secret-key/1.1/salt/') ) {
+    $salts  = preg_split('/[\r\n]+/ms', $salts);
+    foreach ( $salts as $salt ) {
+        if ( preg_match('/define\([\s]*[\'"]('.implode('|',$salt_keys).')[\'"][\s]*,[\s]*[\'"]([^\'"]*)[\'"][\s]*\);/i', $salt, $matches) ) {
+    	   $json_data['wordpress']['salt'][strtolower($matches[1])] = $matches[2];
+        }
+        unset($matches);
     }
-    unset($matches);
+}
+*/
+foreach ( $salt_keys as $salt_key ) {
+    if ( ! isset( $json_data['wordpress']['salt'][strtolower($salt_key)]) ) {
+        $json_data['wordpress']['salt'][strtolower($salt_key)] = random_password(64);
+    }
 }
 
 echo json_encode($json_data);
