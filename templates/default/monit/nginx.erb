@@ -21,3 +21,6 @@ check directory nginx_lib_tmp with path "/var/lib/nginx/tmp"
 
 check directory nginx_log with path "/var/log/nginx"
   if failed uid <%= @user %> then exec "/bin/chown -R <%= @user %>:<%= @group %> /var/log/nginx"
+
+check directory option_amimoto with path "/opt/local/amimoto"
+  if failed uid <%= @user %> then exec "/bin/chown -R <%= @user %>:<%= @group %> /opt/local/amimoto"
