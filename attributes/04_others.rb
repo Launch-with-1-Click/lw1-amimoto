@@ -23,6 +23,7 @@ default[:goofys][:packages] = %w{
   }
 default[:goofys][:source_url] = 'https://github.com/kahing/goofys/releases/download/v' + node[:goofys][:version] + '/goofys'
 default[:goofys][:mount] = false
+default[:goofys][:config][:profile] = 'default'
 default[:goofis][:config][:reagion] = 'us-east-1'
 default[:goofys][:config][:s3_bucket] = 's3_bucket_name'
 default[:goofys][:config][:mount_point] = '/mnt/s3'
