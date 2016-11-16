@@ -1,5 +1,5 @@
 install_path = "/usr/share/phpMyAdmin"
-release      = "phpMyAdmin-#{node.phpmyadmin.version}-all-languages"
+release      = "phpMyAdmin-#{node[:phpmyadmin][:version]}-all-languages"
 release_file = "#{release}.zip"
 work_file    = "#{::File.join('/usr/share/',release_file)}"
 release_url  = "http://repos.amimoto-ami.com/phpmyadmin/#{release_file}"
