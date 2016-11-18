@@ -48,7 +48,7 @@ else
   end
 end
 
-if (node.memory.total.to_i / 1024) > 1024
+if (node[:memory][:total].to_i / 1024) > 1024
   # memcached install
   if node[:memcached][:enabled]
     include_recipe 'amimoto::memcached'
