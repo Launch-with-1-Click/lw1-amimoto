@@ -3,6 +3,7 @@ default[:mysql][:enabled] = true
 default[:mysql][:packages] = %w{
   Percona-Server-server-56
   Percona-Server-client-56
+  Percona-Server-shared-56
   }
 default[:mysql][:service_action] = [:disable, :stop]
 if node[:mysql][:enabled]
