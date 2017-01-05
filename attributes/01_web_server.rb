@@ -45,6 +45,7 @@ default[:nginx][:config][:expires_css] = '30d'
 default[:nginx][:config][:expires_js] = '30d'
 default[:nginx][:config][:expires_pdf] = 'max'
 default[:nginx][:config][:expires_flash] = '30d'
+default[:nginx][:config][:expires_woff] = 'max'
 default[:nginx][:config][:abuse_ua_blocking] = false
 
 default[:nginx][:config][:vpc_ips] = %w{

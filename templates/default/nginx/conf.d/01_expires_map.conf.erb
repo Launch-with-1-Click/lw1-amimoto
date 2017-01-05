@@ -9,4 +9,5 @@ map $sent_http_content_type $expires {
     application/x-javascript <%= @expires_js %>;
     application/pdf        <%= @expires_pdf %>;
     application/x-shockwave-flash <%= @expires_flash %>;
+    application/font-woff  <%= @expires_woff %>;
 }
