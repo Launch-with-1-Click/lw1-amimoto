@@ -20,7 +20,7 @@
 #}
 
 location / {
-    try_files $uri $uri/ /index.php?$args;
+    try_files $uri $uri/ /index.php$is_args$args;
 }
 
 rewrite /wp-admin$ $uri/ permanent;

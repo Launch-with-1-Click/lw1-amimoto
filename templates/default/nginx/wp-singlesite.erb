@@ -21,7 +21,7 @@
 
 # This order might seem weird - this is attempted to match last if rules below fail.
 location / {
-    try_files $uri $uri/ /index.php?$args;
+    try_files $uri $uri/ /index.php$is_args$args;
 }
 
 # Add trailing slash to */wp-admin requests.
