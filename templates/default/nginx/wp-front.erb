@@ -33,9 +33,13 @@
         location ~ /wp-content/(themes|plugins|mu-plugins)/.*\.php$ {
             try_files $uri @wordpress;
 
-            proxy_no_cache     1;
-            proxy_cache_bypass 1;
+            proxy_no_cache     $do_not_cache;
+            proxy_cache_bypass $do_not_cache;
+
             proxy_redirect     off;
+            proxy_cache        czone;
+            proxy_cache_key    "$proxy_proto://$host$request_uri$mobile";
+            proxy_cache_valid  200 0m;
             proxy_pass         http://backend;
         }
     }
@@ -43,11 +47,15 @@
     location ~ \.php$ {
         try_files $uri @wordpress;
 
-        proxy_no_cache     1;
-        proxy_cache_bypass 1;
+        proxy_no_cache     $do_not_cache;
+        proxy_cache_bypass $do_not_cache;
+
         proxy_redirect     off;
+        proxy_cache        czone;
+        proxy_cache_key    "$proxy_proto://$host$request_uri$mobile";
+        proxy_cache_valid  200 0m;
         proxy_pass         http://backend;
-    }
+     }
 
     location / {
         try_files $uri @wordpress;
