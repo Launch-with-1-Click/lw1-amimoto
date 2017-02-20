@@ -11,6 +11,8 @@ default-storage-engine=InnoDB
 
 innodb_strict_mode
 innodb_file_per_table
+innodb_file_format = <%= @innodb_file_format %>
+innodb_file_format_max = <%= @innodb_file_format_max %>
 innodb_use_sys_malloc
 innodb_buffer_pool_size=<%= @innodb_buffer_pool_size %>
 innodb_write_io_threads = 4
