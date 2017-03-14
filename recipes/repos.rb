@@ -30,7 +30,7 @@ template '/etc/yum.repos.d/remi.repo' do
   action :create
 end
 %w{ remi-php54 remi-php55 remi-php56 remi-php70 remi-php71 }.each do | file_name |
-  template '/etc/yum.repos.d/' + file_name + '.repo' do
+  file '/etc/yum.repos.d/' + file_name + '.repo' do
     action :delete
   end
 end
