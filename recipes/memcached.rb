@@ -10,7 +10,6 @@ end
 
 package 'memcached' do
   action [:install, :upgrade]
-  options '--disablerepo=remi'
   notifies :run, 'bash[update-motd]', :delayed
 end
 

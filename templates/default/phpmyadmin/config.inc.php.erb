@@ -24,14 +24,14 @@ $i = 0;
 <% @servers.each do | server | %>
 $i++;
 /* Authentication type */
-$cfg['Servers'][$i]['auth_type'] = '<%= server.auth_type %>';
+$cfg['Servers'][$i]['auth_type'] = '<%= server[:auth_type] %>';
 /* Server parameters */
-$cfg['Servers'][$i]['host'] = '<%= server.host %>';
-$cfg['Servers'][$i]['connect_type'] = '<%= server.connect_type %>';
-$cfg['Servers'][$i]['compress'] = <%= server.compress %>;
-$cfg['Servers'][$i]['AllowNoPassword'] = <%= server.allow_no_password %>;
-<% if server.hide_db != '' %>
-$cfg['Servers'][$i]['hide_db'] = "<%= server.hide_db %>";
+$cfg['Servers'][$i]['host'] = '<%= server[:host] %>';
+$cfg['Servers'][$i]['connect_type'] = '<%= server[:connect_type] %>';
+$cfg['Servers'][$i]['compress'] = <%= server[:compress] %>;
+$cfg['Servers'][$i]['AllowNoPassword'] = <%= server[:allow_no_password] %>;
+<% if server[:hide_db] != '' %>
+$cfg['Servers'][$i]['hide_db'] = "<%= server[:hide_db] %>";
 <% end %>
 
 /**
