@@ -314,7 +314,7 @@ DocumentRoot "<%= node[:wordpress][:document_root] %>"
 #
 # This should be changed to whatever you set DocumentRoot to.
 #
-<Directory "<%= node.wordpress.document_root %>">
+<Directory "<%= node[:wordpress][:document_root] %>">
     DirectoryIndex index.html index.htm index.php
     Options -Indexes FollowSymLinks
     AllowOverride <%= @allow_override %>

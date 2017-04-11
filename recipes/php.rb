@@ -1,7 +1,7 @@
 # php install
 yum_package 'libwebp' do
   action [:install, :upgrade]
-  options '--enablerepo=epel --disablerepo=amzn-main'
+  options "--enablerepo=epel --disablerepo=amzn-main"
   notifies :run, 'bash[update-motd]', :delayed
 end
 
