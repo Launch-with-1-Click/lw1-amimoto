@@ -12,7 +12,7 @@ end
 
 # epel
 template '/etc/yum.repos.d/epel.repo' do
-  source 'yum/epel.erb'
+  source 'yum/epel.repo.erb'
   action :create
 end
 
