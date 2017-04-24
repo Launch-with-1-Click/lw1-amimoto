@@ -10,12 +10,15 @@ template '/etc/yum.repos.d/Percona.repo' do
   action :create
 end
 
-# epel, rpmforge
-%w{ epel.repo rpmforge.repo }.each do | file_name |
-  template '/etc/yum.repos.d/' + file_name do
-    source 'yum/' + file_name + '.erb'
-    action :create
-  end
+# epel
+template '/etc/yum.repos.d/epel.repo' + file_name do
+  source 'yum/' + file_name + '.erb'
+  action :create
+end
+
+# remove rpmforge
+file "/etc/yum.repos.d/rpmforge.repo" do
+    action :delete
 end
 
 # remi
