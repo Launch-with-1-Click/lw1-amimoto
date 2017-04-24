@@ -11,8 +11,8 @@ template '/etc/yum.repos.d/Percona.repo' do
 end
 
 # epel
-template '/etc/yum.repos.d/epel.repo' + file_name do
-  source 'yum/' + file_name + '.erb'
+template '/etc/yum.repos.d/epel.repo' do
+  source 'yum/epel.erb'
   action :create
 end
 
