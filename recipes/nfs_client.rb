@@ -1,5 +1,5 @@
 cfn = JSON.load(::File.read('/opt/aws/cloud_formation.json'))
-describe_cmd = "/usr/bin/aws ec2 describe-instances --instance-id #{cfn['nfs']['server']['instance-id']} --region #{node.ec2[:placement_availability_zone].chop} "
+describe_cmd = "/usr/bin/aws ec2 describe-instances --instance-id #{cfn['nfs']['server']['instance-id']} --region #{node[:ec2][:placement_availability_zone].chop} "
 masterserver = JSON.load(`#{describe_cmd}`)
 master_ip = masterserver['Reservations'].first['Instances'].first["PrivateIpAddress"]
 
