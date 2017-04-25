@@ -18,7 +18,7 @@ hhvm.repo.central.path = /tmp/.hhvm.hhbc
 hhvm.server.file_socket = <%= @file_socket %>
 
 ;;; please update 2 * number of CPUs
-hhvm.server.thread_count = <%= node.cpu.total * 2 %>
+hhvm.server.thread_count = <%= node[:cpu][:total] * 2 %>
 
 ; server mode options
 hhvm.server.type = fastcgi
