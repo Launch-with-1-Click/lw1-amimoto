@@ -1,19 +1,19 @@
-location = /favicon.ico { access_log off; error_log off; log_not_found off; }
-location = /apple-touch-icon.png { access_log off; error_log off; log_not_found off; }
-location = /apple-touch-icon-precomposed.png { access_log off; error_log off; log_not_found off; }
+location = /favicon.ico { access_log off; error_log off; }
+location = /apple-touch-icon.png { access_log off; error_log off; }
+location = /apple-touch-icon-precomposed.png { access_log off; error_log off; }
 
 location /.well-known { auth_basic off; allow all; break; }
 
 # Protect System Files
-location ~ /\.(?!well-known) { deny all; access_log off; error_log off; log_not_found off; }
-location ~* /wp-includes/.*\.php$ { access_log off; error_log off; log_not_found off; return 404; }
-location ~* /wp-admin/includes/.*\.php$ { access_log off; error_log off; log_not_found off; return 404; }
-location ~* /wp-content/themes/.*/index\.php$ { access_log off; error_log off; log_not_found off; return 404; }
-location ~* /wp-content/languages/.*$ { access_log off; error_log off; log_not_found off; return 404; }
-location ~* /wp-content/uploads/.*\.php$ { access_log off; error_log off; log_not_found off; return 404; }
-location ~* /wp-(config|blog-header)\.php$ { access_log off; error_log off; log_not_found off; return 404; }
-location ~* /(readme|readme-[^\.]+)\.(txt|html?)$ { access_log off; error_log off; log_not_found off; return 404; }
-location ~* .*\.(cache|sql|log|ba?k|org)$ { access_log off; error_log off; log_not_found off; return 404; }
+location ~ /\.(?!well-known) { deny all; access_log off; error_log off; }
+location ~* /wp-includes/.*\.php$ { access_log off; error_log off; return 404; }
+location ~* /wp-admin/includes/.*\.php$ { access_log off; error_log off; return 404; }
+location ~* /wp-content/themes/.*/index\.php$ { access_log off; error_log off; return 404; }
+location ~* /wp-content/languages/.*$ { access_log off; error_log off; return 404; }
+location ~* /wp-content/uploads/.*\.php$ { access_log off; error_log off; return 404; }
+location ~* /wp-(config|blog-header)\.php$ { access_log off; error_log off; return 404; }
+location ~* /(readme|readme-[^\.]+)\.(txt|html?)$ { access_log off; error_log off; return 404; }
+location ~* .*\.(cache|sql|log|ba?k|org)$ { access_log off; error_log off; return 404; }
 
 <% if node[:nginx][:config][:abuse_ua_blocking] %>
 # Enable HackRepair.com's blacklist
