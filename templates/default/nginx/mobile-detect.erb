@@ -20,6 +20,6 @@ if ($mobile_off = "@smartphone.off") {
 
 location ~* @(ktai|smartphone|smartphone\.off)$ {
     access_log off;
-    log_not_found off;
+    error_log off;
     return 404;
 }
