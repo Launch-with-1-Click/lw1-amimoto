@@ -102,6 +102,40 @@ when "t2.large"
   default[:mysql][:config][:tmp_table_size]  = '256M'
   default[:mysql][:config][:max_connections] = '256'
   default[:mysql][:config][:thread_cache] = '256'
+when "t2.xlarge"
+  ## Nginx
+  default[:nginx][:config][:worker_processes] = '4'
+
+  ## PHP
+  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:start_servers] = '10'
+  default[:php][:config][:min_spare_servers] = '10'
+  default[:php][:config][:max_spare_servers] = '25'
+  default[:php][:config][:max_requests] = '200'
+
+  ## MySQL
+  default[:mysql][:config][:innodb_buffer_pool_size] = '512M'
+  default[:mysql][:config][:query_cache_size] = '512M'
+  default[:mysql][:config][:tmp_table_size]  = '512M'
+  default[:mysql][:config][:max_connections] = '256'
+  default[:mysql][:config][:thread_cache] = '256'
+when "t2.2xlarge"
+  ## Nginx
+  default[:nginx][:config][:worker_processes] = '8'
+
+  ## PHP
+  default[:php][:config][:max_children] = '35'
+  default[:php][:config][:start_servers] = '10'
+  default[:php][:config][:min_spare_servers] = '10'
+  default[:php][:config][:max_spare_servers] = '25'
+  default[:php][:config][:max_requests] = '200'
+
+  ## MySQL
+  default[:mysql][:config][:innodb_buffer_pool_size] = '512M'
+  default[:mysql][:config][:query_cache_size] = '512M'
+  default[:mysql][:config][:tmp_table_size]  = '512M'
+  default[:mysql][:config][:max_connections] = '256'
+  default[:mysql][:config][:thread_cache] = '256'
 when "m3.medium"
   ## Nginx
   default[:nginx][:config][:worker_processes] = '2'
