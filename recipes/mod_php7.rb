@@ -48,6 +48,16 @@ end
   end
 end
 
+# update www group
+
+if node[:mod_php7][:enabled]
+  group node[:php][:config][:group] do
+    action :modify
+    members [node[:php][:config][:user]]
+    append true
+  end
+end
+
 # php-fpm stop, disable
 
 service "httpd" do

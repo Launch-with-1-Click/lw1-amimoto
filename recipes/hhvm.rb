@@ -58,8 +58,16 @@ template "/etc/logrotate.d/hhvm" do
   source "logrotat.d/hhvm.erb"
 end
 
-# hhvm start
+# update www groups
+if node[:hhvm][:enabled]
+  group node[:hhvm][:config][:group] do
+    action :modify
+    members [node[:hhvm][:config][:user]]
+    append true
+  end
+end
 
+# hhvm start
 if node[:hhvm][:enabled]
   service "php-fpm" do
     action [:stop, :disable]

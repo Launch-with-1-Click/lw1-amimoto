@@ -33,6 +33,16 @@ end
   end
 end
 
+# update www group
+
+if node[:httpd][:enabled]
+  group node[:httpd][:config][:group] do
+    action :modify
+    members [node[:httpd][:config][:user]]
+    append true
+  end
+end
+
 service "httpd" do
   action node[:httpd][:service_action]
 end
