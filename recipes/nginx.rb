@@ -82,6 +82,16 @@ else
   end
 end
 
+# update www group
+
+if node[:nginx][:enabled]
+  group node[:nginx][:config][:group] do
+    action :modify
+    members [node[:nginx][:config][:user]]
+    append true
+  end
+end
+
 service "nginx" do
   action node[:nginx][:service_action]
 end
