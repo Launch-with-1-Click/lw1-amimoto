@@ -1,3 +1,9 @@
+# create www Group
+group node[:hhvm][:config][:group] do
+  members ['ec2-user']
+  action :create
+end
+
 # php install
 
 ## for avoid confricts between amzn and remi.
