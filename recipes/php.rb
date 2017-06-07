@@ -1,3 +1,9 @@
+# create www Group
+group node[:php][:config][:group] do
+  members ['ec2-user']
+  action :create
+end
+
 # php install
 yum_package 'libwebp' do
   action [:install, :upgrade]

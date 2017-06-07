@@ -1,3 +1,9 @@
+# create www Group
+group node[:nginx][:config][:group] do
+  members ['ec2-user']
+  action :create
+end
+
 # nginx install
 node[:nginx][:packages].each do | pkg |
   package pkg do

@@ -1,3 +1,9 @@
+# create www Group
+group node[:php][:config][:group] do
+  members ['ec2-user']
+  action :create
+end
+
 # mod_php7 install
 #execute '/usr/bin/yum clean all'
 

@@ -1,5 +1,10 @@
-# httpd install
+# create www Group
+group node[:httpd][:config][:group] do
+  members ['ec2-user']
+  action :create
+end
 
+# httpd install
 node[:httpd][:packages].each do | pkg |
   package pkg do
     action [:install, :upgrade]

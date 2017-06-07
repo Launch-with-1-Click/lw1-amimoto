@@ -27,23 +27,7 @@ end
 end
 
 # create www Group
-group node[:nginx][:config][:group] do
-  members ['ec2-user']
-  action :create
-end
-if node[:httpd][:enable]
-  group node[:httpd][:config][:group] do
-    members ['ec2-user']
-    action :create
-  end
-end
-if node[:hhvm][:enable]
-  group node[:hhvm][:config][:group] do
-    members ['ec2-user']
-    action :create
-  end
-end
-group node[:php][:config][:group] do
+group node[:web][:group] do
   members ['ec2-user']
   action :create
 end
