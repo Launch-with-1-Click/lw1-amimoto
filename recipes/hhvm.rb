@@ -1,6 +1,6 @@
 # create www Group
 group node[:hhvm][:config][:group] do
-  members ['ec2-user']
+  members ['ec2-user',node[:hhvm][:config][:user]]
   action :create
 end
 
