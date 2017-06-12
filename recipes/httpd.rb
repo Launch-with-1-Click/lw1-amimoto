@@ -1,6 +1,6 @@
 # create www Group
 group node[:httpd][:config][:group] do
-  members ['ec2-user']
+  members ['ec2-user',node[:httpd][:config][:user]]
   action :create
 end
 

@@ -28,7 +28,7 @@ end
 
 # create www Group
 group node[:web][:group] do
-  members ['ec2-user']
+  members ['ec2-user',node[:web][:user]]
   action :create
 end
 
