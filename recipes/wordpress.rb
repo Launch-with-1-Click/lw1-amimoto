@@ -14,7 +14,7 @@ include_recipe 'amimoto::wpcli'
   directory dir_name do
     owner node[:nginx][:config][:user]
     group node[:nginx][:config][:group]
-    mode 00755
+    mode 00775
     recursive true
     action :create
   end
@@ -148,7 +148,7 @@ execute "mysql-create-database" do
   command "/usr/bin/mysql -u root --password='#{node['wordpress']['db']['rootpass']}' < #{create_db_sql}"
   action :nothing
 end
- 
+
 template create_db_sql do
   owner "root"
   group "root"

@@ -66,6 +66,8 @@ default[:php][:packages] = %w{
   php-mysqlnd
   php-pdo
   php-opcache
+  php-pear
+  php-pecl-zip
   }
 default[:php][:config][:user] = node[:web][:user]
 default[:php][:config][:group] = node[:web][:group]
