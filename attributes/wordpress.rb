@@ -1,7 +1,7 @@
 require 'securerandom'
 
 default[:wordpress][:servername] =  node[:ec2][:instance_id]
-default[:wordpress][:version] = '4.7.5'
+default[:wordpress][:version] = '4.8'
 default[:wordpress][:document_root] = '/var/www/vhosts/' + node[:wordpress][:servername]
 default[:wordpress][:wp_multisite] = node[:nginx][:config][:wp_multisite]
 default[:wordpress][:mobile_detect_enable] = node[:nginx][:config][:mobile_detect_enable]
@@ -28,16 +28,7 @@ default[:wordpress][:salt][:nonce_salt] = SecureRandom.hex(32)
 default[:wordpress][:plugins] = %w{
   nginx-champuru
   nginx-mobile-theme
-  nephila-clavata
   c3-cloudfront-clear-cache
-  debug-bar
-  debug-bar-extender
-  debug-bar-console
-  login-lockdown
-  rublon
-  flamingo
-  contact-form-7
-  simple-ga-ranking
   amimoto-dashboard
   }
 default[:wordpress][:mu_plugins] = %w{
