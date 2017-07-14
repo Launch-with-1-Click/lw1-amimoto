@@ -50,6 +50,7 @@ fi
 /bin/rm -f  /etc/yum.repos.d/Percona.repo*
 /bin/rm -f  /etc/yum.repos.d/percona-release.repo*
 /bin/rm -f  /etc/yum.repos.d/*.rpmsave
+/bin/rm -rf /tmp/chef-solo/
 
 [ ! -e /opt/local ] && \
   mkdir -p /opt/local
@@ -161,8 +162,7 @@ fi
 /bin/chown -R nginx:nginx /var/lib/php
 /bin/chmod +x /usr/local/bin/wp-setup
 
-
 ## install DSaaS Client
-/usr/bin/wget https://app.deepsecurity.trendmicro.com:443/software/agent/amzn1/x86_64/ -O /tmp/agent.rpm --no-check-certificate --quiet
-/bin/rpm -ihv /tmp/agent.rpm || /bin/rpm -Uhv /tmp/agent.rpm
-/bin/rm -rf /tmp/agent.rpm
+#/usr/bin/wget https://app.deepsecurity.trendmicro.com:443/software/agent/amzn1/x86_64/ -O /tmp/agent.rpm --no-check-certificate --quiet
+#/bin/rpm -ihv /tmp/agent.rpm || /bin/rpm -Uhv /tmp/agent.rpm
+#/bin/rm -rf /tmp/agent.rpm
