@@ -1,34 +1,22 @@
-amimoto Cookbook
-================
+# AMIMOTO Cookbook
 
 
+### Requirements
 
-Requirements
-------------
-
-Attributes
-----------
-
-Usage
------
-
-
-Test
-----
+- Ruby Version >=2.0
 
 ### Setup
 
-
 ```
-gem install bundler
-bundle
+$ gem install bundler
+$ bundle
 ```
 
-### Configuration
+### Usage and Configuration
 
-Create .kitchen.local.yml. This file will override credincial settings.
+Copy `.kitchen.yml` to `.kitchen.local.yml` and add your local config settings and recipe overrides.
 
-!! Don't add.kitchen.local.yml to git !!
+This file is not tracked with Git by default. **Do not** add this to your Git repo as these are your personal settings.
 
 ```
 ---
@@ -39,9 +27,6 @@ driver_config:
   aws_ssh_key_id: SSH_KEY_NAME_OF_NEW_INSTANCE
   ssh_key: FULL_PATH_TO_KEY
 ```
-
-
-### Test
 
 
 ```
@@ -62,8 +47,6 @@ kitchen verify
 kitchen destroy
 ```
 
-
-
 Contributing
 ------------
 TODO: (optional) If this is a public cookbook, detail the process for contributing. If this is a private cookbook, remove this section.
@@ -75,7 +58,3 @@ e.g.
 4. Write tests for your change (if applicable)
 5. Run the tests, ensuring they all pass
 6. Submit a Pull Request using Github
-
-License and Authors
--------------------
-Authors: TODO: List authors
