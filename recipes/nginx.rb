@@ -76,13 +76,30 @@ else
 end
 
 if node[:nginx][:ngx_mruby]
-  template "/etc/nginx/modules.d/ngx_http_mruby_module.conf" do
+  template "/etc/nginx/modules.d/ngx_mruby_module.conf" do
     #variables node[:nginx][:config]
-    source "nginx/modules.d/ngx_http_mruby_module.conf.erb"
+    source "nginx/modules.d/ngx_mruby_module.conf.erb"
     notifies :restart, 'service[nginx]'
   end
 else
-  file "/etc/nginx/modules.d/ngx_http_mruby_module.conf" do
+  file "/etc/nginx/modules.d/ngx_mruby_module.conf" do
+    action :delete
+    notifies :restart, 'service[nginx]'
+  end
+end
+file "/etc/nginx/modules.d/ngx_http_mruby_module.conf" do
+    action :delete
+    notifies :restart, 'service[nginx]'
+end
+
+if node[:nginx][:ngx_pagespeed]
+  template "/etc/nginx/modules.d/ngx_pagespeed_module.conf" do
+    #variables node[:nginx][:config]
+    source "nginx/modules.d/ngx_pagespeed_module.conf.erb"
+    notifies :restart, 'service[nginx]'
+  end
+else
+  file "/etc/nginx/modules.d/ngx_pagespeed_module.conf" do
     action :delete
     notifies :restart, 'service[nginx]'
   end
