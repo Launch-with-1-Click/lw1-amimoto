@@ -113,7 +113,7 @@ bash "wp-download" do
   umask '0002'
   cwd "/tmp"
   code <<-EOH
-    wp --allow-root --path=#{node[:wordpress][:document_root]} --version=#{node[:wordpress][:version]} --force core download
+    #{node[:wpcli][:link]} --allow-root --path=#{node[:wordpress][:document_root]} --version=#{node[:wordpress][:version]} --force core download
     chown -R #{node[:nginx][:config][:user]}:#{node[:nginx][:config][:group]} #{node[:wordpress][:document_root]}
   EOH
 end
