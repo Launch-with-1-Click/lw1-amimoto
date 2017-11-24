@@ -9,7 +9,7 @@ action :install do
     recursive true
     owner node[:nginx][:config][:user]
     group node[:nginx][:config][:group]
-    mode 00755
+    mode 00775
     action :create
   end
 
@@ -17,11 +17,11 @@ action :install do
     recursive true
     owner node[:nginx][:config][:user]
     group node[:nginx][:config][:group]
-    mode 00755
+    mode 00775
     action :create
     notifies :run, 'bash[wp-theme-unpack]', :immediately
   end
- 
+
   remote_file work_file do
     source release_url
     action :create
@@ -32,6 +32,7 @@ action :install do
   bash "wp-theme-unpack" do
     action :nothing
     user "root"
+    umask '0002'
     cwd "/tmp"
     code <<-EOH
       /usr/bin/unzip #{work_file} -d #{themes_path}

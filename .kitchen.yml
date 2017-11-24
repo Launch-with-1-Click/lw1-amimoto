@@ -34,12 +34,14 @@ suites:
   run_list:
     - recipe[amimoto::default]
     - recipe[amimoto::nginx_default]
+    - recipe[amimoto::wordpress]
     - recipe[amimoto::report_handler]
   attributes: {}
 - name: hhvm-amimoto
   run_list:
     - recipe[amimoto::default]
     - recipe[amimoto::nginx_default]
+    - recipe[amimoto::wordpress]
     - recipe[amimoto::report_handler]
   attributes:
     hhvm:

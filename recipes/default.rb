@@ -32,6 +32,17 @@ group node[:web][:group] do
   action :create
 end
 
+# alter primary group of ec2-user
+user 'ec2-user' do
+  group node[:web][:group]
+end
+
+group 'ec2-user' do
+  members ['ec2-user']
+  action :manage
+end
+
+
 # install mysql
 include_recipe 'amimoto::mysql'
 

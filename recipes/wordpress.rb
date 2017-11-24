@@ -110,6 +110,7 @@ end
 bash "wp-download" do
   action :nothing
   user "root"
+  umask '0002'
   cwd "/tmp"
   code <<-EOH
     wp --allow-root --path=#{node[:wordpress][:document_root]} --version=#{node[:wordpress][:version]} --force core download
@@ -172,7 +173,7 @@ mu_plugins_path = node[:wordpress][:document_root] + "/wp-content/mu-plugins"
 directory mu_plugins_path do
   owner node[:nginx][:config][:user]
   group node[:nginx][:config][:group]
-  mode 00755
+  mode 00775
   recursive true
   action :create
 end
@@ -181,7 +182,7 @@ node[:wordpress][:mu_plugins].each do | file_name |
   template mu_plugins_path + "/" + file_name do
     owner node[:nginx][:config][:user]
     group node[:nginx][:config][:group]
-    mode 00644
+    mode 00664
     variables node[:nginx][:config]
     source "wordpress/wp-content/mu-plugins/" + file_name + ".erb"
   end

@@ -26,7 +26,7 @@ end
   directory dir_name do
     owner node[:httpd][:config][:user]
     group node[:httpd][:config][:group]
-    mode 00755
+    mode 00775
     recursive true
     action :create
   end
