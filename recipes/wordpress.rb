@@ -125,6 +125,7 @@ template node[:wordpress][:document_root] + "/wp-config.php" do
     :table_prefix => node[:wordpress][:table_prefix],
     :wp_multisite => node[:wordpress][:wp_multisite]
   )
+  mode '0664'
   source "wordpress/wp-config.php.erb"
   notifies :run, 'bash[wp-download]', :immediately
 end
@@ -132,6 +133,7 @@ end
 ## create local-config.php
 template node[:wordpress][:document_root] + "/local-config.php" do
   variables node[:wordpress][:db]
+  mode '0664'
   source "wordpress/local-config.php.erb"
   notifies :run, 'bash[wp-download]', :immediately
 end
@@ -139,6 +141,7 @@ end
 # create local-salt.php
 template node[:wordpress][:document_root] + "/local-salt.php" do
   variables node[:wordpress][:salt]
+  mode '0664'
   source "wordpress/local-salt.php.erb"
   notifies :run, 'bash[wp-download]', :immediately
 end

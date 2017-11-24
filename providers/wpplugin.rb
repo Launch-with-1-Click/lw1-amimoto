@@ -1,16 +1,19 @@
 action :install do
+  wpcontent_path = "#{::File.join(new_resource.install_path,'/wp-content/')}"
   plugins_path = "#{::File.join(new_resource.install_path,'/wp-content/plugins/')}"
   install_path = "#{::File.join(new_resource.install_path,'/wp-content/plugins/',new_resource.plugin_name)}"
   release_file = "#{new_resource.plugin_name}.zip"
   work_file    = "#{::File.join('/tmp/.cache/wpplugins/',release_file)}"
   release_url  = "http://downloads.wordpress.org/plugin/#{new_resource.plugin_name}.zip"
 
-  directory '/tmp/.cache/wpplugins/' do
-    recursive true
-    owner node[:nginx][:config][:user]
-    group node[:nginx][:config][:group]
-    mode 00775
-    action :create
+  # recursive option did not set mode of parents dir.
+  [wpcontent_path, plugins_path].each do |dir|
+    directory dir do
+      owner node[:nginx][:config][:user]
+      group node[:nginx][:config][:group]
+      mode 00775
+      action :create
+    end
   end
 
   directory install_path do
@@ -41,6 +44,8 @@ action :install do
         chown -R #{node[:nginx][:config][:user]}:#{node[:nginx][:config][:group]} #{::File.join(new_resource.install_path,'/wp-content/object-cache.php')}
       fi
       chown -R #{node[:nginx][:config][:user]}:#{node[:nginx][:config][:group]} #{install_path}
+      find #{install_path} -type d -exec chmod 775 {} \;
+      find #{install_path} -type f -exec chmod 664 {} \;
     EOH
   end
 end
