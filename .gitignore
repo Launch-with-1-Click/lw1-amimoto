@@ -1,7 +1,9 @@
 *.swp
 .ruby-gemset
 .ruby-version
-Gemfile.lock
 .kitchen/
 .kitchen.local.yml
 /.envrc
+/vendor/
+/.bundle/
+/bin/

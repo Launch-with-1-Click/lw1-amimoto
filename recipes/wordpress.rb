@@ -110,9 +110,10 @@ end
 bash "wp-download" do
   action :nothing
   user "root"
+  umask '0002'
   cwd "/tmp"
   code <<-EOH
-    wp --allow-root --path=#{node[:wordpress][:document_root]} --version=#{node[:wordpress][:version]} --force core download
+    #{node[:wpcli][:link]} --allow-root --path=#{node[:wordpress][:document_root]} --version=#{node[:wordpress][:version]} --force core download
     chown -R #{node[:nginx][:config][:user]}:#{node[:nginx][:config][:group]} #{node[:wordpress][:document_root]}
   EOH
 end
@@ -124,6 +125,7 @@ template node[:wordpress][:document_root] + "/wp-config.php" do
     :table_prefix => node[:wordpress][:table_prefix],
     :wp_multisite => node[:wordpress][:wp_multisite]
   )
+  mode '0664'
   source "wordpress/wp-config.php.erb"
   notifies :run, 'bash[wp-download]', :immediately
 end
@@ -131,6 +133,7 @@ end
 ## create local-config.php
 template node[:wordpress][:document_root] + "/local-config.php" do
   variables node[:wordpress][:db]
+  mode '0664'
   source "wordpress/local-config.php.erb"
   notifies :run, 'bash[wp-download]', :immediately
 end
@@ -138,6 +141,7 @@ end
 # create local-salt.php
 template node[:wordpress][:document_root] + "/local-salt.php" do
   variables node[:wordpress][:salt]
+  mode '0664'
   source "wordpress/local-salt.php.erb"
   notifies :run, 'bash[wp-download]', :immediately
 end
@@ -172,7 +176,7 @@ mu_plugins_path = node[:wordpress][:document_root] + "/wp-content/mu-plugins"
 directory mu_plugins_path do
   owner node[:nginx][:config][:user]
   group node[:nginx][:config][:group]
-  mode 00755
+  mode 00775
   recursive true
   action :create
 end
@@ -181,7 +185,7 @@ node[:wordpress][:mu_plugins].each do | file_name |
   template mu_plugins_path + "/" + file_name do
     owner node[:nginx][:config][:user]
     group node[:nginx][:config][:group]
-    mode 00644
+    mode 00664
     variables node[:nginx][:config]
     source "wordpress/wp-content/mu-plugins/" + file_name + ".erb"
   end

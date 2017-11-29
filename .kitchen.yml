@@ -15,7 +15,7 @@ platforms:
 - name: amazon-linux-micro-tokyo
   driver_config:
     instance_type: t1.micro
-    image_id: ami-c7f90ec7 # Amazon Linux AMI 2015.03.0 (HVM)
+    image_id: ami-923d12f5 # Amazon Linux AMI 2017.03.0 (HVM), SSD Volume Type
     region: ap-northeast-1
     availability_zone: ap-northeast-1a
     tags:
@@ -23,35 +23,39 @@ platforms:
 - name: amazon-linux-large-tokyo
   driver_config:
     instance_type: c3.large
-    image_id: ami-c7f90ec7 # Amazon Linux AMI 2015.03.0 (HVM)
+    image_id: ami-923d12f5 # Amazon Linux AMI 2017.03.0 (HVM), SSD Volume Type
     region: ap-northeast-1
     availability_zone: ap-northeast-1a
     tags:
       Name: test-kitchen-large
-- name: rhel64-micro-tokyo
-  driver_config:
-    instance_type: t1.micro
-    image_id: ami-5769f956  # Red Hat Enterprise Linux 6.4
-    region: ap-northeast-1
-    availability_zone: ap-northeast-1a
-    tags:
-      Name: test-kitchen-micro
 
 suites:
 - name: amimoto
   run_list:
+    - recipe[amimoto::nginx]
     - recipe[amimoto::default]
     - recipe[amimoto::nginx_default]
+    - recipe[amimoto::wordpress]
     - recipe[amimoto::report_handler]
-  attributes: {}
+  attributes:
+    phpfpm:
+      version: "70"
+    wordpress:
+      db:
+        user_name: kitchen
 - name: hhvm-amimoto
   run_list:
+    - recipe[amimoto::nginx]
     - recipe[amimoto::default]
     - recipe[amimoto::nginx_default]
+    - recipe[amimoto::wordpress]
     - recipe[amimoto::report_handler]
   attributes:
     hhvm:
       enabled: true
+    wordpress:
+      db:
+        user_name: kitchen
 #    redis:
 #      enabled: true
 #    memcached:

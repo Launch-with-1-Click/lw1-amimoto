@@ -1,15 +1,15 @@
-# create www Group
-group node[:nginx][:config][:group] do
-  members ['ec2-user',node[:nginx][:config][:user]]
-  action :create
-end
-
 # nginx install
 node[:nginx][:packages].each do | pkg |
   package pkg do
     action [:install, :upgrade]
     notifies :run, 'bash[update-motd]', :delayed
   end
+end
+
+# create www Group
+group node[:nginx][:config][:group] do
+  members ['ec2-user',node[:nginx][:config][:user]]
+  action :create
 end
 
 # configure nginx
