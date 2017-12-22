@@ -31,7 +31,35 @@ class just_do_it {
     }
 
     $this->must_plugins = apply_filters( 'amimoto_just_do_it', $this->must_plugins );
+    $this->init_managed_options();
     add_action('shutdown', array($this, 'plugins_loaded'));
+  }
+
+  public function init_managed_options() {
+    if ( isset( $_SERVER['HTTP_X_AMIMOTO_MANAGED'] ) && $_SERVER['HTTP_X_AMIMOTO_MANAGED'] ){
+      $expires = array(
+        "is_home" => 43200,
+        "is_archive" => 43200,
+        "is_singular" => 43200,
+        "is_feed" => 43200,
+        "other" => 43200,
+      );
+      if ( defined('AMIMOTO_CDN_ID') ) {
+          $expires = array(
+              "is_home" => 30,
+              "is_archive" => 30,
+              "is_singular" => 30,
+              "is_feed" => 30,
+              "other" => 30,
+          );
+      }
+      update_option( 'nginxchampuru-cache_levels', '1:2');
+      update_option( 'nginxchampuru-cache_dir', '/var/cache/nginx/proxy_cache');
+      update_option( 'nginxchampuru-comment', 'single');
+      update_option( 'nginxchampuru-publish', 'almost');
+      update_option( 'nginxchampuru-enable_flush', 1);
+      update_option( 'nginxchampuru-cache_expires', $expires);
+    }
   }
 
   public function plugins_loaded() {
