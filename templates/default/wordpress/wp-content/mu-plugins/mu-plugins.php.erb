@@ -29,6 +29,8 @@ class just_do_it {
       $this->must_plugins['Nginx Cache Controller'] = 'nginx-champuru/nginx-champuru.php';
       $this->must_plugins['AMIMOTO Dashboard'] = 'amimoto-dashboard/amimoto-plugin-dashboard.php';
     }
+    if ( isset( $_SERVER['HTTP_X_AMIMOTO_MANAGED'] ) && $_SERVER['HTTP_X_AMIMOTO_MANAGED'] )
+      $this->must_plugins['C3 Cloudfront Clear Cache'] = 'c3-cloudfront-clear-cache/c3-cloudfront-clear-cache.php';
 
     $this->must_plugins = apply_filters( 'amimoto_just_do_it', $this->must_plugins );
     $this->init_managed_options();
