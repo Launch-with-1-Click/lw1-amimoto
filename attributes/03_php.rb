@@ -69,7 +69,7 @@ default[:php][:packages] = %w{
   php-pear
   php-pecl-zip
   }
-if node[:phpfpm][:version] = '72'
+if node[:phpfpm][:version] == '72'
   default[:php][:packages] = %w{
     php
     php-cli
