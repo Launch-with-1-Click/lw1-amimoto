@@ -101,6 +101,28 @@ gpgcheck=1
 priority=10
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
 
+[remi-php72]
+name=Les RPM de remi de PHP 7.2 pour Enterprise Linux 6 - $basearch
+<% if node[:yum][:repo][:amimoto_repo]  %>
+baseurl=<%= node[:yum][:repo][:remi][:php72][:baseurl] %>
+<% else %>
+#baseurl=<%= node[:yum][:repo][:remi][:php72][:baseurl] %>
+mirrorlist=<%= node[:yum][:repo][:remi][:php72][:mirrorlist] %>
+<% end %>
+# WARNING: If you enable this repository, you must also enable "remi"
+<% if node[:mod_php7][:enabled] %>
+enabled=0
+<% else %>
+<% if node[:phpfpm][:version] == '72' %>
+enabled=1
+<% else %>
+enabled=0
+<% end %>
+<% end %>
+gpgcheck=1
+priority=10
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
+
 [remi-test]
 name=Les RPM de remi en test pour Enterprise Linux 6 - $basearch
 #baseurl=http://rpms.famillecollet.com/enterprise/6/test/$basearch/
@@ -141,6 +163,13 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
 [remi-php71-debuginfo]
 name=Les RPM de remi de PHP 7.1 pour Enterprise Linux 6 - $basearch - debuginfo
 baseurl=http://rpms.famillecollet.com/enterprise/6/debug-php71/$basearch/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
+
+[remi-php72-debuginfo]
+name=Les RPM de remi de PHP 7.2 pour Enterprise Linux 6 - $basearch - debuginfo
+baseurl=http://rpms.famillecollet.com/enterprise/6/debug-php72/$basearch/
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
