@@ -11,6 +11,13 @@ yum_package 'libwebp' do
   notifies :run, 'bash[update-motd]', :delayed
 end
 
+if node[:phpfpm][:version] == '72'
+  package 'php-mcrypt' do
+    action [:remove]
+    notifies :run, 'bash[update-motd]', :delayed
+  end
+end
+
 node[:php][:packages].each do | pkg |
   package pkg do
     action [:install, :upgrade]
