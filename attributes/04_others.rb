@@ -16,7 +16,7 @@ end
 
 ## goofys
 default[:goofys][:install] = false
-default[:goofys][:version] = '0.0.6'
+default[:goofys][:version] = '0.19.0'
 default[:goofys][:packages] = %w{
   golang
   fuse
