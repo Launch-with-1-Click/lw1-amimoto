@@ -1,7 +1,7 @@
 require 'securerandom'
 
 default[:wordpress][:servername] =  node[:ec2][:instance_id]
-default[:wordpress][:version] = '4.9.4'
+default[:wordpress][:version] = '4.9.5'
 default[:wordpress][:document_root] = '/var/www/vhosts/' + node[:wordpress][:servername]
 default[:wordpress][:wp_multisite] = node[:nginx][:config][:wp_multisite]
 default[:wordpress][:mobile_detect_enable] = node[:nginx][:config][:mobile_detect_enable]
@@ -33,11 +33,13 @@ default[:wordpress][:plugins] = %w{
   }
 default[:wordpress][:mu_plugins] = %w{
   mu-plugins.php
+  cf-previewfix.php
   }
 default[:wordpress][:themes] = %w{}
 
 if node[:redis][:enabled]
-  default[:wordpress][:plugins].push('wp-redis')
+  default[:wordpress][:plugins].push('redis-cache')
+  default[:wordpress][:mu_plugins].push('redis-cache-fix.php')
 end
 
 if node[:wordpress][:woocommerce]
@@ -49,6 +51,5 @@ end
 if node[:wordpress][:jinkei_cf]
   default[:wordpress][:mu_plugins].push('amimoto-utilities.php')
   default[:wordpress][:mu_plugins].push('cf-hostfix.php')
-  default[:wordpress][:mu_plugins].push('cf-previewfix.php')
   default[:wordpress][:mu_plugins].push('init-plugins.php')
 end
