@@ -7,9 +7,9 @@ hash jq  || /usr/bin/yum -y install jq
 [ ! -f /opt/local/amimoto.json ] && echo '{"run_list":["recipe[amimoto]"]}' > /opt/local/amimoto.json
 [ "$(cat /opt/local/amimoto.json)" = "" ] && echo '{"run_list":["recipe[amimoto]"]}' > /opt/local/amimoto.json
 
-# node[:phpfpm][:version] 70
+# node[:phpfpm][:version] 72
 TMP_JSON=$(mktemp)
-/usr/bin/jq -s '.[0] * .[1]' \
+/usr/bin/jq -s '.[1] * .[0]' \
   <(echo '{"phpfpm":{"version":"72"}}') \
   /opt/local/amimoto.json \
   > ${TMP_JSON}
