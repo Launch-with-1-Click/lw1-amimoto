@@ -10,7 +10,7 @@ hash jq  || /usr/bin/yum -y install jq
 # node[:phpfpm][:version] 70
 TMP_JSON=$(mktemp)
 /usr/bin/jq -s '.[0] * .[1]' \
-  <(echo '{"phpfpm":{"version":"70"}}') \
+  <(echo '{"phpfpm":{"version":"72"}}') \
   /opt/local/amimoto.json \
   > ${TMP_JSON}
 [ -f ${TMP_JSON} ] && mv -f ${TMP_JSON} /opt/local/amimoto.json

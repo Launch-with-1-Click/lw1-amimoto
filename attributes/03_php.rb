@@ -68,6 +68,7 @@ default[:php][:packages] = %w{
   php-opcache
   php-pear
   php-pecl-zip
+  ImageMagick
   }
 if node[:phpfpm][:version] == '72'
   default[:php][:packages] = %w{

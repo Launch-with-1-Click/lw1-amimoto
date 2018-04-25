@@ -10,7 +10,7 @@ hash jq  || /usr/bin/yum -y install jq
 # node[:wordpress][:woocommerce] enabled
 TMP_JSON=$(mktemp)
 /usr/bin/jq -s '.[0] * .[1]' \
-  <(echo '{"wordpress":{"woocommerce":true}}') \
+  <(echo '{"wordpress":{"woocommerce":true},"phpfpm":{"version":"72"}}') \
   /opt/local/amimoto.json \
   > ${TMP_JSON}
 [ -f ${TMP_JSON} ] && mv -f ${TMP_JSON} /opt/local/amimoto.json
