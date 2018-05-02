@@ -4,7 +4,7 @@ action :install do
   install_path = "#{::File.join(new_resource.install_path,'/wp-content/themes/',new_resource.theme_name)}"
   release_file = "#{new_resource.theme_name}.zip"
   work_file    = "#{::File.join('/tmp/.cache/wpthemes/',release_file)}"
-  release_url  = "http://downloads.wordpress.org/theme/#{new_resource.theme_name}.zip"
+  release_url  = "https://downloads.wordpress.org/theme/#{new_resource.theme_name}.zip"
 
   directory '/tmp/.cache/wpthemes/' do
     recursive true
@@ -45,11 +45,12 @@ action :install do
     user "root"
     umask '0002'
     cwd "/tmp"
+    only_if "test -f #{work_file}"
     code <<-EOH
       /usr/bin/unzip #{work_file} -d #{themes_path}
       chown -R #{node[:nginx][:config][:user]}:#{node[:nginx][:config][:group]} #{install_path}
-      find #{install_path} -type d -exec chmod 775 {} \;
-      find #{install_path} -type f -exec chmod 664 {} \;
+      find #{install_path} -type d -exec chmod 775 {} \\;
+      find #{install_path} -type f -exec chmod 664 {} \\;
     EOH
   end
 end
