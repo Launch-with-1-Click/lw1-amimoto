@@ -10,7 +10,7 @@ hash jq  || /usr/bin/yum -y install jq
 # node[:hhvm][:enabled] enabled
 TMP_JSON=$(mktemp)
 /usr/bin/jq -s '.[1] * .[0]' \
-  <(echo '{"hhvm":{"enabled":true},"wordpress":{"woocommerce":true}}') \
+  <(echo '{"hhvm":{"enabled":true},"phpfpm":{"version":"72"},"wordpress":{"woocommerce":true}}') \
   /opt/local/amimoto.json \
   > ${TMP_JSON}
 [ -f ${TMP_JSON} ] && mv -f ${TMP_JSON} /opt/local/amimoto.json
