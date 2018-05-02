@@ -4,7 +4,7 @@ action :install do
   install_path = "#{::File.join(new_resource.install_path,'/wp-content/plugins/',new_resource.plugin_name)}"
   release_file = "#{new_resource.plugin_name}.zip"
   work_file    = "#{::File.join('/tmp/.cache/wpplugins/',release_file)}"
-  release_url  = "http://downloads.wordpress.org/plugin/#{new_resource.plugin_name}.zip"
+  release_url  = "https://downloads.wordpress.org/plugin/#{new_resource.plugin_name}.zip"
 
   directory '/tmp/.cache/wpplugins/' do
     recursive true
@@ -45,6 +45,7 @@ action :install do
     user "root"
     umask '0002'
     cwd "/tmp"
+    only_if "test -f #{work_file}"
     code <<-EOH
       /usr/bin/unzip #{work_file} -d #{plugins_path}
       chown -R #{node[:nginx][:config][:user]}:#{node[:nginx][:config][:group]} #{install_path}
