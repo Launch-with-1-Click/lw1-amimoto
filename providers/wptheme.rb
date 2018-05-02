@@ -45,6 +45,7 @@ action :install do
     user "root"
     umask '0002'
     cwd "/tmp"
+    only_if "test -f #{work_file}"
     code <<-EOH
       /usr/bin/unzip #{work_file} -d #{themes_path}
       chown -R #{node[:nginx][:config][:user]}:#{node[:nginx][:config][:group]} #{install_path}
