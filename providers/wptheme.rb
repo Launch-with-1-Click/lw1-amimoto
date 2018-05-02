@@ -49,8 +49,8 @@ action :install do
     code <<-EOH
       /usr/bin/unzip #{work_file} -d #{themes_path}
       chown -R #{node[:nginx][:config][:user]}:#{node[:nginx][:config][:group]} #{install_path}
-      find #{install_path} -type d -exec chmod 775 {} \;
-      find #{install_path} -type f -exec chmod 664 {} \;
+      find #{install_path} -type d -exec chmod 775 {} \\;
+      find #{install_path} -type f -exec chmod 664 {} \\;
     EOH
   end
 end
