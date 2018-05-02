@@ -4,7 +4,7 @@ action :install do
   install_path = "#{::File.join(new_resource.install_path,'/wp-content/themes/',new_resource.theme_name)}"
   release_file = "#{new_resource.theme_name}.zip"
   work_file    = "#{::File.join('/tmp/.cache/wpthemes/',release_file)}"
-  release_url  = "http://downloads.wordpress.org/theme/#{new_resource.theme_name}.zip"
+  release_url  = "https://downloads.wordpress.org/theme/#{new_resource.theme_name}.zip"
 
   directory '/tmp/.cache/wpthemes/' do
     recursive true
