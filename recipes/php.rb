@@ -23,6 +23,8 @@ node[:php][:packages].each do | pkg |
     action [:install, :upgrade]
     options "--skip-broken"
     notifies :run, 'bash[update-motd]', :delayed
+    retries 2
+    retry_delay 4
   end
 end
 
