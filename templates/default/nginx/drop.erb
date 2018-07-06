@@ -2,11 +2,21 @@ location = /favicon.ico { access_log off; }
 location = /apple-touch-icon.png { access_log off; }
 location = /apple-touch-icon-precomposed.png { access_log off; }
 
-location /.well-known { auth_basic off; allow all; break; }
+location ^~ /.well-known { auth_basic off; allow all; break; }
 
 # Protect System Files
 location ~ /\.(?!well-known) { deny all; access_log off; }
-location ~* /wp-includes/.*\.php$ { access_log off; return 404; }
+location ~* /wp-includes/.*\.php$ {
+    access_log off;
+    return 404;
+
+    location ~* /wp-includes/js/tinymce/wp-tinymce\.php$ {
+        proxy_no_cache     1;
+        proxy_cache_bypass 1;
+        proxy_redirect     off;
+        proxy_pass         http://backend;
+    }
+}
 location ~* /wp-admin/includes/.*\.php$ { access_log off; return 404; }
 location ~* /wp-content/themes/.*/index\.php$ { access_log off; return 404; }
 location ~* /wp-content/languages/.*$ { access_log off; return 404; }
