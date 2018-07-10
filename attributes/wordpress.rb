@@ -33,7 +33,6 @@ default[:wordpress][:plugins] = %w{
   }
 default[:wordpress][:mu_plugins] = %w{
   mu-plugins.php
-  cf-previewfix.php
   }
 default[:wordpress][:themes] = %w{}
 
