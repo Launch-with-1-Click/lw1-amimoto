@@ -36,3 +36,19 @@ define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
 
 unset($db_data);
+
+/**
+ * For VaultPress
+ */
+define( 'VAULTPRESS_DISABLE_FIREWALL', true );
+if ( !empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+   $forwarded_ips = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
+   $_SERVER['REMOTE_ADDR'] = $forwarded_ips[0];
+   unset( $forwarded_ips );
+}
+
+/**
+ * For Nginx Cache Controller
+ */
+define('IS_AMIMOTO', true);
+define('NCC_CACHE_DIR', '/var/cache/nginx/proxy_cache');

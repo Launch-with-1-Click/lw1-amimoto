@@ -146,22 +146,6 @@ template node[:wordpress][:document_root] + "/local-salt.php" do
   notifies :run, 'bash[wp-download]', :immediately
 end
 
-# create MySQL User and Database
-create_db_sql = "/opt/local/createdb-" + node[:wordpress][:servername] + '.sql'
-execute "mysql-create-database" do
-  command "/usr/bin/mysql -u root --password='#{node['wordpress']['db']['rootpass']}' < #{create_db_sql}"
-  action :nothing
-end
-
-template create_db_sql do
-  owner "root"
-  group "root"
-  mode "0600"
-  variables node[:wordpress][:db]
-  source "wordpress/createdb.sql.erb"
-  notifies :run, "execute[mysql-create-database]", :immediately
-end
-
 # install plugins
 node[:wordpress][:plugins].each do | plugin_name |
   amimoto_wpplugin "install #{plugin_name}" do
@@ -197,6 +181,24 @@ node[:wordpress][:themes].each do | theme_name |
     theme_name theme_name
     install_path node[:wordpress][:document_root]
     action :install
+  end
+end
+
+# create MySQL User and Database
+if node[:mysql][:enabled]
+  create_db_sql = "/opt/local/createdb-" + node[:wordpress][:servername] + '.sql'
+  execute "mysql-create-database" do
+    command "/usr/bin/mysql -u root --password='#{node['wordpress']['db']['rootpass']}' < #{create_db_sql}"
+    action :nothing
+  end
+
+  template create_db_sql do
+    owner "root"
+    group "root"
+    mode "0600"
+    variables node[:wordpress][:db]
+    source "wordpress/createdb.sql.erb"
+    notifies :run, "execute[mysql-create-database]", :immediately
   end
 end
 

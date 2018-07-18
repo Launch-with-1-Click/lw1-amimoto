@@ -68,22 +68,6 @@ define ('WP_ALLOW_MULTISITE', true);
 // define('SITE_ID_CURRENT_SITE', 1);
 // define('BLOG_ID_CURRENT_SITE', 1);
 
-/**
- * For VaultPress
- */
-define( 'VAULTPRESS_DISABLE_FIREWALL', true );
-if ( !empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-   $forwarded_ips = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
-   $_SERVER['REMOTE_ADDR'] = $forwarded_ips[0];
-   unset( $forwarded_ips );
-}
-
-/**
- * For Nginx Cache Controller
- */
-define('IS_AMIMOTO', true);
-define('NCC_CACHE_DIR', '/var/cache/nginx/proxy_cache');
-
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */
