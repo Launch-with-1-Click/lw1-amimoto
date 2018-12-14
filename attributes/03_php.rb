@@ -62,7 +62,6 @@ default[:php][:packages] = %w{
   php-gd
   php-pear
   php-xml
-  php-mcrypt
   php-mysqlnd
   php-pdo
   php-opcache
@@ -70,23 +69,12 @@ default[:php][:packages] = %w{
   php-pecl-zip
   ImageMagick
   }
-if node[:phpfpm][:version] == '72'
-  default[:php][:packages] = %w{
-    php
-    php-cli
-    php-fpm
-    php-devel
-    php-mbstring
-    php-gd
-    php-pear
-    php-xml
-    php-mysqlnd
-    php-pdo
-    php-opcache
-    php-pear
-    php-pecl-zip
-    }
+if node[:phpfpm][:version] >= '72'
+  default[:php][:packages].push('php-pecl-mcrypt')
+else
+  default[:php][:packages].push('php-mcrypt')
 end
+
 default[:php][:config][:user] = node[:web][:user]
 default[:php][:config][:group] = node[:web][:group]
 default[:php][:config][:listen] = '/var/run/php-fpm.sock'
