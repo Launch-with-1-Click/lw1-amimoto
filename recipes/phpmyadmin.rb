@@ -46,4 +46,11 @@ template "#{install_path}/config.inc.php" do
   action :nothing
   variables node[:phpmyadmin]
   source "phpmyadmin/config.inc.php.erb"
+  notifies :create, "directory[#{install_path}/tmp]"
+end
+
+directory "#{install_path}/tmp" do
+  action :nothing
+  owner node[:nginx][:config][:user]
+  group node[:nginx][:config][:group]
 end
