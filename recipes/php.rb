@@ -11,7 +11,15 @@ yum_package 'libwebp' do
   notifies :run, 'bash[update-motd]', :delayed
 end
 
-if node[:phpfpm][:version] == '72'
+if node[:phpfpm][:version] == '73'
+  yum_package 'liblzf' do
+    action [:install, :upgrade]
+    options "--enablerepo=epel --disablerepo=amzn-main"
+    notifies :run, 'bash[update-motd]', :delayed
+  end
+end
+
+if node[:phpfpm][:version] >= '72'
   package 'php-mcrypt' do
     action [:remove]
     notifies :run, 'bash[update-motd]', :delayed
@@ -19,12 +27,14 @@ if node[:phpfpm][:version] == '72'
 end
 
 node[:php][:packages].each do | pkg |
-  yum_package pkg do
-    action [:install, :upgrade]
-    options "--skip-broken"
-    notifies :run, 'bash[update-motd]', :delayed
-    retries 2
-    retry_delay 4
+  if ! ( node[:phpfpm][:version] >= '72' && pkg == 'php-mcrypt' )
+    yum_package pkg do
+      action [:install, :upgrade]
+      options "--skip-broken"
+      notifies :run, 'bash[update-motd]', :delayed
+      retries 2
+      retry_delay 4
+    end
   end
 end
 
