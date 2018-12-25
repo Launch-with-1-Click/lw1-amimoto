@@ -1,4 +1,7 @@
 # Percona
+file '/etc/yum.repos.d/percona-release.repo' do
+  action :delete
+end
 bash 'percona.repo' do
     not_if 'rpm -qi gpg-pubkey-* | grep Percona'
     code <<-EOC
