@@ -7,8 +7,7 @@ end
 
 # install wp-cli
 git node[:wpcli][:dir]  do
-  repository "git://github.com/wp-cli/builds.git"
-#  revision 'master'
+  repository node[:wpcli][:repository]
 end
 
 bin = ::File.join(node[:wpcli][:dir], 'phar', 'wp-cli.phar')
