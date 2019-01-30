@@ -4,5 +4,5 @@
 name = CentOS $releasever - Percona
 baseurl=<%= node[:yum][:repo][:percona][:baseurl] %>
 enabled = 1
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-percona
-gpgcheck = 1
+#gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-percona
+gpgcheck = 0
