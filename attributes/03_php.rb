@@ -13,6 +13,7 @@ default[:mod_php7][:packages] = %w{
   php70-php-xml
   php70-php-mcrypt
   php70-php-mysqlnd
+  php70-bcmath
   php70-php-pdo
   php70-php-opcache
   }
@@ -66,8 +67,10 @@ default[:php][:packages] = %w{
   php-pdo
   php-opcache
   php-pear
+  php-bcmath
   php-pecl-zip
   ImageMagick
+  php-pecl-imagick
   }
 if node[:phpfpm][:version] >= '72'
   default[:php][:packages].push('php-pecl-mcrypt')
