@@ -24,7 +24,7 @@
         set $proxy_https 'on';
     }
 
-    rewrite /wp-admin$ $uri/ permanent;
+    rewrite /wp-admin$ $request_uri/ permanent;
     #rewrite ^(.*)(index|home|default)\.html? $1 permanent;
 
     location ~ /wp-content/.*$ {
