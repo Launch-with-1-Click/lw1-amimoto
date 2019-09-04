@@ -25,7 +25,7 @@ location / {
 }
 
 # Add trailing slash to */wp-admin requests.
-rewrite /wp-admin$ $uri/ permanent;
+rewrite /wp-admin$ $request_uri/ permanent;
 
 # Pass all .php files onto a php-fpm/php-fcgi server.
 location ~ \.php$ {
