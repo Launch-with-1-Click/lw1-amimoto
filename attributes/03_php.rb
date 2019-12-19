@@ -72,9 +72,7 @@ default[:php][:packages] = %w{
   ImageMagick
   php-pecl-imagick
   }
-if node[:phpfpm][:version] >= '72'
-  default[:php][:packages].push('php-pecl-mcrypt')
-else
+if node[:phpfpm][:version] < '72'
   default[:php][:packages].push('php-mcrypt')
 end
 
