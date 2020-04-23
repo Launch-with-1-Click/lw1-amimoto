@@ -63,12 +63,12 @@ default[:php][:packages] = %w{
   php-gd
   php-pear
   php-xml
+  php-soap
   php-mysqlnd
   php-pdo
   php-opcache
   php-pear
   php-bcmath
-  php-pecl-zip
   ImageMagick
   php-pecl-imagick
   }
