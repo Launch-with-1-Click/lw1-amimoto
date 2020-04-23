@@ -71,6 +71,7 @@ default[:php][:packages] = %w{
   php-bcmath
   ImageMagick
   php-pecl-imagick
+  php-pecl-zip
   }
 if node[:phpfpm][:version] < '72'
   default[:php][:packages].push('php-mcrypt')
