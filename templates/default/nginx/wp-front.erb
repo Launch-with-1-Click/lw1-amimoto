@@ -8,24 +8,43 @@
 
     set $proxy_https '';
     set $proxy_proto $scheme;
+    set $proxy_port $server_port;
     if ( $http_x_forwarded_proto = 'https' ) {
         set $proxy_https 'on';
         set $proxy_proto $http_x_forwarded_proto;
+        set $proxy_port '443';
     }
     if ( $http_x_forwarded_port = '443' ) {
         set $proxy_https 'on';
         set $proxy_proto 'https';
+        set $proxy_port $http_x_forwarded_port;
     }
     if ( $http_cloudfront_forwarded_proto = 'https' ) {
         set $proxy_https 'on';
         set $proxy_proto $http_cloudfront_forwarded_proto;
+        set $proxy_port '443';
     }
     if ( $scheme = 'https' ) {
         set $proxy_https 'on';
     }
 
-    rewrite /wp-admin$ $request_uri/ permanent;
-    #rewrite ^(.*)(index|home|default)\.html? $1 permanent;
+    proxy_no_cache     $do_not_cache;
+    proxy_cache_bypass $do_not_cache;
+
+    proxy_redirect     off;
+    proxy_cache        czone;
+
+    proxy_set_header  Host               $host;
+    proxy_set_header  X-Real-IP          $remote_addr;
+    proxy_set_header  Remote-Addr        $remote_addr;
+    proxy_set_header  X-Forwarded-Host   $host;
+    proxy_set_header  X-Forwarded-Server $host;
+    proxy_set_header  X-Forwarded-For    $proxy_add_x_forwarded_for;
+    proxy_set_header  X-Forwarded-Proto  $proxy_proto;
+    proxy_set_header  X-Forwarded-Port   $proxy_port;
+    proxy_set_header  X-UA-Detect        $mobile;
+    proxy_set_header  Accept-Encoding    "";
+    proxy_set_header  Proxy              "";
 
     location ~ /wp-content/.*$ {
         try_files $uri @wordpress;
@@ -33,11 +52,6 @@
         location ~ /wp-content/(themes|plugins|mu-plugins)/.*\.php$ {
             try_files $uri @wordpress;
 
-            proxy_no_cache     $do_not_cache;
-            proxy_cache_bypass $do_not_cache;
-
-            proxy_redirect     off;
-            proxy_cache        czone;
             proxy_cache_key    "$proxy_proto://$host$request_uri$mobile";
             proxy_cache_valid  200 0m;
             proxy_pass         http://backend;
@@ -47,11 +61,6 @@
     location ~ \.php$ {
         try_files $uri @wordpress;
 
-        proxy_no_cache     $do_not_cache;
-        proxy_cache_bypass $do_not_cache;
-
-        proxy_redirect     off;
-        proxy_cache        czone;
         proxy_cache_key    "$proxy_proto://$host$request_uri$mobile";
         proxy_cache_valid  200 0m;
         proxy_pass         http://backend;
@@ -64,11 +73,6 @@
     location @wordpress {
         internal;
 
-        proxy_no_cache     $do_not_cache;
-        proxy_cache_bypass $do_not_cache;
-
-        proxy_redirect     off;
-        proxy_cache        czone;
         proxy_cache_key    "$proxy_proto://$host$request_uri$mobile";
         proxy_cache_valid  200 0m;
         proxy_pass         http://backend;
