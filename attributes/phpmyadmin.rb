@@ -1,6 +1,6 @@
 require 'securerandom'
 
-default[:phpmyadmin][:version] = "5.0.2"
+default[:phpmyadmin][:version] = "5.0.4"
 if node[:phpfpm][:version] < '71'
   default[:phpmyadmin][:version] = "4.9.5"
 end
