@@ -26,6 +26,7 @@ server {
     <% end %>
 
     include     /etc/nginx/wp-front;
+    #location / { return 301 https://<%= @server_name %>$request_uri; }
 
     <% if @server_name == node[:ec2][:instance_id] %>
     <% if @phpmyadmin_enable %>
