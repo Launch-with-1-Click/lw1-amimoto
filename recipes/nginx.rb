@@ -30,7 +30,7 @@ end
   end
 end
 
-%w{ drop mobile-detect phpmyadmin php-fpm wp-front wp-multisite-subdir wp-singlesite }.each do | file_name |
+%w{ drop mobile-detect phpmyadmin php-fpm mime.types wp-front wp-multisite-subdir wp-singlesite }.each do | file_name |
   template "/etc/nginx/" + file_name do
     variables node[:nginx][:config]
     source "nginx/" + file_name + ".erb"
