@@ -1,13 +1,17 @@
 map $sent_http_content_type $expires {
-    default                <%= @expires_default %>;
-    ~image/                <%= @expires_image %>;
-    ~audio/                <%= @expires_audio %>;
-    ~video/                <%= @expires_video %>;
-    text/css               <%= @expires_css %>;
-    text/javascript        <%= @expires_js %>;
-    application/javascript <%= @expires_js %>;
+    default                  <%= @expires_default %>;
+    ~image/                  <%= @expires_image %>;
+    ~audio/                  <%= @expires_audio %>;
+    ~video/                  <%= @expires_video %>;
+    ~font/                   <%= @expires_woff %>;
+    text/css                 <%= @expires_css %>;
+    text/javascript          <%= @expires_js %>;
+    application/javascript   <%= @expires_js %>;
     application/x-javascript <%= @expires_js %>;
-    application/pdf        <%= @expires_pdf %>;
+    application/pdf          <%= @expires_pdf %>;
+    application/font-woff    <%= @expires_woff %>;
+    application/xfont-ttf    <%= @expires_ttf %>;
+    application/xfont-otf    <%= @expires_otf %>;
+    application/vnd.ms-fontobject <%= @expires_eot %>;
     application/x-shockwave-flash <%= @expires_flash %>;
-    application/font-woff  <%= @expires_woff %>;
 }
