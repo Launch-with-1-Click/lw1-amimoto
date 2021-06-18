@@ -63,6 +63,7 @@ default[:php][:packages] = %w{
   php-gd
   php-pear
   php-xml
+  php-intl
   php-soap
   php-mysqlnd
   php-pdo
