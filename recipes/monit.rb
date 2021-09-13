@@ -24,6 +24,10 @@ template node[:monit][:config_file] do
   mode '0600'
 end
 
+template "/etc/logrotate.d/monit" do
+  source "logrotat.d/monit.erb"
+end
+
 node[:monit][:settings][:processes].each do |monit|
   if node[:monit][:monitor][monit[:name]]
     template ::File.join(node[:monit][:config_dir], monit[:name]) do
