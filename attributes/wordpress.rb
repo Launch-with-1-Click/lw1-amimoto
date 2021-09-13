@@ -1,7 +1,7 @@
 require 'securerandom'
 
 default[:wordpress][:servername] =  node[:ec2][:instance_id]
-default[:wordpress][:version] = '5.7.2'
+default[:wordpress][:version] = '5.8.1'
 default[:wordpress][:document_root] = '/var/www/vhosts/' + node[:wordpress][:servername]
 default[:wordpress][:wp_multisite] = node[:nginx][:config][:wp_multisite]
 default[:wordpress][:mobile_detect_enable] = node[:nginx][:config][:mobile_detect_enable]
